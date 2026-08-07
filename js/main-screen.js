@@ -16,6 +16,9 @@ const FOLLOW_UPS = [
 
 let chatLog, chatScroll, greeting, suggestions, composerInput;
 
+// SYSTEM STATE: Set this to true when you hook up your local API or OpenAI/Gemini
+let isApiConnected = false; 
+
 export function init() {
   const root = document.getElementById('main-screen');
   if (!root) return;
@@ -62,12 +65,21 @@ function sendMessage(text) {
   appendMessage('user', text);
   const typingEl = appendTyping();
 
-  // Simulated latency before the assistant "responds" — replace with
-  // your real API round-trip; call resolveTyping(typingEl, reply) when done.
+  // Simulated latency before the assistant "responds"
   setTimeout(() => {
-    const reply = getAssistantReply(text);
-    resolveTyping(typingEl, reply);
-    renderSuggestions();
+    // API CHECK FALLBACK LOGIC
+    if (!isApiConnected) {
+      const offlineReply = "⚠️ SYSTEM ALERT: JT API Engine is currently disconnected. Please configure your API endpoint in the Right Sidebar settings to initiate live data stream.";
+      resolveTyping(typingEl, offlineReply);
+      
+      // Dispatch offline event so the left-sidebar can turn the status dot red
+      window.dispatchEvent(new Event('jt-api-offline'));
+    } else {
+      // Normal flow when API is connected
+      const reply = getAssistantReply(text);
+      resolveTyping(typingEl, reply);
+      renderSuggestions();
+    }
   }, 900 + Math.random() * 500);
 }
 
