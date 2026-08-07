@@ -1,54 +1,62 @@
-<!-- components/left-bar.html -->
-<aside class="left-sidebar glass-panel">
-    <!-- Brand Header -->
-    <header class="sidebar-header">
-        <h1 class="brand-title">JOHNNY <span>TEC</span></h1>
-    </header>
+<nav class="left-bar" aria-label="Primary navigation">
 
-    <!-- Primary Action -->
-    <div class="action-container">
-        <button id="btn-new-chat" class="neon-button">
-            <span class="icon">+</span> New Chat
-        </button>
+  <header class="brand">
+    <div class="brand-ring">
+      <span class="brand-mark">JT</span>
     </div>
+    <h1 class="brand-name"><span class="gradient-text">Johnny</span> Tec<span class="text-dim">.Dev</span></h1>
+    <p class="brand-tagline">Building Digital Excellence</p>
+  </header>
 
-    <!-- Navigation -->
-    <nav class="sidebar-nav">
-        <ul id="nav-list">
-            <li class="nav-item active" data-target="dashboard">Dashboard</li>
-            <li class="nav-item" data-target="history">Chat History</li>
-            <li class="nav-item" data-target="prompts">Saved Prompts</li>
-            <li class="nav-item" data-target="plugins">Plugins</li>
-        </ul>
-    </nav>
+  <button class="new-chat-btn" type="button" id="newChatBtn">
+    <span class="icon-plus" aria-hidden="true">+</span> New Chat
+  </button>
 
-    <!-- System Status & Usage Tracker -->
-    <div class="system-status-card">
-        <div class="status-header">
-            <span class="status-indicator online"></span>
-            <h4>JT API Engine</h4>
-        </div>
-        <div class="usage-tracker">
-            <div class="usage-labels">
-                <span>AI Core Usage</span>
-                <span>78%</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" id="ai-usage-fill"></div>
-            </div>
-        </div>
+  <ul class="nav-list" id="navList">
+    <li><button class="nav-item is-active" data-nav="dashboard"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg><span>Dashboard</span></button></li>
+    <li><button class="nav-item" data-nav="chat"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4V4Z"/></svg><span>AI Chat</span><svg class="nav-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg></button></li>
+    <li><button class="nav-item" data-nav="code"><svg class="nav-icon" viewBox="0 0 24 24"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg><span>Code Assistant</span></button></li>
+    <li><button class="nav-item" data-nav="image"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m5 18 5-5 4 4 3-3 4 4"/></svg><span>Image Generator</span></button></li>
+    <li><button class="nav-item" data-nav="documents"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg><span>Documents</span></button></li>
+    <li><button class="nav-item" data-nav="knowledge"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 5c3-1.5 6-1.5 8 0v14c-2-1.5-5-1.5-8 0V5Z"/><path d="M20 5c-3-1.5-6-1.5-8 0v14c2-1.5 5-1.5 8 0V5Z"/></svg><span>Knowledge Base</span></button></li>
+    <li><button class="nav-item" data-nav="voice"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg><span>Voice Assistant</span></button></li>
+    <li><button class="nav-item" data-nav="history"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><path d="M12 8v5l3 2"/></svg><span>History</span></button></li>
+  </ul>
+
+  <div class="upgrade-card">
+    <div class="upgrade-head">
+      <span class="upgrade-crown" aria-hidden="true">♛</span>
+      <b>Upgrade to Pro</b>
+      <svg class="nav-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
     </div>
+    <p>Unlock all premium features and models.</p>
+    <button class="upgrade-btn" type="button">Upgrade Now</button>
+    <span class="upgrade-crystal" aria-hidden="true"></span>
+  </div>
 
-    <!-- User Profile Footer -->
-    <footer class="user-profile">
-        <div class="avatar-container">
-            <div class="robot-eye-animation"></div>
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=JohnnyTec" alt="Pro User" class="user-avatar" />
-        </div>
-        <div class="user-info">
-            <span class="user-name">Johnny Tec.Dev</span>
-            <span class="pro-badge">PRO</span>
-        </div>
-    </footer>
-</aside>
+  <div class="usage-card">
+    <div class="usage-head">
+      <b>AI Usage</b>
+      <svg class="usage-spark" viewBox="0 0 24 24"><path d="M2 17 8 9l4 4 8-10"/></svg>
+    </div>
+    <div class="usage-row">
+      <span>This Month</span>
+      <span class="usage-pct" id="usagePct">78%</span>
+    </div>
+    <div class="usage-track"><div class="usage-fill" id="usageFill" style="width:78%"></div></div>
+    <small>Resets in 12 days</small>
+  </div>
 
+  <button class="profile-footer" type="button" id="profileBtn">
+    <span class="avatar-ring">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Johnny&backgroundColor=0a0a1c" alt="" class="avatar-img">
+      <span class="status-dot" aria-hidden="true"></span>
+    </span>
+    <span class="profile-meta">
+      <b>Johnny Tec<span class="text-dim">.Dev</span></b>
+      <span class="pro-badge"><span aria-hidden="true">♛</span> Pro User</span>
+    </span>
+    <svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1.11 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1Z"/></svg>
+  </button>
+
+</nav>
