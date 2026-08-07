@@ -1,107 +1,175 @@
 document.addEventListener("DOMContentLoaded", () => {
-    loadLoadingScreen();
+    initThemeToggle();
+    initMenuHandlers();
+    initActionCards();
+    initPillPrompts();
+    initChatSender();
 });
 
-// Load 15s Loading Screen Component
-function loadLoadingScreen() {
-    fetch('loading.html')
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('root').innerHTML = html;
-            runCounter();
-            
-            // Wait 15 seconds, then load the Home Dashboard layout
-            setTimeout(() => {
-                loadHomeScreen();
-            }, 15000);
-        });
-}
+/* 1. DARK / LIGHT MODE TOGGLE */
+function initThemeToggle() {
+    const themeBtn = document.getElementById("theme-btn");
+    if (!themeBtn) return;
 
-// Increment Percentage Counter during loading
-function runCounter() {
-    let percent = 0;
-    const interval = setInterval(() => {
-        const el = document.getElementById('percent-text');
-        if (el && percent < 100) {
-            percent++;
-            el.innerText = percent + '%';
+    themeBtn.addEventListener("click", () => {
+        document.body.classList.toggle("light-mode");
+        if (document.body.classList.contains("light-mode")) {
+            themeBtn.innerText = "☀️";
         } else {
-            clearInterval(interval);
+            themeBtn.innerText = "🌙";
         }
-    }, 150);
+    });
 }
 
-// Load Home Layout & Sidebar Components
-function loadHomeScreen() {
-    fetch('home.html')
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('root').innerHTML = html;
+/* 2. 3-LINES & 3-DOTS MENU TOGGLES */
+function initMenuHandlers() {
+    const menuBtn = document.getElementById("menu-btn");
+    const moreBtn = document.getElementById("more-btn");
+    const moreMenu = document.getElementById("more-menu");
 
-            // Fetch Left Sidebar
-            fetch('left.html')
-                .then(res => res.text())
-                .then(data => { document.getElementById('left-sidebar').innerHTML = data; });
-
-            // Fetch Right Sidebar
-            fetch('right.html')
-                .then(res => res.text())
-                .then(data => { document.getElementById('right-sidebar').innerHTML = data; });
-
-            // Initialize Groq Chat Listener
-            initChatEngine();
-        });
-}
-
-// Groq API Communication Logic
-function initChatEngine() {
-    const GROQ_API_KEY = "PASTE_YOUR_GROQ_API_KEY_HERE"; 
-    
-    // Wait briefly for DOM injection to settle
-    setTimeout(() => {
-        const sendBtn = document.getElementById("send-btn");
-        const chatInput = document.getElementById("chat-input");
-        const chatArea = document.getElementById("chat-area");
-
-        if (!sendBtn) return;
-
-        sendBtn.addEventListener("click", async () => {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            // Add User Bubble
-            chatArea.innerHTML += `<div class="chat-bubble user-bubble">${text}</div>`;
-            chatInput.value = "";
-            
-            // Add Thinking Indicator
-            chatArea.innerHTML += `<div class="chat-bubble ai-bubble" id="thinking">Johnny Tec AI is thinking...</div>`;
-            chatArea.scrollTop = chatArea.scrollHeight;
-
-            try {
-                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${GROQ_API_KEY}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        model: "llama-3.1-70b-versatile",
-                        messages: [{ role: "user", content: text }]
-                    })
-                });
-
-                const data = await response.json();
-                document.getElementById("thinking").remove();
-                
-                const reply = data.choices[0].message.content;
-                chatArea.innerHTML += `<div class="chat-bubble ai-bubble">${reply}</div>`;
-            } catch (err) {
-                if (document.getElementById("thinking")) {
-                    document.getElementById("thinking").remove();
-                }
-                chatArea.innerHTML += `<div class="chat-bubble ai-bubble" style="color:#ff4444;">Error connecting to Groq API. Check your API key.</div>`;
+    // 3-Lines Hamburger Left Drawer Toggle
+    if (menuBtn) {
+        menuBtn.addEventListener("click", () => {
+            const leftSidebar = document.getElementById("left-sidebar");
+            if (leftSidebar) {
+                leftSidebar.classList.toggle("open");
             }
-            chatArea.scrollTop = chatArea.scrollHeight;
         });
-    }, 500);
+    }
+
+    // 3-Dots Dropdown Toggle
+    if (moreBtn && moreMenu) {
+        moreBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            moreMenu.classList.toggle("show");
+        });
+
+        document.addEventListener("click", () => {
+            moreMenu.classList.remove("show");
+        });
+    }
 }
+
+/* 3. QUICK ACTION CARDS CLICK HANDLER */
+function initActionCards() {
+    const cards = document.querySelectorAll(".action-card");
+    const chatInput = document.getElementById("chat-input");
+
+    cards.forEach(card => {
+        card.addEventListener("click", () => {
+            const promptText = card.getAttribute("data-prompt");
+            if (chatInput && promptText) {
+                chatInput.value = promptText;
+                chatInput.focus();
+            }
+        });
+    });
+}
+
+/* 4. SUGGESTION PILLS CLICK HANDLER */
+function initPillPrompts() {
+    const pills = document.querySelectorAll(".pill-btn");
+    const chatInput = document.getElementById("chat-input");
+
+    pills.forEach(pill => {
+        pill.addEventListener("click", () => {
+            if (chatInput) {
+                chatInput.value = pill.innerText;
+                document.getElementById("send-btn").click();
+            }
+        });
+    });
+}
+
+/* 5. CHAT MESSAGING ENGINE */
+function initChatSender() {
+    const sendBtn = document.getElementById("send-btn");
+    const chatInput = document.getElementById("chat-input");
+    const chatArea = document.getElementById("chat-area");
+
+    if (!sendBtn || !chatInput) return;
+
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        // Add User Message
+        const userHTML = `
+            <div class="message-wrapper user-wrapper">
+                <div class="message-bubble user-bubble">${text}</div>
+                <div class="message-meta">${time}</div>
+            </div>`;
+        chatArea.innerHTML += userHTML;
+        chatInput.value = "";
+        chatArea.scrollTop = chatArea.scrollHeight;
+
+        // Add Thinking Indicator
+        const thinkingId = "thinking-" + Date.now();
+        const thinkingHTML = `
+            <div class="message-wrapper ai-wrapper" id="${thinkingId}">
+                <div class="ai-avatar-icon">🤖</div>
+                <div class="ai-content-box">
+                    <div class="message-bubble ai-bubble" style="color:var(--text-secondary);">Johnny Tec AI is typing...</div>
+                </div>
+            </div>`;
+        chatArea.innerHTML += thinkingHTML;
+        chatArea.scrollTop = chatArea.scrollHeight;
+
+        // Simulated AI Response (Hook Groq API fetch here)
+        setTimeout(() => {
+            const thinkingEl = document.getElementById(thinkingId);
+            if (thinkingEl) thinkingEl.remove();
+
+            const aiResponseHTML = `
+                <div class="message-wrapper ai-wrapper">
+                    <div class="ai-avatar-icon">🤖</div>
+                    <div class="ai-content-box">
+                        <div class="message-bubble ai-bubble">
+                            I processed your request for: <strong>"${text}"</strong>. How else can I assist you?
+                        </div>
+                        <div class="response-actions">
+                            <button class="action-pill-btn" onclick="readAloud(this)">▶ Read Aloud</button>
+                            <div class="action-icons">
+                                <button class="icon-action-btn" title="Copy" onclick="copyResponse(this)">📋</button>
+                                <button class="icon-action-btn" title="Regenerate">🔄</button>
+                                <button class="icon-action-btn" title="Like">👍</button>
+                                <button class="icon-action-btn" title="Dislike">👎</button>
+                            </div>
+                        </div>
+                        <div class="message-meta">${time}</div>
+                    </div>
+                </div>`;
+            chatArea.innerHTML += aiResponseHTML;
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }, 1200);
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+}
+
+/* 6. UTILITY FUNCTIONS */
+function readAloud(btn) {
+    const bubble = btn.closest(".ai-content-box").querySelector(".ai-bubble");
+    if (bubble) {
+        const utterance = new SpeechSynthesisUtterance(bubble.innerText);
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+function copyResponse(btn) {
+    const bubble = btn.closest(".ai-content-box").querySelector(".ai-bubble");
+    if (bubble) {
+        navigator.clipboard.writeText(bubble.innerText);
+        alert("Response copied to clipboard!");
+    }
+}
+
+function clearChat() {
+    const chatArea = document.getElementById("chat-area");
+    if (chatArea) chatArea.innerHTML = "";
+        }
