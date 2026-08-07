@@ -1,1 +1,183 @@
+/* css/right-bar.css */
+.right-sidebar {
+    width: 300px;
+    height: 100vh;
+    background: var(--glass-bg);
+    backdrop-filter: var(--blur-effect);
+    -webkit-backdrop-filter: var(--blur-effect);
+    border-left: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translateX(100%);
+    animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sidebar-header {
+    margin-bottom: 25px;
+}
+.sidebar-header.secondary {
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+.sidebar-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.settings-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.settings-container::-webkit-scrollbar {
+    display: none;
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+.setting-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #a0a0b5;
+    margin-bottom: 8px;
+}
+
+/* Custom Select Dropdown */
+.custom-select select {
+    width: 100%;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.9rem;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+.custom-select select:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: inset 0 0 10px rgba(0, 210, 255, 0.1);
+}
+
+/* Range Sliders */
+.setting-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.setting-value {
+    font-size: 0.85rem;
+    color: var(--neon-cyan);
+    font-weight: bold;
+}
+.neon-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+}
+.neon-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    cursor: pointer;
+    box-shadow: var(--cyan-glow);
+    transition: transform 0.2s ease;
+}
+.neon-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Toggles */
+.toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.toggle-group label {
+    margin-bottom: 0;
+}
+.neon-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+.neon-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: .4s;
+    border-radius: 22px;
+}
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+.neon-toggle input:checked + .toggle-slider {
+    background: var(--jt-gradient);
+}
+.neon-toggle input:checked + .toggle-slider:before {
+    transform: translateX(22px);
+    box-shadow: 0 0 5px #fff;
+}
+
+/* Layout Utilities */
+.neon-divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.3), transparent);
+    margin: 25px 0;
+}
+
+/* System Stats Footer */
+.system-stats {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 15px;
+    font-size: 0.8rem;
+}
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    color: #a0a0b5;
+    margin-bottom: 5px;
+}
+.text-cyan { color: var(--neon-cyan); text-shadow: 0 0 5px rgba(0, 210, 255, 0.5); }
+.text-purple { color: var(--neon-purple); text-shadow: 0 0 5px rgba(176, 38, 255, 0.5); }
+
+/* Animation */
+@keyframes slideInRight {
+    0% { transform: translateX(100%); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
 
