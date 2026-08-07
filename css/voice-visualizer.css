@@ -1,93 +1,69 @@
-/* css/voice-visualizer.css */
+/* ===================== VOICE VISUALIZER OVERLAY ===================== */
+
 .voice-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(5, 5, 17, 0.8);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    z-index: 9000; /* Just below loading screen */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
+  position: fixed; inset: 0;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: rgba(5, 5, 17, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: fade-in var(--med) var(--ease);
 }
-.voice-overlay.active {
-    opacity: 1;
-    pointer-events: all;
+.voice-overlay[hidden] { display: none; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.voice-close {
+  position: absolute; top: 24px; right: 24px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  display: grid; place-items: center;
+}
+.voice-close svg { width: 18px; height: 18px; stroke: var(--text-dim); fill: none; stroke-width: 1.8; }
+
+.voice-ring { position: relative; width: 120px; height: 120px; display: grid; place-items: center; }
+.voice-pulse {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--cyan);
+  animation: voice-pulse 1.8s ease-out infinite;
+}
+.voice-pulse::before, .voice-pulse::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--purple);
+  animation: voice-pulse 1.8s ease-out infinite;
+}
+.voice-pulse::before { animation-delay: .5s; }
+.voice-pulse::after { animation-delay: 1s; }
+@keyframes voice-pulse {
+  0% { transform: scale(0.7); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.voice-mic {
+  width: 44px; height: 44px;
+  stroke: var(--text);
+  fill: none; stroke-width: 1.6;
+  z-index: 1;
+  filter: drop-shadow(0 0 10px rgba(0,210,255,0.5));
 }
 
-.voice-container {
-    width: 90%;
-    max-width: 600px;
-    height: 400px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), var(--cyan-glow);
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    box-sizing: border-box;
-    transform: scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.voice-overlay.active .voice-container {
-    transform: scale(1);
-}
+.voice-canvas { width: min(480px, 82vw); height: 100px; }
 
-.visualizer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-.visualizer-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    color: #fff;
-    letter-spacing: 1px;
-    flex-grow: 1;
-    text-align: center;
-}
-.status-dot.pulsing {
-    width: 10px;
-    height: 10px;
-    background: var(--neon-purple);
-    border-radius: 50%;
-    box-shadow: var(--purple-glow);
-    animation: pulse 1.5s infinite alternate;
-}
+.voice-status { font-size: 14px; color: var(--text-dim); letter-spacing: 0.02em; }
 
-#audio-canvas {
-    width: 100%;
-    flex-grow: 1;
-    background: transparent;
-    /* Prevent canvas pixelation */
-    image-rendering: pixelated; 
+.voice-stop {
+  padding: 10px 26px;
+  border: none;
+  border-radius: var(--r-full);
+  background: var(--gradient);
+  color: #04040c;
+  font-weight: 600;
+  font-size: 13.5px;
 }
-
-.voice-status-text {
-    text-align: center;
-    color: var(--neon-cyan);
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 15px;
-    animation: fadePulse 2s infinite;
-}
-
-/* Animations */
-@keyframes pulse {
-    0% { transform: scale(0.8); opacity: 0.5; }
-    100% { transform: scale(1.2); opacity: 1; }
-}
-@keyframes fadePulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
-  }
-
