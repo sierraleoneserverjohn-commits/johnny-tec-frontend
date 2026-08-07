@@ -1,134 +1,132 @@
-<div id="app-container" class="app-viewport">
-    
-    <!-- Left Drawer (Toggled by 3-lines menu icon) -->
-    <div id="left-sidebar" class="sidebar-drawer-left"></div>
-
-    <!-- Main Content Container -->
-    <div class="main-content">
-        
-        <!-- Header -->
-        <header class="top-header">
-            <div class="header-left">
-                <button id="menu-btn" class="icon-circle-btn" title="Toggle Sidebar">
-                    <span class="hamburger-icon">☰</span>
-                </button>
-                <div class="header-title-box">
-                    <h1 class="header-title">AI <span class="gradient-text-pink">Assistant</span></h1>
-                    <span class="header-subtitle">Smart. Fast. Reliable.</span>
-                </div>
+<div class="home-wrapper">
+    <!-- Header -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <button id="menu-btn" class="circle-btn" title="Toggle Sidebar">☰</button>
+            <div class="title-container">
+                <h2>AI <span class="gradient-text">Assistant</span></h2>
+                <p>Smart. Fast. Reliable.</p>
             </div>
-
-            <div class="header-right">
-                <button id="notif-btn" class="icon-btn" title="Notifications">
-                    🔔<span class="notif-badge"></span>
-                </button>
-                <button id="theme-btn" class="icon-btn" title="Toggle Theme">🌙</button>
-                <div class="avatar-wrapper">
-                    <div class="avatar-img">👤</div>
-                    <span class="status-indicator"></span>
-                </div>
-                <button id="more-btn" class="icon-btn" title="More Options">⋮</button>
-            </div>
-        </header>
-
-        <!-- Dynamic 3-Dots Dropdown Menu -->
-        <div id="more-menu" class="dropdown-menu">
-            <div class="dropdown-item" onclick="clearChat()">🗑️ Clear Conversation</div>
-            <div class="dropdown-item" id="toggle-right-sidebar-btn">📊 View Model Stats</div>
-            <div class="dropdown-item">⚙️ Settings</div>
         </div>
 
-        <!-- Greeting Section -->
-        <section class="welcome-header">
-            <h2>👋 <span class="gradient-text-pink">Hey Johnny,</span></h2>
-            <h3 class="headline">How can I help you today?</h3>
-            <p class="subheadline">Your AI assistant is ready to help you with anything you need.</p>
+        <div class="top-bar-right">
+            <button class="icon-btn notif-btn" title="Notifications">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                <span class="notif-dot"></span>
+            </button>
+            
+            <!-- Moon Dark/Light Mode Icon -->
+            <button id="theme-btn" class="icon-btn" title="Toggle Dark/Light Mode">🌙</button>
+            
+            <div class="user-avatar-wrap">
+                <div class="user-avatar-img">👤</div>
+                <span class="status-dot"></span>
+            </div>
+
+            <!-- 3 Dots Options Button -->
+            <button id="more-btn" class="icon-btn" title="More Options">⋮</button>
+        </div>
+    </header>
+
+    <!-- 3-Dots Dropdown Menu -->
+    <div id="more-dropdown" class="dropdown-popover">
+        <div class="dropdown-option" onclick="clearChat()">🗑️ Clear Conversation</div>
+        <div class="dropdown-option" id="toggle-stats-btn">📊 View Model Stats</div>
+        <div class="dropdown-option">⚙️ App Settings</div>
+    </div>
+
+    <!-- Main Feed Scroll Area -->
+    <main class="feed-content">
+        <!-- Hero Greeting -->
+        <section class="hero-section">
+            <h2>👋 Hey <span class="gradient-text">Johnny,</span></h2>
+            <h1>How can I help you today?</h1>
+            <p class="hero-sub">Your AI assistant is ready to help you with anything you need.</p>
         </section>
 
-        <!-- Quick Action Cards -->
-        <div class="action-cards-grid">
+        <!-- 4 Quick Action Cards -->
+        <section class="action-grid">
             <div class="action-card" data-prompt="Generate code for ">
-                <div class="card-icon icon-blue">&lt;/&gt;</div>
-                <div class="card-label">Code</div>
-                <div class="card-sub">Generate code</div>
+                <div class="card-icon blue-glow">&lt;/&gt;</div>
+                <div class="card-title">Code</div>
+                <div class="card-desc">Generate code</div>
             </div>
             <div class="action-card" data-prompt="Explain this concept simply: ">
-                <div class="card-icon icon-purple">📄</div>
-                <div class="card-label">Explain</div>
-                <div class="card-sub">Explain anything</div>
+                <div class="card-icon blue-glow">💬</div>
+                <div class="card-title">Explain</div>
+                <div class="card-desc">Explain anything</div>
             </div>
-            <div class="action-card" data-prompt="Help me create content for: ">
-                <div class="card-icon icon-pink">✏️</div>
-                <div class="card-label">Create</div>
-                <div class="card-sub">Create content</div>
+            <div class="action-card" data-prompt="Create content for: ">
+                <div class="card-icon purple-glow">✏️</div>
+                <div class="card-title">Create</div>
+                <div class="card-desc">Create content</div>
             </div>
-            <div class="action-card" data-prompt="Help me solve this problem: ">
-                <div class="card-icon icon-violet">🧊</div>
-                <div class="card-label">Solve</div>
-                <div class="card-sub">Solve problems</div>
+            <div class="action-card" data-prompt="Help me solve this: ">
+                <div class="card-icon purple-glow">🧊</div>
+                <div class="card-title">Solve</div>
+                <div class="card-desc">Solve problems</div>
             </div>
-        </div>
+        </section>
 
-        <!-- Chat Stream Area -->
-        <div class="chat-area" id="chat-area">
-            
-            <!-- User Bubble Example -->
-            <div class="message-wrapper user-wrapper">
-                <div class="message-bubble user-bubble">
-                    Explain quantum computing in simple terms.
+        <!-- Dynamic Chat Log -->
+        <section class="chat-log" id="chat-area">
+            <!-- Sample User Message -->
+            <div class="chat-row user-row">
+                <div class="user-bubble-container">
+                    <div class="message-bubble user-bubble">
+                        Explain quantum computing in simple terms.
+                    </div>
+                    <div class="timestamp">10:30 AM</div>
                 </div>
-                <div class="message-meta">10:30 AM</div>
+                <div class="chat-avatar user-thumb">👤</div>
             </div>
 
-            <!-- Bot Bubble Example -->
-            <div class="message-wrapper ai-wrapper">
-                <div class="ai-avatar-icon">🤖</div>
-                <div class="ai-content-box">
+            <!-- Sample AI Message -->
+            <div class="chat-row ai-row">
+                <div class="chat-avatar bot-thumb">🤖</div>
+                <div class="ai-bubble-container">
                     <div class="message-bubble ai-bubble">
                         <p>Quantum computing is a type of computing that uses the principles of quantum mechanics to process information. Unlike classical computers that use bits (0s and 1s), quantum computers use quantum bits or qubits.</p>
-                        <p style="margin-top: 10px;">Qubits can exist in multiple states simultaneously thanks to a property called superposition. This allows quantum computers to solve certain problems much faster than traditional computers.</p>
+                        <br>
+                        <p>Qubits can exist in multiple states simultaneously thanks to a property called superposition. This allows quantum computers to solve certain problems much faster than traditional computers.</p>
                     </div>
-                    
-                    <!-- Action Bar -->
-                    <div class="response-actions">
-                        <button class="action-pill-btn" onclick="readAloud(this)">
-                            ▶ Read Aloud
-                        </button>
-                        <div class="action-icons">
-                            <button class="icon-action-btn" title="Copy" onclick="copyResponse(this)">📋</button>
-                            <button class="icon-action-btn" title="Regenerate">🔄</button>
-                            <button class="icon-action-btn" title="Like">👍</button>
-                            <button class="icon-action-btn" title="Dislike">👎</button>
+
+                    <!-- AI Response Action Bar -->
+                    <div class="ai-actions-bar">
+                        <button class="pill-action-btn" onclick="readAloud(this)">▶ Read Aloud</button>
+                        <div class="action-icons-group">
+                            <button class="icon-tool-btn" onclick="copyResponse(this)" title="Copy">📋</button>
+                            <button class="icon-tool-btn" title="Regenerate">🔄</button>
+                            <button class="icon-tool-btn" title="Like">👍</button>
+                            <button class="icon-tool-btn" title="Dislike">👎</button>
                         </div>
                     </div>
-                    <div class="message-meta">10:31 AM</div>
+                    <div class="timestamp">10:31 AM</div>
                 </div>
             </div>
+        </section>
 
-        </div>
+        <!-- Suggestion Pills -->
+        <section class="pills-scroll-row">
+            <button class="suggestion-pill">Can you give an example?</button>
+            <button class="suggestion-pill">How does superposition work?</button>
+            <button class="suggestion-pill">What are the real-world applications?</button>
+            <button class="suggestion-pill">Explain more simply</button>
+        </section>
+    </main>
 
-        <!-- Suggested Prompt Pills -->
-        <div class="suggestion-pills">
-            <button class="pill-btn">Can you give an example?</button>
-            <button class="pill-btn">How does superposition work?</button>
-            <button class="pill-btn">What are the real-world applications?</button>
-            <button class="pill-btn">Explain more simply</button>
-        </div>
-
-        <!-- Bottom Input Bar -->
-        <div class="bottom-input-container">
-            <div class="input-actions-left">
-                <button class="input-tool-btn">+</button>
-                <button class="input-tool-btn">📎</button>
-                <button class="input-tool-btn">🎙️</button>
-                <button class="input-tool-btn">✨</button>
+    <!-- Bottom Input Bar -->
+    <footer class="bottom-bar">
+        <div class="input-inner">
+            <div class="input-tools-left">
+                <button class="tool-circle-btn">+</button>
+                <button class="tool-circle-btn">📎</button>
+                <button class="tool-circle-btn">🎙️</button>
+                <button class="tool-circle-btn">✨</button>
             </div>
             <input type="text" id="chat-input" placeholder="Type your message...">
             <button id="send-btn" class="send-gradient-btn">➔</button>
         </div>
-
+    </footer>
     </div>
-
-    <!-- Right Drawer (Toggled by 3-dots menu option) -->
-    <div id="right-sidebar" class="sidebar-drawer-right"></div>
-</div>
+                            
