@@ -1,1 +1,76 @@
+<!-- components/main-screen.html -->
+<main class="main-screen-wrapper">
+    <!-- Top Control Bar -->
+    <header class="top-control-bar glass-panel-light">
+        <button class="icon-btn" id="menu-toggle" aria-label="Toggle Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        
+        <div class="top-bar-actions">
+            <button class="icon-btn theme-switch" id="theme-switch" aria-label="Toggle Theme">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </button>
+            <button class="icon-btn notifications" aria-label="Notifications">
+                <span class="notification-dot"></span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9zm-4.27 13a2 2 0 01-3.46 0"/></svg>
+            </button>
+            <div class="top-avatar">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=JohnnyTec" alt="User" />
+            </div>
+        </div>
+    </header>
+
+    <!-- Scrollable Chat Feed -->
+    <section class="chat-feed" id="chat-feed">
+        <!-- Initial Welcome State -->
+        <div class="welcome-container" id="welcome-container">
+            <h2 class="greeting-header">
+                Hey Johnny, <br/>
+                <span class="gradient-text">How can I help you today?</span>
+            </h2>
+            
+            <div class="quick-action-grid">
+                <div class="action-card" data-prompt="Write a Python script to automate file organization.">
+                    <span class="card-icon code-icon">&lt;/&gt;</span>
+                    <h4>Code</h4>
+                    <p>Generate high-performance scripts</p>
+                </div>
+                <div class="action-card" data-prompt="Explain quantum computing like I'm 5.">
+                    <span class="card-icon explain-icon">?</span>
+                    <h4>Explain</h4>
+                    <p>Break down complex concepts</p>
+                </div>
+                <div class="action-card" data-prompt="Draft a technical architectural brief for a new API.">
+                    <span class="card-icon create-icon">+</span>
+                    <h4>Create</h4>
+                    <p>Draft documents and architectures</p>
+                </div>
+                <div class="action-card" data-prompt="Find the bug in this asynchronous JavaScript function.">
+                    <span class="card-icon solve-icon">!</span>
+                    <h4>Solve</h4>
+                    <p>Debug and optimize logic</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Chat Log -->
+        <div class="chat-log" id="chat-log">
+            <!-- Messages injected via JS -->
+        </div>
+    </section>
+
+    <!-- Floating Input Toolbar -->
+    <div class="input-wrapper">
+        <div class="floating-toolbar glass-panel">
+            <button class="tool-btn attachment-btn" aria-label="Attach File">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <textarea id="chat-input" placeholder="Initiate sequence or type a command..." rows="1"></textarea>
+            <button class="tool-btn send-btn" id="send-btn" aria-label="Send Message">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+        </div>
+        <div class="disclaimer">JOHNNY TEC AI Assistant may produce inaccurate responses. Verify critical data.</div>
+    </div>
+                                                 </main>
 
