@@ -1,6 +1,19 @@
 /* ===================== LEFT SIDEBAR ===================== */
 
-#left-bar { border-right: 1px solid var(--border); min-height: 0; }
+/* Always an off-canvas drawer within the fixed mobile screen —
+   opened via the topbar menu button, closed via the scrim or a nav tap. */
+#left-bar {
+  position: absolute; inset: 0 auto 0 0;
+  width: 84%;
+  max-width: 300px;
+  z-index: 200;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  transform: translateX(-100%);
+  transition: transform var(--med) var(--ease);
+  min-height: 0;
+}
+#left-bar.is-open { transform: translateX(0); box-shadow: 20px 0 60px rgba(0,0,0,0.5); }
 
 .left-bar {
   height: 100%;
@@ -176,17 +189,3 @@
   color: #d9a5ff;
 }
 .settings-icon { width: 18px; height: 18px; stroke: var(--text-faint); stroke-width: 1.8; fill: none; flex-shrink: 0; }
-
-/* Off-canvas on narrow viewports, opened via the topbar menu button */
-@media (max-width: 1100px) {
-  #left-bar {
-    position: fixed; inset: 0 auto 0 0;
-    width: min(280px, 84vw);
-    z-index: 200;
-    background: var(--bg);
-    border-right: 1px solid var(--border);
-    transform: translateX(-100%);
-    transition: transform var(--med) var(--ease);
-  }
-  #left-bar.is-open { transform: translateX(0); box-shadow: 20px 0 60px rgba(0,0,0,0.5); }
-}
