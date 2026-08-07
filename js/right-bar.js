@@ -1,66 +1,70 @@
-// js/right-bar.js
-(function initializeRightSidebar() {
-    // 1. Dynamic Value Updates for Sliders
-    const tempSlider = document.getElementById('temp-slider');
-    const tempValue = document.getElementById('temp-value');
-    
-    if (tempSlider && tempValue) {
-        tempSlider.addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value).toFixed(1);
-            tempValue.textContent = val;
-            // Dispatch event for internal configuration updates
-            window.dispatchEvent(new CustomEvent('jt-config-update', { 
-                detail: { parameter: 'temperature', value: val } 
-            }));
-        });
-    }
+/**
+ * Right sidebar — model selection, mobile slide-in toggle, status sparkline.
+ */
+export function init() {
+  const root = document.getElementById('right-bar');
+  if (!root) return;
 
-    const tokenSlider = document.getElementById('token-slider');
-    const tokenValue = document.getElementById('token-value');
+  const models = root.querySelectorAll('.rb-model');
+  models.forEach((item) => {
+    item.addEventListener('click', () => {
+      models.forEach((m) => {
+        m.classList.remove('is-active');
+        m.querySelector('.model-check')?.remove();
+      });
+      item.classList.add('is-active');
+      if (!item.querySelector('.model-check')) {
+        item.insertAdjacentHTML('beforeend', `<svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>`);
+      }
+      document.dispatchEvent(new CustomEvent('jt:model-change', { detail: item.dataset.model }));
+    });
+  });
 
-    if (tokenSlider && tokenValue) {
-        tokenSlider.addEventListener('input', (e) => {
-            tokenValue.textContent = e.target.value;
-            window.dispatchEvent(new CustomEvent('jt-config-update', { 
-                detail: { parameter: 'max_tokens', value: e.target.value } 
-            }));
-        });
-    }
+  root.querySelector('#rightBarClose')?.addEventListener('click', () => {
+    root.classList.remove('is-open');
+  });
 
-    // 2. Model Selection Logic
-    const modelSelect = document.getElementById('ai-model-select');
-    if (modelSelect) {
-        modelSelect.addEventListener('change', (e) => {
-            console.log(`SYSTEM: AI Core switched to ${e.target.value}`);
-            window.dispatchEvent(new CustomEvent('jt-model-switch', { 
-                detail: { model: e.target.value } 
-            }));
-        });
-    }
+  document.addEventListener('jt:toggle-right-bar', () => {
+    root.classList.toggle('is-open');
+  });
 
-    // 3. Developer Toggles Logic
-    const voiceToggle = document.getElementById('toggle-voice');
-    if (voiceToggle) {
-        voiceToggle.addEventListener('change', (e) => {
-            if(e.target.checked) {
-                console.log("SYSTEM: Voice Synthesizer Module Activated.");
-                // This will later trigger the voice visualizer canvas logic
-                window.dispatchEvent(new Event('jt-voice-activated'));
-            } else {
-                console.log("SYSTEM: Voice Synthesizer Module Deactivated.");
-                window.dispatchEvent(new Event('jt-voice-deactivated'));
-            }
-        });
-    }
+  drawSparkline(root.querySelector('#statusSpark'));
+}
 
-    const debugToggle = document.getElementById('toggle-debug');
-    if (debugToggle) {
-        debugToggle.addEventListener('change', (e) => {
-            window.JT_DEBUG_MODE = e.target.checked;
-            if (window.JT_DEBUG_MODE) {
-                console.warn("SYSTEM: Debug mode enabled. Exposing raw API traces.");
-            }
-        });
+function drawSparkline(canvas) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    const w = canvas.clientWidth || canvas.parentElement.clientWidth;
+    canvas.width = w * dpr;
+    canvas.height = 46 * dpr;
+    ctx.scale(dpr, dpr);
+    draw(w);
+  }
+
+  function draw(w) {
+    const h = 46;
+    const points = 40;
+    ctx.clearRect(0, 0, w, h);
+
+    const grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0, '#00d2ff');
+    grad.addColorStop(1, '#b026ff');
+
+    ctx.beginPath();
+    for (let i = 0; i < points; i++) {
+      const x = (i / (points - 1)) * w;
+      const y = h / 2 + Math.sin(i * 0.9) * (h * 0.28) * Math.random() * 0.9 + Math.cos(i * 0.4) * 4;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
-})();
-                                     
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.6;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+}
