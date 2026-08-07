@@ -1,1 +1,72 @@
+/* css/loading.css */
+.loading-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: var(--space-black);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.glow-ring {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--neon-cyan);
+    border-bottom-color: var(--neon-purple);
+    /* Dual animation for spinning and glowing */
+    animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite, 
+               pulseGlow 2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.jt-logo {
+    font-size: 2.8rem;
+    font-weight: 900;
+    background: var(--jt-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Counter-spin keeps the text upright while the ring rotates */
+    animation: counterSpin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.status-text {
+    margin-top: 35px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--neon-cyan);
+    text-transform: uppercase;
+    text-shadow: var(--cyan-glow);
+    animation: textFlicker 1.2s infinite alternate;
+}
+
+/* --- Hardware Accelerated Animations --- */
+@keyframes spin { 
+    100% { transform: rotate(360deg); } 
+}
+@keyframes counterSpin { 
+    100% { transform: rotate(-360deg); } 
+}
+@keyframes pulseGlow {
+    0%, 100% { 
+        box-shadow: 0 0 10px rgba(0, 210, 255, 0.2), inset 0 0 10px rgba(176, 38, 255, 0.2); 
+    }
+    50% { 
+        box-shadow: 0 0 25px rgba(0, 210, 255, 0.8), inset 0 0 25px rgba(176, 38, 255, 0.8); 
+    }
+}
+@keyframes textFlicker {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
 
