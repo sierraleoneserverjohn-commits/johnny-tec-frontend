@@ -1,1 +1,18 @@
+<!-- components/voice-visualizer.html -->
+<div id="voice-overlay" class="voice-overlay hidden">
+    <div class="voice-container glass-panel">
+        <div class="visualizer-header">
+            <span class="status-dot pulsing"></span>
+            <h3>JOHNNY TEC Voice Interface</h3>
+            <button id="close-voice-btn" class="icon-btn" aria-label="Close Voice Module">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0b5" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        
+        <!-- High-Performance Rendering Canvas -->
+        <canvas id="audio-canvas"></canvas>
+        
+        <div class="voice-status-text" id="voice-status">Listening...</div>
+    </div>
+</div>
 
