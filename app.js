@@ -6,18 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setupMessageSender();
 });
 
-/* 1. Moon Dark/Light Mode Switcher */
+/* 1. Dark/Light Mode Switcher */
 function setupThemeToggle() {
     const themeBtn = document.getElementById("theme-btn");
     if (!themeBtn) return;
 
     themeBtn.addEventListener("click", () => {
         document.body.classList.toggle("light-theme");
-        if (document.body.classList.contains("light-theme")) {
-            themeBtn.innerText = "☀️";
-        } else {
-            themeBtn.innerText = "🌙";
-        }
+        themeBtn.innerText = document.body.classList.contains("light-theme") ? "☀️" : "🌙";
     });
 }
 
@@ -38,7 +34,7 @@ function setupDropdownMenu() {
     }
 }
 
-/* 3. Action Card Clicks */
+/* 3. Action Cards */
 function setupQuickCards() {
     const cards = document.querySelectorAll(".action-card");
     const input = document.getElementById("chat-input");
@@ -54,7 +50,7 @@ function setupQuickCards() {
     });
 }
 
-/* 4. Suggestion Pill Clicks */
+/* 4. Suggestion Pills */
 function setupPills() {
     const pills = document.querySelectorAll(".suggestion-pill");
     const input = document.getElementById("chat-input");
