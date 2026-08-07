@@ -1,105 +1,131 @@
-// js/voice-visualizer.js
-(function initializeVoiceVisualizer() {
-    const overlay = document.getElementById('voice-overlay');
-    const closeBtn = document.getElementById('close-voice-btn');
-    const canvas = document.getElementById('audio-canvas');
-    const ctx = canvas ? canvas.getContext('2d') : null;
-    
-    let animationId = null;
-    let isActive = false;
+/**
+ * Voice Assistant Visualizer — HTML5 canvas frequency wave.
+ * Uses getUserMedia + Web Audio API when the user grants mic access;
+ * falls back to an ambient animated waveform otherwise so the UI
+ * never looks broken.
+ */
 
-    // Handle high-DPI displays for crisp canvas rendering
-    function resizeCanvas() {
-        if (!canvas) return;
-        const rect = canvas.parentElement.getBoundingClientRect();
-        // Accounting for flex layout height
-        const width = rect.width - 40; 
-        const height = 250; 
-        
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        
-        ctx.scale(dpr, dpr);
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
+let audioCtx, analyser, source, stream, rafId;
+
+export function init() {
+  const overlay = document.getElementById('voiceOverlay');
+  const canvas = document.getElementById('voiceCanvas');
+  const statusEl = document.getElementById('voiceStatus');
+  if (!overlay || !canvas) return;
+
+  document.addEventListener('jt:open-voice', () => open(overlay, canvas, statusEl));
+  document.querySelector('[data-nav="voice"]')?.addEventListener('click', () => open(overlay, canvas, statusEl));
+
+  overlay.querySelector('#voiceClose')?.addEventListener('click', () => close(overlay));
+  overlay.querySelector('#voiceStop')?.addEventListener('click', () => close(overlay));
+  document.querySelector('#micBtn')?.addEventListener('click', () => open(overlay, canvas, statusEl));
+}
+
+async function open(overlay, canvas, statusEl) {
+  overlay.hidden = false;
+  fitCanvas(canvas);
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    source = audioCtx.createMediaStreamSource(stream);
+    source.connect(analyser);
+    statusEl.textContent = 'Listening…';
+    drawLive(canvas);
+  } catch (err) {
+    // Mic denied/unavailable — show an ambient wave instead of a dead canvas.
+    statusEl.textContent = 'Microphone unavailable — ambient preview';
+    drawAmbient(canvas);
+  }
+}
+
+function close(overlay) {
+  overlay.hidden = true;
+  cancelAnimationFrame(rafId);
+  stream?.getTracks().forEach((t) => t.stop());
+  audioCtx?.close().catch(() => {});
+  audioCtx = analyser = source = stream = null;
+}
+
+function fitCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight || 100;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function drawLive(canvas) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight || 100;
+  const data = new Uint8Array(analyser.frequencyBinCount);
+
+  const grad = ctx.createLinearGradient(0, 0, w, 0);
+  grad.addColorStop(0, '#00d2ff');
+  grad.addColorStop(1, '#b026ff');
+
+  function frame() {
+    rafId = requestAnimationFrame(frame);
+    analyser.getByteFrequencyData(data);
+    ctx.clearRect(0, 0, w, h);
+
+    const barCount = 48;
+    const step = Math.floor(data.length / barCount);
+    const barW = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+      const v = data[i * step] / 255;
+      const barH = Math.max(4, v * h);
+      ctx.fillStyle = grad;
+      const x = i * barW;
+      const y = (h - barH) / 2;
+      roundRect(ctx, x + barW * 0.18, y, barW * 0.64, barH, 3);
+      ctx.fill();
     }
+  }
+  frame();
+}
 
-    // Mathematical Sine Wave Generator
-    function drawVisualizer() {
-        if (!isActive || !ctx) return;
-        
-        const width = canvas.width / (window.devicePixelRatio || 1);
-        const height = canvas.height / (window.devicePixelRatio || 1);
-        const centerY = height / 2;
-        
-        ctx.clearRect(0, 0, width, height);
-        
-        const time = Date.now() * 0.002;
-        
-        // Define wave parameters [amplitude, frequency, speed, color, lineWidth]
-        const waves = [
-            [40, 0.02, 1.5, '#00d2ff', 3], // Neon Cyan
-            [30, 0.03, 1.0, '#b026ff', 2], // Neon Purple
-            [20, 0.04, 2.0, 'rgba(255, 255, 255, 0.3)', 1] // Ghost Wave
-        ];
+function drawAmbient(canvas) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight || 100;
+  const barCount = 48;
+  const barW = w / barCount;
+  let t = 0;
 
-        ctx.globalCompositeOperation = 'screen';
+  const grad = ctx.createLinearGradient(0, 0, w, 0);
+  grad.addColorStop(0, '#00d2ff');
+  grad.addColorStop(1, '#b026ff');
 
-        waves.forEach(wave => {
-            const [amp, freq, speed, color, lineWidth] = wave;
-            ctx.beginPath();
-            ctx.moveTo(0, centerY);
-            
-            for (let x = 0; x < width; x++) {
-                // Modulate amplitude based on center distance for a "burst" effect
-                const distanceToCenter = Math.abs(x - width / 2);
-                const dampening = Math.max(0, 1 - (distanceToCenter / (width / 2)));
-                
-                const y = Math.sin(x * freq + time * speed) * (amp * dampening);
-                ctx.lineTo(x, centerY + y);
-            }
-            
-            ctx.strokeStyle = color;
-            ctx.lineWidth = lineWidth;
-            // Add native canvas glow
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = color;
-            ctx.stroke();
-            ctx.shadowBlur = 0; // Reset for next line
-        });
-
-        animationId = requestAnimationFrame(drawVisualizer);
+  function frame() {
+    rafId = requestAnimationFrame(frame);
+    t += 0.06;
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < barCount; i++) {
+      const v = (Math.sin(t + i * 0.35) + 1) / 2;
+      const barH = Math.max(4, v * h * 0.7);
+      ctx.fillStyle = grad;
+      const x = i * barW;
+      const y = (h - barH) / 2;
+      roundRect(ctx, x + barW * 0.18, y, barW * 0.64, barH, 3);
+      ctx.fill();
     }
+  }
+  frame();
+}
 
-    // Event Listeners for Activation/Deactivation
-    window.addEventListener('jt-voice-activated', () => {
-        if (!overlay) return;
-        overlay.classList.add('active');
-        isActive = true;
-        resizeCanvas();
-        drawVisualizer();
-    });
-
-    const stopVoiceEngine = () => {
-        if (!overlay) return;
-        overlay.classList.remove('active');
-        isActive = false;
-        if (animationId) cancelAnimationFrame(animationId);
-        
-        // Reset the right sidebar toggle if closed manually
-        const voiceToggle = document.getElementById('toggle-voice');
-        if (voiceToggle && voiceToggle.checked) {
-            voiceToggle.checked = false;
-        }
-    };
-
-    window.addEventListener('jt-voice-deactivated', stopVoiceEngine);
-    if (closeBtn) closeBtn.addEventListener('click', stopVoiceEngine);
-
-    // Handle Window Resize
-    window.addEventListener('resize', () => {
-        if (isActive) resizeCanvas();
-    });
-})();
-                  
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
