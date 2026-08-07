@@ -1,6 +1,18 @@
 /* ===================== RIGHT SIDEBAR ===================== */
 
-#right-bar { border-left: 1px solid var(--border); position: relative; }
+/* Always an off-canvas drawer within the fixed mobile screen —
+   opened via the avatar/profile button, closed via the scrim or ✕. */
+#right-bar {
+  position: absolute; inset: 0 0 0 auto;
+  width: 88%;
+  max-width: 320px;
+  z-index: 200;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
+  transition: transform var(--med) var(--ease);
+}
+#right-bar.is-open { transform: translateX(0); box-shadow: -20px 0 60px rgba(0,0,0,0.5); }
 
 .right-bar {
   height: 100%;
@@ -11,7 +23,15 @@
   gap: 20px;
 }
 
-.right-bar-close { display: none; }
+.right-bar-close {
+  display: grid; place-items: center;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  margin-bottom: 6px;
+}
+.right-bar-close svg { width: 16px; height: 16px; stroke: var(--text-dim); fill: none; stroke-width: 2; }
 
 .rb-profile { text-align: center; padding-bottom: 4px; }
 .rb-avatar-ring {
@@ -94,25 +114,3 @@
 .rb-services li { display: flex; justify-content: space-between; font-size: 12.5px; }
 .rb-services span { color: var(--text-dim); }
 .rb-services b.ok { color: var(--success); font-weight: 500; font-size: 11.5px; }
-
-@media (max-width: 1100px) {
-  #right-bar {
-    position: fixed; inset: 0 0 0 auto;
-    width: min(340px, 88vw);
-    z-index: 200;
-    background: var(--bg);
-    transform: translateX(100%);
-    transition: transform var(--med) var(--ease);
-    display: block !important;
-  }
-  #right-bar.is-open { transform: translateX(0); box-shadow: -20px 0 60px rgba(0,0,0,0.5); }
-  .right-bar-close {
-    display: grid; place-items: center;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg-raised);
-    margin-bottom: 6px;
-  }
-  .right-bar-close svg { width: 16px; height: 16px; stroke: var(--text-dim); fill: none; stroke-width: 2; }
-}
