@@ -163,5 +163,4 @@ function escapeHtml(str) {
 // Stub reply generator — swap for a real API call.
 function getAssistantReply(prompt) {
   return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend in <code>getAssistantReply()</code> (main-screen.js) to replace this placeholder with live answers.`;
-        }
-                                               
+}
