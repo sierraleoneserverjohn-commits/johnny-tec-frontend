@@ -1,8 +1,39 @@
-<!-- components/loading.html -->
-<div class="loading-wrapper">
-    <div class="glow-ring">
-        <div class="jt-logo">JT</div>
-    </div>
-    <div class="status-text" id="loading-status">Booting System...</div>
-</div>
+<div class="loading-screen" role="status" aria-live="polite">
+  <div class="loading-orbit" aria-hidden="true">
+    <span class="orbit-particle p1"></span>
+    <span class="orbit-particle p2"></span>
+    <span class="orbit-particle p3"></span>
+  </div>
 
+  <div class="loading-logo">
+    <svg class="logo-ring" viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="ring-track" cx="60" cy="60" r="54"></circle>
+      <circle class="ring-sweep" cx="60" cy="60" r="54"></circle>
+    </svg>
+    <span class="logo-mark">JT</span>
+  </div>
+
+  <h1 class="loading-title">
+    <span class="gradient-text">Johnny Tec</span><span class="loading-dot">.Dev</span>
+  </h1>
+  <p class="loading-tagline">Building Digital Excellence</p>
+
+  <div class="loading-status">
+    <span class="status-label">LOADING</span>
+    <span class="status-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  </div>
+
+  <div class="loading-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="loading-bar-fill" id="loadingBarFill"></div>
+  </div>
+  <span class="loading-percent" id="loadingPercent">0%</span>
+
+  <ul class="loading-features" aria-hidden="true">
+    <li><span class="feature-icon">&lt;/&gt;</span><b>Clean Code</b><small>Modern &amp; Reliable</small></li>
+    <li><span class="feature-icon">⚡</span><b>High Performance</b><small>Super Fast Speed</small></li>
+    <li><span class="feature-icon">🛡</span><b>Secure</b><small>Safe &amp; Protected</small></li>
+    <li><span class="feature-icon">🚀</span><b>Always Improving</b><small>Better Every Day</small></li>
+  </ul>
+
+  <p class="loading-footer-text">Preparing something <em>amazing</em> for you&hellip;</p>
+</div>
