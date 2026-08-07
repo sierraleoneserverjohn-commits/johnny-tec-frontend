@@ -1,4 +1,4 @@
-<section class="main-screen" aria-label="AI Assistant chat">
+<section class="main-screen" aria-label="AI Assistant chat" style="max-width: 100%; overflow-x: hidden; box-sizing: border-box;">
 
   <header class="topbar">
     <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Toggle navigation">
@@ -27,10 +27,11 @@
 
   <div class="chat-scroll" id="chatScroll">
 
-    <div class="greeting" id="greeting">
-      <p class="greeting-hi">👋 Hey <span class="gradient-text">Johnny</span>,</p>
-      <h1>How can I help you today?</h1>
-      <p class="greeting-sub">Your AI assistant is ready to help you with anything you need.</p>
+    <div class="greeting" id="greeting" style="padding: 0 1rem; width: 100%; box-sizing: border-box;">
+      <!-- These IDs will be targeted by JS for random greetings -->
+      <p class="greeting-hi" id="greetingTitle">👋 Hey I am <span class="gradient-text">Johnny</span>,</p>
+      <h1 id="greetingSubtitle" style="font-size: clamp(1.5rem, 6vw, 2.5rem); word-wrap: break-word; white-space: normal; line-height: 1.2;">How can I help you today?</h1>
+      <p class="greeting-sub" style="word-wrap: break-word; white-space: normal;">Your AI assistant is ready to help you with anything you need.</p>
 
       <div class="quick-grid">
         <button class="quick-card" data-prompt="Generate code for ">
@@ -53,11 +54,11 @@
     </div>
 
     <div class="chat-log" id="chatLog"></div>
-
     <div class="suggestions" id="suggestions" hidden></div>
   </div>
 
   <form class="composer" id="composer">
+    <!-- ... (keep your composer inner code exactly the same) ... -->
     <div class="composer-inner glass">
       <button type="button" class="composer-icon" aria-label="Add attachment menu">
         <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -77,4 +78,5 @@
       </button>
     </div>
   </form>
-</section>
+ </section>
+          
