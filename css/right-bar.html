@@ -1,0 +1,71 @@
+<aside class="right-bar" aria-label="Profile and system status">
+
+  <button class="right-bar-close" id="rightBarClose" aria-label="Close panel">
+    <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+
+  <div class="rb-profile">
+    <span class="rb-avatar-ring">
+      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Johnny&backgroundColor=0a0a1c" alt="">
+      <span class="status-dot" aria-hidden="true"></span>
+    </span>
+    <h3>Johnny Tec<span class="text-dim">.Dev</span></h3>
+    <span class="pro-badge"><span aria-hidden="true">♛</span> Pro User</span>
+
+    <div class="rb-stats">
+      <div><b>1,247</b><small>Messages</small></div>
+      <div><b>98</b><small>Projects</small></div>
+      <div><b>32</b><small>Days Active</small></div>
+    </div>
+  </div>
+
+  <section class="rb-section">
+    <div class="rb-section-head"><b>Models</b><button class="rb-link" type="button">View all</button></div>
+    <ul class="rb-models" id="rbModels">
+      <li class="rb-model is-active" data-model="gpt-4.1">
+        <span class="model-icon">✳</span>
+        <span class="model-meta"><b>GPT-4.1</b><small>Most Powerful</small></span>
+        <svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>
+      </li>
+      <li class="rb-model" data-model="claude-3.5">
+        <span class="model-icon">◆</span>
+        <span class="model-meta"><b>Claude 3.5</b><small>Advanced</small></span>
+        <svg class="nav-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
+      </li>
+      <li class="rb-model" data-model="gemini-1.5">
+        <span class="model-icon">✦</span>
+        <span class="model-meta"><b>Gemini 1.5 Pro</b><small>Google's Best</small></span>
+        <svg class="nav-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
+      </li>
+      <li class="rb-model" data-model="llama-3.1">
+        <span class="model-icon">🦙</span>
+        <span class="model-meta"><b>Llama 3.1</b><small>Open Source</small></span>
+        <svg class="nav-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>
+      </li>
+    </ul>
+  </section>
+
+  <section class="rb-section">
+    <div class="rb-section-head"><b>Recent Chats</b><button class="rb-link" type="button">View all</button></div>
+    <ul class="rb-chats">
+      <li><span class="chat-icon">💬</span><span>Quantum Computing Explained</span><small>10:31 AM</small></li>
+      <li><span class="chat-icon">💬</span><span>Build a React Dashboard</span><small>Yesterday</small></li>
+      <li><span class="chat-icon">💬</span><span>Python Algorithm Help</span><small>Yesterday</small></li>
+      <li><span class="chat-icon">💬</span><span>Write a SQL Query</span><small>2 days ago</small></li>
+      <li><span class="chat-icon">💬</span><span>Create API with Node.js</span><small>3 days ago</small></li>
+    </ul>
+  </section>
+
+  <section class="rb-section rb-status">
+    <div class="rb-section-head"><b>System Status</b></div>
+    <div class="status-live"><span class="status-live-dot"></span> All Systems Operational</div>
+    <canvas id="statusSpark" class="status-spark" height="46" aria-hidden="true"></canvas>
+    <ul class="rb-services">
+      <li><span>AI Service</span><b class="ok">Operational</b></li>
+      <li><span>Database</span><b class="ok">Operational</b></li>
+      <li><span>API Gateway</span><b class="ok">Operational</b></li>
+      <li><span>Storage</span><b class="ok">Operational</b></li>
+    </ul>
+  </section>
+
+</aside>
