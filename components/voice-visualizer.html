@@ -1,18 +1,16 @@
-<!-- components/voice-visualizer.html -->
-<div id="voice-overlay" class="voice-overlay hidden">
-    <div class="voice-container glass-panel">
-        <div class="visualizer-header">
-            <span class="status-dot pulsing"></span>
-            <h3>JOHNNY TEC Voice Interface</h3>
-            <button id="close-voice-btn" class="icon-btn" aria-label="Close Voice Module">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a0a0b5" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-        </div>
-        
-        <!-- High-Performance Rendering Canvas -->
-        <canvas id="audio-canvas"></canvas>
-        
-        <div class="voice-status-text" id="voice-status">Listening...</div>
-    </div>
-</div>
+<div class="voice-overlay" id="voiceOverlay" hidden role="dialog" aria-modal="true" aria-label="Voice assistant">
+  <button class="voice-close" id="voiceClose" aria-label="Close voice assistant">
+    <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
 
+  <div class="voice-ring" aria-hidden="true">
+    <span class="voice-pulse"></span>
+    <svg viewBox="0 0 24 24" class="voice-mic"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
+  </div>
+
+  <canvas id="voiceCanvas" class="voice-canvas" height="120"></canvas>
+
+  <p class="voice-status" id="voiceStatus">Listening&hellip;</p>
+
+  <button class="voice-stop" id="voiceStop" type="button">Stop</button>
+</div>
