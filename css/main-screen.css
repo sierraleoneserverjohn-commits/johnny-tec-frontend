@@ -1,15 +1,50 @@
-/* ===================== MAIN CHAT SCREEN ===================== */
+/* ===================== THEME VARIABLES (For Moon Icon) ===================== */
+:root {
+  /* Default Dark Mode */
+  --bg: #0b0f19;
+  --bg-raised: #151a2a;
+  --bg-elevated: #1e2436;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text: #ffffff;
+  --text-dim: #a0aec0;
+  --text-faint: #718096;
+  /* Add your other existing variables here if you have them */
+}
 
+/* Light Mode Override - Toggled via JS on the body tag */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-raised: #f8f9fa;
+  --bg-elevated: #e9ecef;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --text: #1a202c;
+  --text-dim: #4a5568;
+  --text-faint: #718096;
+}
+
+/* Base Body settings to prevent mobile scroll bleeding */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevents the whole page from scrolling */
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* ===================== MAIN CHAT SCREEN ===================== */
 .main-screen {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100dvh; /* FIX 1: 'dvh' fixes the mobile address bar hiding issue */
   width: 100%;
   max-width: 100vw;
   min-width: 0;
   border-right: 1px solid var(--border);
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevents horizontal scroll bleed */
+  overflow: hidden; 
 }
 
 /* Topbar */
@@ -22,6 +57,8 @@
   flex-shrink: 0;
   box-sizing: border-box;
   width: 100%;
+  background-color: var(--bg); /* Ensure it stays opaque */
+  z-index: 10;
 }
 .icon-btn {
   width: 38px; height: 38px;
@@ -31,6 +68,7 @@
   display: grid; place-items: center;
   position: relative;
   flex-shrink: 0;
+  cursor: pointer;
 }
 .icon-btn svg { width: 18px; height: 18px; stroke: var(--text-dim); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .icon-btn:hover svg { stroke: var(--text); }
@@ -76,7 +114,7 @@
 
 /* Scroll area */
 .chat-scroll {
-  flex: 1;
+  flex: 1; /* This ensures ONLY this area scrolls */
   overflow-y: auto;
   overflow-x: hidden;
   padding: 26px 22px 12px;
@@ -100,7 +138,7 @@
 }
 .greeting h1 { 
   font-family: var(--font-display); 
-  font-size: clamp(22px, 6vw, 32px); /* Fluid typography to fit mobile screens perfectly */
+  font-size: clamp(22px, 6vw, 32px); 
   font-weight: 700; 
   margin-bottom: 6px; 
   line-height: 1.2;
@@ -130,7 +168,7 @@
   display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
   text-align: left;
   transition: transform var(--fast) var(--ease), border-color var(--fast) var(--ease), background var(--fast) var(--ease);
-  min-width: 0; /* Allows text inside flex items to truncate/wrap */
+  min-width: 0; 
 }
 .quick-card:hover { transform: translateY(-2px); border-color: var(--border-strong); background: var(--bg-elevated); }
 .quick-card b { font-size: 14px; font-weight: 600; }
@@ -203,6 +241,7 @@
   border-radius: 6px;
   display: grid; place-items: center;
   color: var(--text-faint);
+  cursor: pointer;
 }
 .msg-actions button:hover { background: rgba(255,255,255,0.06); color: var(--text); }
 .msg-actions svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
@@ -227,6 +266,7 @@
   padding: 8px 14px;
   font-size: 12.5px;
   color: var(--text-dim);
+  cursor: pointer;
   transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease);
 }
 .suggestion-chip:hover { border-color: var(--cyan); color: var(--text); }
@@ -237,6 +277,9 @@
   flex-shrink: 0; 
   width: 100%;
   box-sizing: border-box;
+  background-color: var(--bg); /* FIX 1: Keeps background solid so it overlays cleanly */
+  border-top: 1px solid var(--border); /* Visual separation from scrolling chat */
+  z-index: 10; 
 }
 .composer-inner {
   display: flex; align-items: center; gap: 6px;
@@ -244,6 +287,8 @@
   padding: 8px 10px;
   width: 100%;
   box-sizing: border-box;
+  background: var(--bg-raised); /* Added slight contrast */
+  border: 1px solid var(--border);
 }
 .composer-inner:focus-within { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0,210,255,0.12); }
 .composer-icon {
@@ -253,29 +298,35 @@
   display: grid; place-items: center;
   color: var(--text-faint);
   flex-shrink: 0;
+  cursor: pointer;
 }
-.composer-icon:hover { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+.composer-icon:hover { background: rgba(128,128,128,0.1); color: var(--text-dim); }
 .composer-icon svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .composer-input {
   flex: 1; min-width: 0;
   background: none; border: none;
   font-size: 14px;
   padding: 8px 4px;
+  color: var(--text);
 }
+.composer-input:focus { outline: none; }
 .composer-input::placeholder { color: var(--text-faint); }
 .composer-send {
   width: 38px; height: 38px;
   border-radius: 50%;
   border: none;
+  background: var(--cyan); /* fallback color */
   background: var(--gradient);
   display: grid; place-items: center;
   flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(0,210,255,0.3);
+  cursor: pointer;
   transition: transform var(--fast) var(--ease);
 }
 .composer-send:hover { transform: scale(1.06); }
 .composer-send:active { transform: scale(0.96); }
 .composer-send svg { width: 17px; height: 17px; stroke: #04040c; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
 
 /* ===================== MOBILE OVERRIDES ===================== */
 @media (max-width: 768px) {
@@ -292,12 +343,24 @@
     max-width: 95%; 
   }
   .quick-grid {
-    grid-template-columns: repeat(2, 1fr); /* Forces 2x2 grid on standard mobile screens */
+    grid-template-columns: repeat(2, 1fr); /* FIX 2: Forces 2x2 grid on ALL standard mobile screens */
   }
 }
 
+/* FIX 2: Replaced the 1fr column layout with slightly scaled-down cards so they fit nicely 2-across on small phones */
 @media (max-width: 380px) {
   .quick-grid {
-    grid-template-columns: 1fr; /* Stacks to 1 column on extremely small phones */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 8px; /* Slightly tighter gap */
   }
-}
+  .quick-card {
+    padding: 12px 8px; /* Slightly smaller padding */
+  }
+  .quick-card b {
+    font-size: 13px; /* Slightly smaller text */
+  }
+  .quick-card small {
+    font-size: 10.5px;
+  }
+            }
+  
