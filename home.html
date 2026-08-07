@@ -3,25 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Johnny Tec.Dev - AI Assistant</title>
+    <title>Johnny Tec.Dev - AI</title>
     <style>
         :root {
-            --bg-dark: #03030b;
-            --panel-bg: #0a0a16;
-            --border-color: #1a1a2e;
-            --text-main: #ffffff;
-            --text-muted: #8b8b9f;
-            --accent-blue: #00d2ff;
-            --accent-purple: #b500ff;
+            --bg-dark: #03030b; --panel-bg: #0a0a16; --border-color: #1a1a2e;
+            --text-main: #ffffff; --text-muted: #8b8b9f;
+            --accent-blue: #00d2ff; --accent-purple: #b500ff;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -29,425 +19,85 @@
             display: flex;
             padding: 15px;
             gap: 15px;
-            overflow: hidden;
-            /* Subtle background glow */
-            background-image: radial-gradient(circle at 15% 85%, rgba(0, 210, 255, 0.05), transparent 40%);
+            overflow-x: auto; /* Allows swiping left/right on mobile */
+            scroll-snap-type: x mandatory; /* Smooth snapping */
         }
 
-        /* --- LAYOUT STRUCTURE --- */
-        .sidebar-left {
-            width: 260px;
+        /* Standardized Panel Style */
+        .panel {
             background-color: var(--panel-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            scroll-snap-align: center;
         }
 
-        .main-chat {
-            flex: 1;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            position: relative;
+        .sidebar-left { min-width: 260px; }
+        .sidebar-right { min-width: 300px; overflow-y: auto; }
+        .main-chat { min-width: 100%; flex: 1; position: relative; }
+
+        @media (min-width: 1024px) {
+            .main-chat { min-width: 500px; } /* Desktop width fixing */
         }
 
-        .sidebar-right {
-            width: 300px;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        /* --- LEFT SIDEBAR CONTENT --- */
-        .logo-area {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        /* Internal Styles pulled from previous version */
+        .jt-ring { width: 70px; height: 70px; border-radius: 50%; border-top: 2px solid var(--accent-blue); border-bottom: 2px solid var(--accent-purple); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 24px; font-weight: 900; font-style: italic; background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-area { text-align: center; margin-bottom: 20px; }
+        .menu-list { list-style: none; flex: 1; }
+        .menu-list li { padding: 12px; color: var(--text-muted); margin-bottom: 5px; border-radius: 10px; cursor: pointer; display: flex; gap: 10px; }
+        .menu-list li.active { background-color: rgba(181, 0, 255, 0.1); color: var(--accent-blue); border-left: 3px solid var(--accent-purple); }
         
-        .jt-ring {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            border-top: 2px solid var(--accent-blue);
-            border-bottom: 2px solid var(--accent-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            font-size: 24px;
-            font-weight: 900;
-            font-style: italic;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .new-chat-btn {
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-
-        .menu-list {
-            list-style: none;
-            flex: 1;
-        }
-
-        .menu-list li {
-            padding: 12px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu-list li.active {
-            background-color: rgba(181, 0, 255, 0.1);
-            color: var(--accent-blue);
-            border-left: 3px solid var(--accent-purple);
-        }
-
-        .upgrade-card {
-            background: linear-gradient(145deg, #111122, #0a0a16);
-            border: 1px solid #2a2a4a;
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: auto;
-            text-align: center;
-        }
-
-        /* --- MAIN CHAT CONTENT --- */
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .search-bar {
-            background-color: #111122;
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            width: 300px;
-            outline: none;
-        }
-
-        .welcome-text h2 {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        .welcome-text span {
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .prompt-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .prompt-card {
-            background-color: #111122;
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        .chat-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding: 10px 0; }
+        .chat-bubble { max-width: 85%; padding: 15px; border-radius: 15px; line-height: 1.5; font-size: 14px; }
+        .user-bubble { background-color: #1a1a3a; align-self: flex-end; border-bottom-right-radius: 5px; }
+        .ai-bubble { border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 5px; }
         
-        .prompt-card:hover {
-            border-color: var(--accent-purple);
-        }
-
-        .chat-area {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding-right: 10px;
-        }
-
-        .chat-bubble {
-            max-width: 80%;
-            padding: 15px;
-            border-radius: 15px;
-            line-height: 1.5;
-        }
-
-        .user-bubble {
-            background-color: #1a1a3a;
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
-        }
-
-        .ai-bubble {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-        }
-
-        .input-box {
-            display: flex;
-            align-items: center;
-            background-color: #111122;
-            border: 1px solid var(--border-color);
-            border-radius: 15px;
-            padding: 10px 15px;
-            margin-top: 15px;
-        }
-
-        .input-box input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 10px;
-            outline: none;
-        }
-
-        .send-btn {
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* --- RIGHT SIDEBAR CONTENT --- */
-        .profile-card {
-            text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .profile-pic {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-purple);
-            margin: 0 auto 10px;
-            background-color: #222; /* Placeholder for image */
-        }
-
-        .stats-row {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
-
-        .stat {
-            display: flex;
-            flex-direction: column;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .stat strong {
-            color: white;
-            font-size: 16px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        .model-list, .recent-chats {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .model-item {
-            background-color: #111122;
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-        }
-
-        .model-active {
-            border: 1px solid var(--accent-purple);
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
-        @media (max-width: 1024px) {
-            body { flex-direction: column; height: auto; overflow: auto; }
-            .sidebar-left, .sidebar-right { width: 100%; }
-            .main-chat { min-height: 80vh; }
-            .prompt-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        .input-box { display: flex; align-items: center; background-color: #111122; border: 1px solid var(--border-color); border-radius: 15px; padding: 10px; margin-top: 15px; }
+        .input-box input { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; }
+        .send-btn { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR -->
-    <div class="sidebar-left">
-        <div class="logo-area">
-            <div class="jt-ring">JT</div>
-            <h3 style="color: var(--accent-blue);">Johnny Tec<span style="color: var(--accent-purple);">.Dev</span></h3>
-            <p style="font-size: 10px; color: var(--text-muted);">Building Digital Excellence</p>
-        </div>
+    <!-- LEFT BAR (Fetched via JS) -->
+    <div id="left-sidebar" class="panel sidebar-left"></div>
+
+    <!-- MAIN CHAT -->
+    <div class="panel main-chat">
+        <h2 style="color: var(--accent-blue); margin-bottom: 20px;">AI <span style="color: var(--accent-purple);">Assistant</span></h2>
         
-        <button class="new-chat-btn">＋ New Chat</button>
-
-        <ul class="menu-list">
-            <li>🏠 Dashboard</li>
-            <li class="active">💬 AI Chat</li>
-            <li>&lt;/&gt; Code Assistant</li>
-            <li>🖼️ Image Generator</li>
-            <li>📄 Documents</li>
-            <li>⚙️ Settings</li>
-        </ul>
-
-        <div class="upgrade-card">
-            <h4 style="color: #ffd700;">👑 Upgrade to Pro</h4>
-            <p style="font-size: 12px; color: var(--text-muted); margin: 5px 0;">Unlock all premium features.</p>
-            <button style="background: var(--accent-purple); color: white; border: none; padding: 8px 15px; border-radius: 5px; width: 100%; cursor: pointer;">Upgrade Now</button>
-        </div>
-    </div>
-
-    <!-- MAIN CHAT CENTER -->
-    <div class="main-chat">
-        <div class="top-header">
-            <div>
-                <h2 style="color: var(--accent-blue);">AI <span style="color: var(--accent-purple);">Assistant</span></h2>
-                <p style="font-size: 12px; color: var(--text-muted);">Smart. Fast. Reliable.</p>
-            </div>
-            <input type="text" class="search-bar" placeholder="🔍 Search anything...">
-        </div>
-
-        <div class="welcome-text">
-            <h2>👋 Hey <span>Johnny</span>,</h2>
-            <h2>How can I help you today?</h2>
-        </div>
-
-        <div class="prompt-grid">
-            <div class="prompt-card">
-                <div style="color: var(--accent-blue); font-size: 24px; margin-bottom: 5px;">&lt;/&gt;</div>
-                <h4>Code</h4>
-                <p style="font-size: 10px; color: var(--text-muted);">Generate code</p>
-            </div>
-            <div class="prompt-card">
-                <div style="color: var(--accent-blue); font-size: 24px; margin-bottom: 5px;">📄</div>
-                <h4>Explain</h4>
-                <p style="font-size: 10px; color: var(--text-muted);">Explain anything</p>
-            </div>
-            <div class="prompt-card">
-                <div style="color: var(--accent-purple); font-size: 24px; margin-bottom: 5px;">✍️</div>
-                <h4>Create</h4>
-                <p style="font-size: 10px; color: var(--text-muted);">Create content</p>
-            </div>
-            <div class="prompt-card">
-                <div style="color: var(--accent-purple); font-size: 24px; margin-bottom: 5px;">🧊</div>
-                <h4>Solve</h4>
-                <p style="font-size: 10px; color: var(--text-muted);">Solve problems</p>
-            </div>
-        </div>
-
-        <div class="chat-area">
-            <div class="chat-bubble user-bubble">
-                Explain quantum computing in simple terms.
-            </div>
+        <div class="chat-area" id="chat-area">
             <div class="chat-bubble ai-bubble">
-                <p>Quantum computing is a type of computing that uses the principles of quantum mechanics to process information. Unlike classical computers that use bits (0s and 1s), quantum computers use quantum bits or qubits.</p>
-                <br>
-                <p>Qubits can exist in multiple states simultaneously thanks to a property called superposition. This allows quantum computers to solve certain problems much faster than traditional computers.</p>
+                👋 Hey Johnny, your Groq Llama 3.1 API is ready. What are we building today?
             </div>
         </div>
 
         <div class="input-box">
-            <span style="color: var(--text-muted); cursor: pointer; padding: 0 10px;">➕</span>
-            <input type="text" placeholder="Type your message...">
-            <button class="send-btn">➔</button>
+            <input type="text" id="chat-input" placeholder="Message Johnny Tec AI...">
+            <button class="send-btn" id="send-btn">➔</button>
         </div>
     </div>
 
-    <!-- RIGHT SIDEBAR -->
-    <div class="sidebar-right">
-        <div class="profile-card">
-            <div class="profile-pic"></div>
-            <h3>Johnny Tec.Dev</h3>
-            <span style="background: rgba(181,0,255,0.2); color: var(--accent-purple); padding: 3px 10px; border-radius: 10px; font-size: 12px;">👑 Pro User</span>
-            
-            <div class="stats-row">
-                <div class="stat"><strong>1,247</strong>Messages</div>
-                <div class="stat"><strong>98</strong>Projects</div>
-                <div class="stat"><strong>32</strong>Days Active</div>
-            </div>
-        </div>
+    <!-- RIGHT BAR (Fetched via JS) -->
+    <div id="right-sidebar" class="panel sidebar-right"></div>
 
-        <div class="section-title">Models</div>
-        <div class="model-list">
-            <div class="model-item model-active">
-                <div>
-                    <strong>GPT-4.1</strong>
-                    <div style="font-size: 10px; color: var(--text-muted);">Most Powerful</div>
-                </div>
-                <span style="color: var(--accent-purple);">✔️</span>
-            </div>
-            <div class="model-item">
-                <div>
-                    <strong>Claude 3.5</strong>
-                    <div style="font-size: 10px; color: var(--text-muted);">Advanced</div>
-                </div>
-            </div>
-            <div class="model-item">
-                <div>
-                    <strong>Gemini 1.5 Pro</strong>
-                    <div style="font-size: 10px; color: var(--text-muted);">Google's Best</div>
-                </div>
-            </div>
-        </div>
+    <!-- SCRIPT TO LOAD EVERYTHING TOGETHER -->
+    <script>
+        // Fetch the Left Menu
+        fetch('left.html')
+            .then(response => response.text())
+            .then(data => { document.getElementById('left-sidebar').innerHTML = data; });
 
-        <div class="section-title">System Status</div>
-        <div style="background: #111122; padding: 15px; border-radius: 10px; font-size: 12px;">
-            <div style="color: #00ff00; margin-bottom: 10px;">● All Systems Operational</div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>AI Service</span><span style="color: #00ff00;">Operational</span></div>
-            <div style="display: flex; justify-content: space-between;"><span>Database</span><span style="color: #00ff00;">Operational</span></div>
-        </div>
-    </div>
+        // Fetch the Right Stats
+        fetch('right.html')
+            .then(response => response.text())
+            .then(data => { document.getElementById('right-sidebar').innerHTML = data; });
+    </script>
+    
+    <!-- Connect API Logic -->
+    <script src="api.js"></script>
 
 </body>
-  </html>
-                  
+</html>
