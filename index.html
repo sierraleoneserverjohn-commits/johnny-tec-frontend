@@ -3,14 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Johnny Tec.Dev - AI</title>
+    <title>Johnny Tec AI Assistant</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Target container for dynamic component injection -->
-    <div id="root"></div>
+    <div class="home-wrapper">
+        <!-- Top Header -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button id="menu-btn" class="circle-btn" title="Toggle Sidebar">☰</button>
+                <div class="title-container">
+                    <h2>AI <span class="gradient-text">Assistant</span></h2>
+                    <p>Smart. Fast. Reliable.</p>
+                </div>
+            </div>
+
+            <div class="top-bar-right">
+                <button class="icon-btn notif-btn" title="Notifications">
+                    🔔<span class="notif-dot"></span>
+                </button>
+                
+                <!-- Moon Light/Dark Mode Switcher -->
+                <button id="theme-btn" class="icon-btn" title="Toggle Mode">🌙</button>
+                
+                <div class="user-avatar-wrap">
+                    <div class="user-avatar-img">👤</div>
+                    <span class="status-dot"></span>
+                </div>
+
+                <!-- 3-Dots Menu Button -->
+                <button id="more-btn" class="icon-btn" title="More Options">⋮</button>
+            </div>
+        </header>
+
+        <!-- 3-Dots Dropdown Menu -->
+        <div id="more-dropdown" class="dropdown-popover">
+            <div class="dropdown-option" onclick="clearChat()">🗑️ Clear Conversation</div>
+            <div class="dropdown-option">📊 View Model Stats</div>
+            <div class="dropdown-option">⚙️ App Settings</div>
+        </div>
+
+        <!-- Main Feed -->
+        <main class="feed-content">
+            <!-- Hero Header -->
+            <section class="hero-section">
+                <h2>👋 Hey <span class="gradient-text">Johnny,</span></h2>
+                <h1>How can I help you today?</h1>
+                <p class="hero-sub">Your AI assistant is ready to help you with anything you need.</p>
+            </section>
+
+            <!-- 4 Quick Action Cards -->
+            <section class="action-grid">
+                <div class="action-card" data-prompt="Generate code for ">
+                    <div class="card-icon blue-glow">&lt;/&gt;</div>
+                    <div class="card-title">Code</div>
+                    <div class="card-desc">Generate code</div>
+                </div>
+                <div class="action-card" data-prompt="Explain this concept simply: ">
+                    <div class="card-icon blue-glow">💬</div>
+                    <div class="card-title">Explain</div>
+                    <div class="card-desc">Explain anything</div>
+                </div>
+                <div class="action-card" data-prompt="Create content for: ">
+                    <div class="card-icon purple-glow">✏️</div>
+                    <div class="card-title">Create</div>
+                    <div class="card-desc">Create content</div>
+                </div>
+                <div class="action-card" data-prompt="Help me solve this: ">
+                    <div class="card-icon purple-glow">🧊</div>
+                    <div class="card-title">Solve</div>
+                    <div class="card-desc">Solve problems</div>
+                </div>
+            </section>
+
+            <!-- Chat Stream -->
+            <section class="chat-log" id="chat-area">
+                <!-- User Message Sample -->
+                <div class="chat-row user-row">
+                    <div class="user-bubble-container">
+                        <div class="message-bubble user-bubble">
+                            Explain quantum computing in simple terms.
+                        </div>
+                        <div class="timestamp">10:30 AM</div>
+                    </div>
+                    <div class="chat-avatar user-thumb">👤</div>
+                </div>
+
+                <!-- AI Message Sample -->
+                <div class="chat-row ai-row">
+                    <div class="chat-avatar bot-thumb">🤖</div>
+                    <div class="ai-bubble-container">
+                        <div class="message-bubble ai-bubble">
+                            <p>Quantum computing is a type of computing that uses the principles of quantum mechanics to process information. Unlike classical computers that use bits (0s and 1s), quantum computers use quantum bits or qubits.</p>
+                            <br>
+                            <p>Qubits can exist in multiple states simultaneously thanks to a property called superposition. This allows quantum computers to solve certain problems much faster than traditional computers.</p>
+                        </div>
+
+                        <div class="ai-actions-bar">
+                            <button class="pill-action-btn" onclick="readAloud(this)">▶ Read Aloud</button>
+                            <div class="action-icons-group">
+                                <button class="icon-tool-btn" onclick="copyResponse(this)" title="Copy">📋</button>
+                                <button class="icon-tool-btn" title="Regenerate">🔄</button>
+                                <button class="icon-tool-btn" title="Like">👍</button>
+                                <button class="icon-tool-btn" title="Dislike">👎</button>
+                            </div>
+                        </div>
+                        <div class="timestamp">10:31 AM</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Suggestion Pills -->
+            <section class="pills-scroll-row">
+                <button class="suggestion-pill">Can you give an example?</button>
+                <button class="suggestion-pill">How does superposition work?</button>
+                <button class="suggestion-pill">What are the real-world applications?</button>
+                <button class="suggestion-pill">Explain more simply</button>
+            </section>
+        </main>
+
+        <!-- Bottom Input Bar -->
+        <footer class="bottom-bar">
+            <div class="input-inner">
+                <div class="input-tools-left">
+                    <button class="tool-circle-btn">+</button>
+                    <button class="tool-circle-btn">📎</button>
+                    <button class="tool-circle-btn">🎙️</button>
+                    <button class="tool-circle-btn">✨</button>
+                </div>
+                <input type="text" id="chat-input" placeholder="Type your message...">
+                <button id="send-btn" class="send-gradient-btn">➔</button>
+            </div>
+        </footer>
+    </div>
 
     <script src="app.js"></script>
 </body>
-</html>
+                                    </html>
+                                    
