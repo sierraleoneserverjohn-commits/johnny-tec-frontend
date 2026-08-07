@@ -1,103 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Johnny Tec.Dev - AI</title>
-    <style>
-        :root {
-            --bg-dark: #03030b; --panel-bg: #0a0a16; --border-color: #1a1a2e;
-            --text-main: #ffffff; --text-muted: #8b8b9f;
-            --accent-blue: #00d2ff; --accent-purple: #b500ff;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+<div id="app-container" class="app-viewport">
+    
+    <!-- Left Drawer (Toggled by 3-lines menu icon) -->
+    <div id="left-sidebar" class="sidebar-drawer-left"></div>
+
+    <!-- Main Content Container -->
+    <div class="main-content">
         
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            padding: 15px;
-            gap: 15px;
-            overflow-x: auto; /* Allows swiping left/right on mobile */
-            scroll-snap-type: x mandatory; /* Smooth snapping */
-        }
+        <!-- Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button id="menu-btn" class="icon-circle-btn" title="Toggle Sidebar">
+                    <span class="hamburger-icon">☰</span>
+                </button>
+                <div class="header-title-box">
+                    <h1 class="header-title">AI <span class="gradient-text-pink">Assistant</span></h1>
+                    <span class="header-subtitle">Smart. Fast. Reliable.</span>
+                </div>
+            </div>
 
-        /* Standardized Panel Style */
-        .panel {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            scroll-snap-align: center;
-        }
+            <div class="header-right">
+                <button id="notif-btn" class="icon-btn" title="Notifications">
+                    🔔<span class="notif-badge"></span>
+                </button>
+                <button id="theme-btn" class="icon-btn" title="Toggle Theme">🌙</button>
+                <div class="avatar-wrapper">
+                    <div class="avatar-img">👤</div>
+                    <span class="status-indicator"></span>
+                </div>
+                <button id="more-btn" class="icon-btn" title="More Options">⋮</button>
+            </div>
+        </header>
 
-        .sidebar-left { min-width: 260px; }
-        .sidebar-right { min-width: 300px; overflow-y: auto; }
-        .main-chat { min-width: 100%; flex: 1; position: relative; }
+        <!-- Dynamic 3-Dots Dropdown Menu -->
+        <div id="more-menu" class="dropdown-menu">
+            <div class="dropdown-item" onclick="clearChat()">🗑️ Clear Conversation</div>
+            <div class="dropdown-item" id="toggle-right-sidebar-btn">📊 View Model Stats</div>
+            <div class="dropdown-item">⚙️ Settings</div>
+        </div>
 
-        @media (min-width: 1024px) {
-            .main-chat { min-width: 500px; } /* Desktop width fixing */
-        }
+        <!-- Greeting Section -->
+        <section class="welcome-header">
+            <h2>👋 <span class="gradient-text-pink">Hey Johnny,</span></h2>
+            <h3 class="headline">How can I help you today?</h3>
+            <p class="subheadline">Your AI assistant is ready to help you with anything you need.</p>
+        </section>
 
-        /* Internal Styles pulled from previous version */
-        .jt-ring { width: 70px; height: 70px; border-radius: 50%; border-top: 2px solid var(--accent-blue); border-bottom: 2px solid var(--accent-purple); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 24px; font-weight: 900; font-style: italic; background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo-area { text-align: center; margin-bottom: 20px; }
-        .menu-list { list-style: none; flex: 1; }
-        .menu-list li { padding: 12px; color: var(--text-muted); margin-bottom: 5px; border-radius: 10px; cursor: pointer; display: flex; gap: 10px; }
-        .menu-list li.active { background-color: rgba(181, 0, 255, 0.1); color: var(--accent-blue); border-left: 3px solid var(--accent-purple); }
-        
-        .chat-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; padding: 10px 0; }
-        .chat-bubble { max-width: 85%; padding: 15px; border-radius: 15px; line-height: 1.5; font-size: 14px; }
-        .user-bubble { background-color: #1a1a3a; align-self: flex-end; border-bottom-right-radius: 5px; }
-        .ai-bubble { border: 1px solid var(--border-color); align-self: flex-start; border-bottom-left-radius: 5px; }
-        
-        .input-box { display: flex; align-items: center; background-color: #111122; border: 1px solid var(--border-color); border-radius: 15px; padding: 10px; margin-top: 15px; }
-        .input-box input { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; }
-        .send-btn { background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple)); border: none; width: 40px; height: 40px; border-radius: 50%; color: white; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-    <!-- LEFT BAR (Fetched via JS) -->
-    <div id="left-sidebar" class="panel sidebar-left"></div>
-
-    <!-- MAIN CHAT -->
-    <div class="panel main-chat">
-        <h2 style="color: var(--accent-blue); margin-bottom: 20px;">AI <span style="color: var(--accent-purple);">Assistant</span></h2>
-        
-        <div class="chat-area" id="chat-area">
-            <div class="chat-bubble ai-bubble">
-                👋 Hey Johnny, your Groq Llama 3.1 API is ready. What are we building today?
+        <!-- Quick Action Cards -->
+        <div class="action-cards-grid">
+            <div class="action-card" data-prompt="Generate code for ">
+                <div class="card-icon icon-blue">&lt;/&gt;</div>
+                <div class="card-label">Code</div>
+                <div class="card-sub">Generate code</div>
+            </div>
+            <div class="action-card" data-prompt="Explain this concept simply: ">
+                <div class="card-icon icon-purple">📄</div>
+                <div class="card-label">Explain</div>
+                <div class="card-sub">Explain anything</div>
+            </div>
+            <div class="action-card" data-prompt="Help me create content for: ">
+                <div class="card-icon icon-pink">✏️</div>
+                <div class="card-label">Create</div>
+                <div class="card-sub">Create content</div>
+            </div>
+            <div class="action-card" data-prompt="Help me solve this problem: ">
+                <div class="card-icon icon-violet">🧊</div>
+                <div class="card-label">Solve</div>
+                <div class="card-sub">Solve problems</div>
             </div>
         </div>
 
-        <div class="input-box">
-            <input type="text" id="chat-input" placeholder="Message Johnny Tec AI...">
-            <button class="send-btn" id="send-btn">➔</button>
+        <!-- Chat Stream Area -->
+        <div class="chat-area" id="chat-area">
+            
+            <!-- User Bubble Example -->
+            <div class="message-wrapper user-wrapper">
+                <div class="message-bubble user-bubble">
+                    Explain quantum computing in simple terms.
+                </div>
+                <div class="message-meta">10:30 AM</div>
+            </div>
+
+            <!-- Bot Bubble Example -->
+            <div class="message-wrapper ai-wrapper">
+                <div class="ai-avatar-icon">🤖</div>
+                <div class="ai-content-box">
+                    <div class="message-bubble ai-bubble">
+                        <p>Quantum computing is a type of computing that uses the principles of quantum mechanics to process information. Unlike classical computers that use bits (0s and 1s), quantum computers use quantum bits or qubits.</p>
+                        <p style="margin-top: 10px;">Qubits can exist in multiple states simultaneously thanks to a property called superposition. This allows quantum computers to solve certain problems much faster than traditional computers.</p>
+                    </div>
+                    
+                    <!-- Action Bar -->
+                    <div class="response-actions">
+                        <button class="action-pill-btn" onclick="readAloud(this)">
+                            ▶ Read Aloud
+                        </button>
+                        <div class="action-icons">
+                            <button class="icon-action-btn" title="Copy" onclick="copyResponse(this)">📋</button>
+                            <button class="icon-action-btn" title="Regenerate">🔄</button>
+                            <button class="icon-action-btn" title="Like">👍</button>
+                            <button class="icon-action-btn" title="Dislike">👎</button>
+                        </div>
+                    </div>
+                    <div class="message-meta">10:31 AM</div>
+                </div>
+            </div>
+
         </div>
+
+        <!-- Suggested Prompt Pills -->
+        <div class="suggestion-pills">
+            <button class="pill-btn">Can you give an example?</button>
+            <button class="pill-btn">How does superposition work?</button>
+            <button class="pill-btn">What are the real-world applications?</button>
+            <button class="pill-btn">Explain more simply</button>
+        </div>
+
+        <!-- Bottom Input Bar -->
+        <div class="bottom-input-container">
+            <div class="input-actions-left">
+                <button class="input-tool-btn">+</button>
+                <button class="input-tool-btn">📎</button>
+                <button class="input-tool-btn">🎙️</button>
+                <button class="input-tool-btn">✨</button>
+            </div>
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button id="send-btn" class="send-gradient-btn">➔</button>
+        </div>
+
     </div>
 
-    <!-- RIGHT BAR (Fetched via JS) -->
-    <div id="right-sidebar" class="panel sidebar-right"></div>
-
-    <!-- SCRIPT TO LOAD EVERYTHING TOGETHER -->
-    <script>
-        // Fetch the Left Menu
-        fetch('left.html')
-            .then(response => response.text())
-            .then(data => { document.getElementById('left-sidebar').innerHTML = data; });
-
-        // Fetch the Right Stats
-        fetch('right.html')
-            .then(response => response.text())
-            .then(data => { document.getElementById('right-sidebar').innerHTML = data; });
-    </script>
-    
-    <!-- Connect API Logic -->
-    <script src="api.js"></script>
-
-</body>
-</html>
+    <!-- Right Drawer (Toggled by 3-dots menu option) -->
+    <div id="right-sidebar" class="sidebar-drawer-right"></div>
+</div>
