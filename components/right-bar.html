@@ -1,1 +1,82 @@
+<!-- components/right-bar.html -->
+<aside class="right-sidebar glass-panel">
+    <header class="sidebar-header">
+        <h2 class="sidebar-title">Model Settings</h2>
+    </header>
+
+    <div class="settings-container">
+        <!-- Model Selection -->
+        <div class="setting-group">
+            <label for="ai-model-select">Active Core Model</label>
+            <div class="custom-select">
+                <select id="ai-model-select">
+                    <option value="jt-turbo">JT-Turbo (Default)</option>
+                    <option value="jt-omni">JT-Omni (Advanced)</option>
+                    <option value="jt-code">JT-Code-Pro (Dev)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Temperature Slider -->
+        <div class="setting-group">
+            <div class="setting-header">
+                <label for="temp-slider">Creativity (Temperature)</label>
+                <span class="setting-value" id="temp-value">0.7</span>
+            </div>
+            <input type="range" id="temp-slider" min="0" max="1" step="0.1" value="0.7" class="neon-slider">
+        </div>
+
+        <!-- Token Limit Slider -->
+        <div class="setting-group">
+            <div class="setting-header">
+                <label for="token-slider">Max Tokens</label>
+                <span class="setting-value" id="token-value">2048</span>
+            </div>
+            <input type="range" id="token-slider" min="256" max="8192" step="256" value="2048" class="neon-slider">
+        </div>
+
+        <hr class="neon-divider">
+
+        <!-- Developer Toggles -->
+        <header class="sidebar-header secondary">
+            <h2 class="sidebar-title">Developer Mode</h2>
+        </header>
+
+        <div class="setting-group toggle-group">
+            <label for="toggle-stream">Stream Responses</label>
+            <label class="neon-toggle">
+                <input type="checkbox" id="toggle-stream" checked>
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-group toggle-group">
+            <label for="toggle-debug">System Debug Logs</label>
+            <label class="neon-toggle">
+                <input type="checkbox" id="toggle-debug">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+        
+        <div class="setting-group toggle-group">
+            <label for="toggle-voice">Voice Synthesizer</label>
+            <label class="neon-toggle">
+                <input type="checkbox" id="toggle-voice">
+                <span class="toggle-slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Live System Stats Footer -->
+    <footer class="system-stats">
+        <div class="stat-row">
+            <span>Latency</span>
+            <span class="stat-value text-cyan">24ms</span>
+        </div>
+        <div class="stat-row">
+            <span>Environment</span>
+            <span class="stat-value text-purple">Production</span>
+        </div>
+    </footer>
+  </aside>
 
