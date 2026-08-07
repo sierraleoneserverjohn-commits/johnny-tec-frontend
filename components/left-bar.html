@@ -1,1 +1,54 @@
+<!-- components/left-bar.html -->
+<aside class="left-sidebar glass-panel">
+    <!-- Brand Header -->
+    <header class="sidebar-header">
+        <h1 class="brand-title">JOHNNY <span>TEC</span></h1>
+    </header>
+
+    <!-- Primary Action -->
+    <div class="action-container">
+        <button id="btn-new-chat" class="neon-button">
+            <span class="icon">+</span> New Chat
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+        <ul id="nav-list">
+            <li class="nav-item active" data-target="dashboard">Dashboard</li>
+            <li class="nav-item" data-target="history">Chat History</li>
+            <li class="nav-item" data-target="prompts">Saved Prompts</li>
+            <li class="nav-item" data-target="plugins">Plugins</li>
+        </ul>
+    </nav>
+
+    <!-- System Status & Usage Tracker -->
+    <div class="system-status-card">
+        <div class="status-header">
+            <span class="status-indicator online"></span>
+            <h4>JT API Engine</h4>
+        </div>
+        <div class="usage-tracker">
+            <div class="usage-labels">
+                <span>AI Core Usage</span>
+                <span>78%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="ai-usage-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Footer -->
+    <footer class="user-profile">
+        <div class="avatar-container">
+            <div class="robot-eye-animation"></div>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=JohnnyTec" alt="Pro User" class="user-avatar" />
+        </div>
+        <div class="user-info">
+            <span class="user-name">Johnny Tec.Dev</span>
+            <span class="pro-badge">PRO</span>
+        </div>
+    </footer>
+</aside>
 
