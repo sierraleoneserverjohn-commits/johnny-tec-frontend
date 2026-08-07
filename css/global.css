@@ -1,1 +1,28 @@
+:root {
+  /* Brand Colors */
+  --space-black: #050511;
+  --neon-cyan: #00d2ff;
+  --neon-purple: #b026ff;
+  
+  /* Glassmorphism Utilities */
+  --glass-bg: rgba(5, 5, 17, 0.6);
+  --glass-border: rgba(0, 210, 255, 0.2);
+  --blur-effect: blur(12px);
+
+  /* Gradients & Shadows */
+  --cyan-glow: 0 0 15px rgba(0, 210, 255, 0.5);
+  --purple-glow: 0 0 15px rgba(176, 38, 255, 0.5);
+  --jt-gradient: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--space-black);
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden; /* App-like feel */
+  display: flex;
+  height: 100vh;
+}
 
