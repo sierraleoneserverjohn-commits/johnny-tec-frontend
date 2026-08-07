@@ -3,142 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Johnny Tec AI Assistant</title>
-    <link rel="stylesheet" href="style.css">
+    <title>JOHNNY TEC AI Assistant</title>
+    
+    <!-- Google Fonts for the Cyber Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- CSS Design System Links -->
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/loading.css">
+    <link rel="stylesheet" href="./css/left-bar.css">
+    <link rel="stylesheet" href="./css/main-screen.css">
+    <link rel="stylesheet" href="./css/right-bar.css">
+    <link rel="stylesheet" href="./css/voice-visualizer.css">
 </head>
 <body>
 
-    <div class="home-wrapper">
-        <!-- Top Header -->
-        <header class="top-bar">
-            <div class="top-bar-left">
-                <button id="menu-btn" class="circle-btn" title="Toggle Sidebar">☰</button>
-                <div class="title-container">
-                    <h2>AI <span class="gradient-text">Assistant</span></h2>
-                    <p>Smart. Fast. Reliable.</p>
-                </div>
-            </div>
+    <!-- 1. Splash Screen Mount -->
+    <div id="loading-container"></div>
 
-            <div class="top-bar-right">
-                <button class="icon-btn notif-btn" title="Notifications">
-                    🔔<span class="notif-dot"></span>
-                </button>
-                
-                <!-- Moon Light/Dark Mode Switcher -->
-                <button id="theme-btn" class="icon-btn" title="Toggle Mode">🌙</button>
-                
-                <div class="user-avatar-wrap">
-                    <div class="user-avatar-img">👤</div>
-                    <span class="status-dot"></span>
-                </div>
+    <!-- 2. Core App Layout (Flexbox Container) -->
+    <div id="app-root" style="display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative;">
+        
+        <!-- Sidebar Navigation -->
+        <div id="left-sidebar-container"></div>
+        
+        <!-- Main Chat Interface -->
+        <div id="main-chat-container" style="flex-grow: 1; position: relative;"></div>
+        
+        <!-- Right Settings Panel -->
+        <div id="right-sidebar-container"></div>
 
-                <!-- 3-Dots Menu Button -->
-                <button id="more-btn" class="icon-btn" title="More Options">⋮</button>
-            </div>
-        </header>
-
-        <!-- 3-Dots Dropdown Menu -->
-        <div id="more-dropdown" class="dropdown-popover">
-            <div class="dropdown-option" onclick="clearChat()">🗑️ Clear Conversation</div>
-            <div class="dropdown-option">📊 View Model Stats</div>
-            <div class="dropdown-option">⚙️ App Settings</div>
-        </div>
-
-        <!-- Main Feed -->
-        <main class="feed-content">
-            <!-- Hero Header -->
-            <section class="hero-section">
-                <h2>👋 Hey <span class="gradient-text">Johnny,</span></h2>
-                <h1>How can I help you today?</h1>
-                <p class="hero-sub">Your AI assistant is ready to help you with anything you need.</p>
-            </section>
-
-            <!-- 4 Quick Action Cards -->
-            <section class="action-grid">
-                <div class="action-card" data-prompt="Generate code for ">
-                    <div class="card-icon blue-glow">&lt;/&gt;</div>
-                    <div class="card-title">Code</div>
-                    <div class="card-desc">Generate code</div>
-                </div>
-                <div class="action-card" data-prompt="Explain this concept simply: ">
-                    <div class="card-icon blue-glow">💬</div>
-                    <div class="card-title">Explain</div>
-                    <div class="card-desc">Explain anything</div>
-                </div>
-                <div class="action-card" data-prompt="Create content for: ">
-                    <div class="card-icon purple-glow">✏️</div>
-                    <div class="card-title">Create</div>
-                    <div class="card-desc">Create content</div>
-                </div>
-                <div class="action-card" data-prompt="Help me solve this: ">
-                    <div class="card-icon purple-glow">🧊</div>
-                    <div class="card-title">Solve</div>
-                    <div class="card-desc">Solve problems</div>
-                </div>
-            </section>
-
-            <!-- Chat Stream -->
-            <section class="chat-log" id="chat-area">
-                <!-- User Message Sample -->
-                <div class="chat-row user-row">
-                    <div class="user-bubble-container">
-                        <div class="message-bubble user-bubble">
-                            Explain quantum computing in simple terms.
-                        </div>
-                        <div class="timestamp">10:30 AM</div>
-                    </div>
-                    <div class="chat-avatar user-thumb">👤</div>
-                </div>
-
-                <!-- AI Message Sample -->
-                <div class="chat-row ai-row">
-                    <div class="chat-avatar bot-thumb">🤖</div>
-                    <div class="ai-bubble-container">
-                        <div class="message-bubble ai-bubble">
-                            <p>Quantum computing is a type of computing that uses the principles of quantum mechanics to process information. Unlike classical computers that use bits (0s and 1s), quantum computers use quantum bits or qubits.</p>
-                            <br>
-                            <p>Qubits can exist in multiple states simultaneously thanks to a property called superposition. This allows quantum computers to solve certain problems much faster than traditional computers.</p>
-                        </div>
-
-                        <div class="ai-actions-bar">
-                            <button class="pill-action-btn" onclick="readAloud(this)">▶ Read Aloud</button>
-                            <div class="action-icons-group">
-                                <button class="icon-tool-btn" onclick="copyResponse(this)" title="Copy">📋</button>
-                                <button class="icon-tool-btn" title="Regenerate">🔄</button>
-                                <button class="icon-tool-btn" title="Like">👍</button>
-                                <button class="icon-tool-btn" title="Dislike">👎</button>
-                            </div>
-                        </div>
-                        <div class="timestamp">10:31 AM</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Suggestion Pills -->
-            <section class="pills-scroll-row">
-                <button class="suggestion-pill">Can you give an example?</button>
-                <button class="suggestion-pill">How does superposition work?</button>
-                <button class="suggestion-pill">What are the real-world applications?</button>
-                <button class="suggestion-pill">Explain more simply</button>
-            </section>
-        </main>
-
-        <!-- Bottom Input Bar -->
-        <footer class="bottom-bar">
-            <div class="input-inner">
-                <div class="input-tools-left">
-                    <button class="tool-circle-btn">+</button>
-                    <button class="tool-circle-btn">📎</button>
-                    <button class="tool-circle-btn">🎙️</button>
-                    <button class="tool-circle-btn">✨</button>
-                </div>
-                <input type="text" id="chat-input" placeholder="Type your message...">
-                <button id="send-btn" class="send-gradient-btn">➔</button>
-            </div>
-        </footer>
     </div>
 
-    <script src="app.js"></script>
+    <!-- 3. Voice Visualizer Mount (Hidden by default) -->
+    <div id="voice-visualizer-container"></div>
+
+    <!-- 4. Async Orchestrator Initialization -->
+    <script src="./app.js"></script>
+    
 </body>
-                                    </html>
-                                    
+</html>
