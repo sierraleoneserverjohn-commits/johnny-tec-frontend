@@ -30,3 +30,14 @@ export function init() {
     requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = target; }));
   }
 }
+// Add this to the bottom of js/left-bar.js
+window.addEventListener('jt-api-offline', () => {
+    const statusIndicator = document.querySelector('.status-indicator');
+    const statusText = document.querySelector('.status-header h4');
+    if (statusIndicator && statusText) {
+        statusIndicator.style.backgroundColor = '#ff2a2a'; // Neon Red
+        statusIndicator.style.boxShadow = '0 0 8px #ff2a2a';
+        statusText.textContent = "JT API: OFFLINE";
+    }
+});
+
