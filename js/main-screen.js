@@ -16,9 +16,6 @@ const FOLLOW_UPS = [
 
 let chatLog, chatScroll, greeting, suggestions, composerInput;
 
-// SYSTEM STATE: Set this to true when you hook up your local API or OpenAI/Gemini
-let isApiConnected = false; 
-
 export function init() {
   const root = document.getElementById('main-screen');
   if (!root) return;
@@ -65,21 +62,12 @@ function sendMessage(text) {
   appendMessage('user', text);
   const typingEl = appendTyping();
 
-  // Simulated latency before the assistant "responds"
+  // Simulated latency before the assistant "responds" — replace with
+  // your real API round-trip; call resolveTyping(typingEl, reply) when done.
   setTimeout(() => {
-    // API CHECK FALLBACK LOGIC
-    if (!isApiConnected) {
-      const offlineReply = "⚠️ SYSTEM ALERT: JT API Engine is currently disconnected. Please configure your API endpoint in the Right Sidebar settings to initiate live data stream.";
-      resolveTyping(typingEl, offlineReply);
-      
-      // Dispatch offline event so the left-sidebar can turn the status dot red
-      window.dispatchEvent(new Event('jt-api-offline'));
-    } else {
-      // Normal flow when API is connected
-      const reply = getAssistantReply(text);
-      resolveTyping(typingEl, reply);
-      renderSuggestions();
-    }
+    const reply = getAssistantReply(text);
+    resolveTyping(typingEl, reply);
+    renderSuggestions();
   }, 900 + Math.random() * 500);
 }
 
@@ -175,34 +163,5 @@ function escapeHtml(str) {
 // Stub reply generator — swap for a real API call.
 function getAssistantReply(prompt) {
   return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend in <code>getAssistantReply()</code> (main-screen.js) to replace this placeholder with live answers.`;
-}
-export function init() {
-  const root = document.getElementById('main-screen');
-  if (!root) return;
-
-  // --- NEW RANDOM GREETING LOGIC ---
-  const greetings = [
-    { title: "👋 Hey I am <span class='gradient-text'>Johnny</span>,", sub: "How can I help you today?" },
-    { title: "🤗 Hello there!", sub: "What are we building today?" },
-    { title: "⚡ Johnny is online.", sub: "Ready to solve some problems?" },
-    { title: "🚀 Welcome back!", sub: "How can I assist you right now?" },
-    { title: "🤖 Systems ready.", sub: "Drop a prompt below to get started." }
-  ];
-
-  // Pick a random greeting
-  const randomWelcome = greetings[Math.floor(Math.random() * greetings.length)];
-  
-  // Inject it into the DOM
-  const greetingTitle = root.querySelector('#greetingTitle');
-  const greetingSubtitle = root.querySelector('#greetingSubtitle');
-  
-  if (greetingTitle && greetingSubtitle) {
-      greetingTitle.innerHTML = randomWelcome.title;
-      greetingSubtitle.innerText = randomWelcome.sub;
-  }
-  // ---------------------------------
-
-  // ... (Keep the rest of your init() function exactly the same below this) ...
-  chatLog = root.querySelector('#chatLog');
-  chatScroll = root.querySelector('#chatScroll');
-  
+        }
+                                               
