@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOHNNY TEC - Loading</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #03030b;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Electric Blue Background Lighting */
+        .ambient-light {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 30%, rgba(0, 150, 255, 0.15) 0%, rgba(0, 0, 0, 0) 60%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        /* Rotating JT Logo */
+        .logo-wrapper {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+        }
+
+        .ring-outer {
+            border-top: 4px solid #00d2ff;
+            border-bottom: 4px solid #b500ff;
+            animation: spin 3s linear infinite;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+
+        .ring-inner {
+            width: 85%;
+            height: 85%;
+            border-left: 4px solid #00d2ff;
+            border-right: 4px solid #b500ff;
+            animation: spin-reverse 4s linear infinite;
+        }
+
+        .jt-text {
+            font-size: 55px;
+            font-weight: 900;
+            font-style: italic;
+            background: linear-gradient(90deg, #00d2ff, #b500ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            z-index: 2;
+            text-shadow: 0px 0px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00d2ff, #b500ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #a0a0b0;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        /* Progress Bar (15s animation) */
+        .loading-text {
+            font-size: 12px;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+            color: #d0d0d0;
+        }
+
+        .progress-container {
+            width: 80%;
+            height: 12px;
+            background-color: #111122;
+            border-radius: 20px;
+            border: 1px solid #333355;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00d2ff, #b500ff);
+            border-radius: 20px;
+            box-shadow: 0 0 15px #00d2ff;
+            /* 15 Second Animation */
+            animation: load 15s ease-in-out forwards; 
+        }
+
+        .percentage {
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00d2ff;
+            margin-bottom: 40px;
+        }
+
+        /* Feature Icons */
+        .features {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #333355;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            background: rgba(17, 17, 34, 0.5);
+            box-shadow: 0 0 10px rgba(181, 0, 255, 0.2);
+            color: #00d2ff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .feature-title {
+            font-size: 12px;
+            color: #ffffff;
+            margin-bottom: 3px;
+        }
+
+        .feature-sub {
+            font-size: 10px;
+            color: #777788;
+        }
+
+        /* Footer */
+        .footer-status {
+            background: #111122;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: #a0a0b0;
+            border: 1px solid #222233;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .highlight {
+            color: #00d2ff;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-reverse {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-light"></div>
+
+    <div class="container">
+        <!-- Logo Section -->
+        <div class="logo-wrapper">
+            <div class="ring ring-outer"></div>
+            <div class="ring ring-inner"></div>
+            <div class="jt-text">JT</div>
+        </div>
+
+        <!-- Titles -->
+        <h1>Johnny Tec.Dev</h1>
+        <div class="subtitle">Building Digital Excellence</div>
+
+        <!-- Loading Section -->
+        <div class="loading-text">LOADING • • •</div>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        <div class="percentage" id="percent-text">0%</div>
+
+        <!-- Features Row -->
+        <div class="features">
+            <div class="feature-item">
+                <div class="icon-circle">&lt;/&gt;</div>
+                <div class="feature-title">Clean Code</div>
+                <div class="feature-sub">Modern & Reliable</div>
+            </div>
+            <div class="feature-item">
+                <div class="icon-circle">⚡</div>
+                <div class="feature-title">High Performance</div>
+                <div class="feature-sub">Super Fast Speed</div>
+            </div>
+            <div class="feature-item">
+                <div class="icon-circle">🛡️</div>
+                <div class="feature-title">Secure</div>
+                <div class="feature-sub">Safe & Protected</div>
+            </div>
+            <div class="feature-item">
+                <div class="icon-circle">🚀</div>
+                <div class="feature-title">Always Improving</div>
+                <div class="feature-sub">Better Every Day</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-status">
+            <span>|||····</span>
+            <span>Preparing something <span class="highlight">amazing</span> for you...</span>
+            <span>····|||</span>
+        </div>
+    </div>
+
+    <!-- JavaScript for the 15-second number counter -->
+    <script>
+        const percentText = document.getElementById('percent-text');
+        let currentPercent = 0;
+        
+        // 15 seconds = 15000 milliseconds. 
+        // 15000 / 100 steps = 150 milliseconds per 1% increment.
+        const intervalTime = 150; 
+
+        const loadingInterval = setInterval(() => {
+            if (currentPercent < 100) {
+                currentPercent++;
+                percentText.innerText = currentPercent + '%';
+            } else {
+                clearInterval(loadingInterval);
+                // When it hits 100%, it will automatically send the user to the main chat!
+                setTimeout(() => {
+                    window.location.href = 'index.html'; 
+                }, 500); // Waits half a second before redirecting
+            }
+        }, intervalTime);
+    </script>
+</body>
+  </html>
+  
