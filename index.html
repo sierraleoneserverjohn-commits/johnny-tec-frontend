@@ -1,47 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOHNNY TEC AI Assistant</title>
-    
-    <!-- Google Fonts for the Cyber Aesthetic -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>JOHNNY TEC AI Assistant</title>
+<meta name="description" content="Johnny Tec.Dev — Building Digital Excellence. A cyber-neon AI assistant.">
 
-    <!-- CSS Design System Links -->
-    <link rel="stylesheet" href="./css/global.css">
-    <link rel="stylesheet" href="./css/loading.css">
-    <link rel="stylesheet" href="./css/left-bar.css">
-    <link rel="stylesheet" href="./css/main-screen.css">
-    <link rel="stylesheet" href="./css/right-bar.css">
-    <link rel="stylesheet" href="./css/voice-visualizer.css">
+<!-- Fonts: Space Grotesk (display), Inter (body), JetBrains Mono (data/labels) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/loading.css">
+<link rel="stylesheet" href="css/left-bar.css">
+<link rel="stylesheet" href="css/main-screen.css">
+<link rel="stylesheet" href="css/right-bar.css">
+<link rel="stylesheet" href="css/voice-visualizer.css">
 </head>
 <body>
 
-    <!-- 1. Splash Screen Mount -->
-    <div id="loading-container"></div>
+  <!-- Loading Screen: static shell, populated by components/loading.html -->
+  <div id="loading-screen" class="mount"></div>
 
-    <!-- 2. Core App Layout (Flexbox Container) -->
-    <div id="app-root" style="display: flex; width: 100vw; height: 100vh; overflow: hidden; position: relative;">
-        
-        <!-- Sidebar Navigation -->
-        <div id="left-sidebar-container"></div>
-        
-        <!-- Main Chat Interface -->
-        <div id="main-chat-container" style="flex-grow: 1; position: relative;"></div>
-        
-        <!-- Right Settings Panel -->
-        <div id="right-sidebar-container"></div>
+  <div id="app-shell" class="app-shell" hidden>
+    <div id="left-bar" class="mount"></div>
+    <div id="main-screen" class="mount"></div>
+    <div id="right-bar" class="mount"></div>
+  </div>
 
-    </div>
+  <!-- Voice visualizer is an overlay, mounted globally, hidden until invoked -->
+  <div id="voice-visualizer" class="mount"></div>
 
-    <!-- 3. Voice Visualizer Mount (Hidden by default) -->
-    <div id="voice-visualizer-container"></div>
-
-    <!-- 4. Async Orchestrator Initialization -->
-    <script src="./app.js"></script>
-    
+  <script type="module" src="app.js"></script>
 </body>
 </html>
