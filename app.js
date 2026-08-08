@@ -118,8 +118,6 @@ function revealApp() {
     loadingMount.remove();
   }, 500);
 }
-
-boot();
 import { initLeftBar } from './left-bar.js';
 import { initRightBar } from './sidebar.js'; // your existing right bar code
 import { initAvatar } from './avatar.js';   // modular avatar animation
@@ -133,4 +131,4 @@ document.addEventListener('DOMContentLoaded', () => {
   initAvatar(); 
 });
 
-        
+boot();
