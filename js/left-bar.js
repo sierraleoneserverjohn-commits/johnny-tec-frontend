@@ -1,30 +1,25 @@
 /**
- * Left sidebar — Avatar Interaction Logic (Auto-Expression Mode)
+ * Combined Initialization Logic
  */
-export function initLeftBar() {
+export function init() {
+  
+  // ==========================================
+  // 1. LEFT SIDEBAR: Avatar Interaction Logic 
+  // ==========================================
   const brandAvatarBtn = document.getElementById('brandAvatarBtn');
   const aiFaceMini = document.getElementById('aiFaceMini');
   
   if (brandAvatarBtn && aiFaceMini) {
-    // Array of 10 expressions
     const expressions = [
-      'normal', 
-      'happy', 
-      'winking', 
-      'surprised', 
-      'thinking', 
-      'excited',
-      'sad',
-      'angry',
-      'sleepy',
-      'dizzy'
+      'normal', 'happy', 'winking', 'surprised', 'thinking', 
+      'excited', 'sad', 'angry', 'sleepy', 'dizzy'
     ];
     
     let currentIndex = 0;
     let autoExpressionTimer = null;
 
     brandAvatarBtn.addEventListener('click', () => {
-      // Add a tiny bounce effect to the ring on tap
+      // Tiny bounce effect on tap
       brandAvatarBtn.style.transform = 'scale(0.92)';
       setTimeout(() => {
         brandAvatarBtn.style.transform = 'scale(1)';
@@ -32,58 +27,55 @@ export function initLeftBar() {
 
       // Toggle Auto-Expression mode
       if (autoExpressionTimer) {
-        // If it's already auto-playing, tapping stops it and resets to normal
         clearInterval(autoExpressionTimer);
         autoExpressionTimer = null;
         aiFaceMini.className = 'ai-face-mini normal';
         currentIndex = 0;
       } else {
-        // Start auto-playing: change expression every 1.8 seconds
+        currentIndex = 1; // Start with the first alternate expression immediately
+        aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
+        
         autoExpressionTimer = setInterval(() => {
           currentIndex = (currentIndex + 1) % expressions.length;
           aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
         }, 1800);
-        
-        // Trigger the very first change immediately so it doesn't wait 1.8s
-        currentIndex = 1;
-        aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
       }
     });
   }
-}
 
-/**
- * Right sidebar — model selection, mobile slide-in toggle, status sparkline.
- */
-export function initRightBar() {
+  // ==========================================
+  // 2. RIGHT SIDEBAR: Original Logic
+  // ==========================================
   const root = document.getElementById('right-bar');
-  if (!root) return;
-
-  const models = root.querySelectorAll('.rb-model');
-  models.forEach((item) => {
-    item.addEventListener('click', () => {
-      models.forEach((m) => {
-        m.classList.remove('is-active');
-        m.querySelector('.model-check')?.remove();
+  if (root) {
+    const models = root.querySelectorAll('.rb-model');
+    models.forEach((item) => {
+      item.addEventListener('click', () => {
+        models.forEach((m) => {
+          m.classList.remove('is-active');
+          m.querySelector('.model-check')?.remove();
+        });
+        item.classList.add('is-active');
+        if (!item.querySelector('.model-check')) {
+          item.insertAdjacentHTML('beforeend', `<svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>`);
+        }
+        document.dispatchEvent(new CustomEvent('jt:model-change', { detail: item.dataset.model }));
       });
-      item.classList.add('is-active');
-      if (!item.querySelector('.model-check')) {
-        item.insertAdjacentHTML('beforeend', `<svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>`);
-      }
-      document.dispatchEvent(new CustomEvent('jt:model-change', { detail: item.dataset.model }));
     });
-  });
 
-  root.querySelector('#rightBarClose')?.addEventListener('click', () => {
-    root.classList.remove('is-open');
-  });
+    root.querySelector('#rightBarClose')?.addEventListener('click', () => {
+      root.classList.remove('is-open');
+    });
 
-  document.addEventListener('jt:toggle-right-bar', () => {
-    root.classList.toggle('is-open');
-  });
-
-  drawSparkline(root.querySelector('#statusSpark'));
+    drawSparkline(root.querySelector('#statusSpark'));
+  }
 }
+
+// Global Event Listeners outside of init()
+document.addEventListener('jt:toggle-right-bar', () => {
+  const root = document.getElementById('right-bar');
+  if (root) root.classList.toggle('is-open');
+});
 
 function drawSparkline(canvas) {
   if (!canvas) return;
@@ -121,10 +113,5 @@ function drawSparkline(canvas) {
 
   resize();
   window.addEventListener('resize', resize);
-}
-
-// Make sure to actually call the initialization functions when the script runs!
-document.addEventListener('DOMContentLoaded', () => {
-  initLeftBar();
-  initRightBar();
-});
+    }
+        
