@@ -1,25 +1,53 @@
 /**
- * Left sidebar — Avatar Interaction Logic
+ * Left sidebar — Avatar Interaction Logic (Auto-Expression Mode)
  */
 export function initLeftBar() {
   const brandAvatarBtn = document.getElementById('brandAvatarBtn');
   const aiFaceMini = document.getElementById('aiFaceMini');
   
   if (brandAvatarBtn && aiFaceMini) {
+    // Array of 10 expressions
     const expressions = [
       'normal', 
       'happy', 
       'winking', 
       'surprised', 
       'thinking', 
-      'excited'
+      'excited',
+      'sad',
+      'angry',
+      'sleepy',
+      'dizzy'
     ];
+    
     let currentIndex = 0;
+    let autoExpressionTimer = null;
 
     brandAvatarBtn.addEventListener('click', () => {
-      // Cycle to the next expression
-      currentIndex = (currentIndex + 1) % expressions.length;
-      aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
+      // Add a tiny bounce effect to the ring on tap
+      brandAvatarBtn.style.transform = 'scale(0.92)';
+      setTimeout(() => {
+        brandAvatarBtn.style.transform = 'scale(1)';
+      }, 150);
+
+      // Toggle Auto-Expression mode
+      if (autoExpressionTimer) {
+        // If it's already auto-playing, tapping stops it and resets to normal
+        clearInterval(autoExpressionTimer);
+        autoExpressionTimer = null;
+        aiFaceMini.className = 'ai-face-mini normal';
+        currentIndex = 0;
+      } else {
+        // Start auto-playing: change expression every 1.8 seconds
+        autoExpressionTimer = setInterval(() => {
+          currentIndex = (currentIndex + 1) % expressions.length;
+          aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
+        }, 1800);
+        
+        // Trigger the very first change immediately so it doesn't wait 1.8s
+        currentIndex = 1;
+        aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
+      }
     });
   }
 }
