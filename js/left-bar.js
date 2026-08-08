@@ -40,4 +40,16 @@ window.addEventListener('jt-api-offline', () => {
         statusText.textContent = "JT API: OFFLINE";
     }
 });
+// Open Left bar Js
+const sidebarVoiceBtn = document.getElementById('YOUR_SIDEBAR_VOICE_BUTTON_ID'); // Change to your actual ID
+
+if (sidebarVoiceBtn) {
+  sidebarVoiceBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    // Navigate to the voice visualizer page
+    // If you are using iframes, use window.parent.location.href instead
+    window.location.href = 'voice_visualizer.html';
+  });
+}
+
 
