@@ -1,295 +1,131 @@
-// --- DOM Elements ---
-const canvas = document.getElementById('visualizerCanvas');
-const ctx = canvas.getContext('2d');
-const statusText = document.getElementById('statusText');
-const primaryText = document.getElementById('primaryText');
-const secondaryText = document.getElementById('secondaryText');
-const errorMessage = document.getElementById('errorMessage');
-const btnStop = document.getElementById('btnStop');
-const btnHome = document.getElementById('btnHome');
-const aiAudioElement = document.getElementById('aiAudio');
+/**
+ * Voice Assistant Visualizer — HTML5 canvas frequency wave.
+ * Uses getUserMedia + Web Audio API when the user grants mic access;
+ * falls back to an ambient animated waveform otherwise so the UI
+ * never looks broken.
+ */
 
-// --- Audio & State Variables ---
-let audioCtx;
-let analyser;
-let microphoneStream;
-let sourceNode;
-let dataArray;
-let bufferLength;
-let animationId;
+let audioCtx, analyser, source, stream, rafId;
 
-let currentState = 'idle'; // 'idle', 'listening', 'processing', 'speaking'
-let targetRadiusMultiplier = 1;
-let currentRadiusMultiplier = 1;
+export function init() {
+  const overlay = document.getElementById('voiceOverlay');
+  const canvas = document.getElementById('voiceCanvas');
+  const statusEl = document.getElementById('voiceStatus');
+  if (!overlay || !canvas) return;
 
-// --- Canvas Resizing ---
-function resizeCanvas() {
-  // Use device pixel ratio for crisp rendering on mobile
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.parentElement.getBoundingClientRect();
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  ctx.scale(dpr, dpr);
-  canvas.style.width = `${rect.width}px`;
-  canvas.style.height = `${rect.height}px`;
-}
-window.addEventListener('resize', resizeCanvas);
+  document.addEventListener('jt:open-voice', () => open(overlay, canvas, statusEl));
+  document.querySelector('[data-nav="voice"]')?.addEventListener('click', () => open(overlay, canvas, statusEl));
 
-// --- State Management ---
-function updateUIState(state) {
-  currentState = state;
-  switch(state) {
-    case 'idle':
-      statusText.innerText = "Standby";
-      primaryText.innerText = "Ready";
-      secondaryText.innerText = "Tap mic to start";
-      targetRadiusMultiplier = 0.5;
-      break;
-    case 'listening':
-      statusText.innerText = "Listening...";
-      primaryText.innerText = "I'm listening";
-      secondaryText.innerText = "Speak now, I'm here to help";
-      targetRadiusMultiplier = 1.0;
-      break;
-    case 'processing':
-      statusText.innerText = "Thinking...";
-      primaryText.innerText = "Processing...";
-      secondaryText.innerText = "Give me a moment";
-      targetRadiusMultiplier = 0.8;
-      break;
-    case 'speaking':
-      statusText.innerText = "Speaking...";
-      primaryText.innerText = "Here is my answer";
-      secondaryText.innerText = "Listen closely";
-      targetRadiusMultiplier = 1.2;
-      break;
-  }
+  overlay.querySelector('#voiceClose')?.addEventListener('click', () => close(overlay));
+  overlay.querySelector('#voiceStop')?.addEventListener('click', () => close(overlay));
+  document.querySelector('#micBtn')?.addEventListener('click', () => open(overlay, canvas, statusEl));
 }
 
-// --- Audio Initialization ---
-async function startListening() {
+async function open(overlay, canvas, statusEl) {
+  overlay.hidden = false;
+  fitCanvas(canvas);
+
   try {
-    errorMessage.innerText = "";
-    
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-      await audioCtx.resume();
-    }
-
-    microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-    sourceNode = audioCtx.createMediaStreamSource(microphoneStream);
-    
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256; // 128 data points
-    bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
-    
-    sourceNode.connect(analyser);
-    // Do NOT connect to destination (speakers) or you'll get feedback loop!
-    
-    updateUIState('listening');
-    resizeCanvas();
-    drawVisualizer();
-
-  } catch (err) {
-    console.error("Microphone access denied or error:", err);
-    errorMessage.innerText = "Microphone access required.";
-    updateUIState('idle');
-  }
-}
-
-// --- AI Audio Hook (For when your backend responds) ---
-// Call this function and pass the URL of the AI speech audio
-function playAIResponse(audioUrl) {
-  stopMicrophone(); // Stop listening to user
-  
-  if (!audioCtx) {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  
-  aiAudioElement.src = audioUrl;
-  
-  // Re-route AI audio through analyser
-  const aiSource = audioCtx.createMediaElementSource(aiAudioElement);
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 256;
-  bufferLength = analyser.frequencyBinCount;
-  dataArray = new Uint8Array(bufferLength);
-  
-  aiSource.connect(analyser);
-  analyser.connect(audioCtx.destination); // Play out loud
-  
-  aiAudioElement.play();
-  updateUIState('speaking');
-  drawVisualizer();
-  
-  aiAudioElement.onended = () => {
-    updateUIState('idle');
-    // Optionally automatically go back to startListening() here
-  };
-}
-
-// --- Cleanup & Stop ---
-function stopMicrophone() {
-  if (microphoneStream) {
-    microphoneStream.getTracks().forEach(track => track.stop());
-  }
-  if (sourceNode) {
-    sourceNode.disconnect();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    source = audioCtx.createMediaStreamSource(stream);
+    source.connect(analyser);
+    statusEl.textContent = 'Listening…';
+    drawLive(canvas);
+  } catch (err) {
+    // Mic denied/unavailable — show an ambient wave instead of a dead canvas.
+    statusEl.textContent = 'Microphone unavailable — ambient preview';
+    drawAmbient(canvas);
   }
 }
 
-function cleanupAndExit() {
-  cancelAnimationFrame(animationId);
-  stopMicrophone();
-  if (aiAudioElement) {
-    aiAudioElement.pause();
-    aiAudioElement.src = "";
-  }
-  if (audioCtx) {
-    audioCtx.close();
-    audioCtx = null;
-  }
-  // Redirect back to main dashboard
-  window.location.href = 'index.html'; // Update with your actual home route
+function close(overlay) {
+  overlay.hidden = true;
+  cancelAnimationFrame(rafId);
+  stream?.getTracks().forEach((t) => t.stop());
+  audioCtx?.close().catch(() => {});
+  audioCtx = analyser = source = stream = null;
 }
 
-// --- Canvas Rendering Loop ---
-function drawVisualizer() {
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const baseRadius = 85; // slightly larger than the outer mic ring
+function fitCanvas(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight || 100;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
 
-  ctx.clearRect(0, 0, width, height);
+function drawLive(canvas) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight || 100;
+  const data = new Uint8Array(analyser.frequencyBinCount);
 
-  if (analyser && (currentState === 'listening' || currentState === 'speaking')) {
-    analyser.getByteTimeDomainData(dataArray);
-  } else {
-    // If processing or idle, simulate a flat calm line
-    if (!dataArray) dataArray = new Uint8Array(128).fill(128);
-    for(let i=0; i<dataArray.length; i++) {
-        dataArray[i] = 128 + Math.sin(Date.now() / 300 + i) * 5; 
+  const grad = ctx.createLinearGradient(0, 0, w, 0);
+  grad.addColorStop(0, '#00d2ff');
+  grad.addColorStop(1, '#b026ff');
+
+  function frame() {
+    rafId = requestAnimationFrame(frame);
+    analyser.getByteFrequencyData(data);
+    ctx.clearRect(0, 0, w, h);
+
+    const barCount = 48;
+    const step = Math.floor(data.length / barCount);
+    const barW = w / barCount;
+
+    for (let i = 0; i < barCount; i++) {
+      const v = data[i * step] / 255;
+      const barH = Math.max(4, v * h);
+      ctx.fillStyle = grad;
+      const x = i * barW;
+      const y = (h - barH) / 2;
+      roundRect(ctx, x + barW * 0.18, y, barW * 0.64, barH, 3);
+      ctx.fill();
     }
   }
-
-  // Smooth radius transitions based on state
-  currentRadiusMultiplier += (targetRadiusMultiplier - currentRadiusMultiplier) * 0.1;
-
-  ctx.globalCompositeOperation = 'screen';
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-
-  // Draw 3 layers of waveforms for that complex 1000036667.png look
-  drawWaveLayer(width, height, centerX, centerY, baseRadius, 1.0, 3, 0);   // Main
-  drawWaveLayer(width, height, centerX, centerY, baseRadius, 0.6, 1.5, 45); // Inner tight
-  drawWaveLayer(width, height, centerX, centerY, baseRadius, 1.4, 1, 90);  // Outer subtle
-
-  animationId = requestAnimationFrame(drawVisualizer);
+  frame();
 }
 
-// Helper to draw a single reactive ring + horizontal extensions
-function drawWaveLayer(width, height, cx, cy, baseRadius, sensitivity, lineWidth, offsetPhase) {
-  ctx.beginPath();
-  
-  // Create Cyan to Magenta gradient
-  const gradient = ctx.createLinearGradient(cx - 150, cy, cx + 150, cy);
-  gradient.addColorStop(0, '#00d2ff');
-  gradient.addColorStop(0.5, '#3a7bd5');
-  gradient.addColorStop(1, '#ff3cb4');
-  
-  ctx.strokeStyle = gradient;
-  ctx.lineWidth = lineWidth;
-  ctx.shadowBlur = 15;
-  ctx.shadowColor = gradient;
+function drawAmbient(canvas) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight || 100;
+  const barCount = 48;
+  const barW = w / barCount;
+  let t = 0;
 
-  // Draw Circular Waveform
-  for (let i = 0; i < bufferLength; i++) {
-    // Calculate amplitude (normalize 0-255 to -1 to 1)
-    const v = dataArray[i] / 128.0; 
-    const amplitude = (v - 1) * 50 * sensitivity * currentRadiusMultiplier;
-    
-    // Map to circle
-    const angle = (i * 2 * Math.PI) / bufferLength + (offsetPhase * Math.PI / 180);
-    const radius = baseRadius + amplitude;
-    const x = cx + Math.cos(angle) * radius;
-    const y = cy + Math.sin(angle) * radius;
+  const grad = ctx.createLinearGradient(0, 0, w, 0);
+  grad.addColorStop(0, '#00d2ff');
+  grad.addColorStop(1, '#b026ff');
 
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
+  function frame() {
+    rafId = requestAnimationFrame(frame);
+    t += 0.06;
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < barCount; i++) {
+      const v = (Math.sin(t + i * 0.35) + 1) / 2;
+      const barH = Math.max(4, v * h * 0.7);
+      ctx.fillStyle = grad;
+      const x = i * barW;
+      const y = (h - barH) / 2;
+      roundRect(ctx, x + barW * 0.18, y, barW * 0.64, barH, 3);
+      ctx.fill();
+    }
   }
+  frame();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
-  ctx.stroke();
-
-  // Draw Horizontal extensions (the heartbeat line effect fading to edges)
-  ctx.beginPath();
-  ctx.moveTo(0, cy);
-  for (let i = 0; i < bufferLength; i++) {
-    const v = dataArray[i] / 128.0;
-    const amplitude = (v - 1) * 30 * sensitivity * currentRadiusMultiplier;
-    
-    // Map array across the screen width
-    const x = (i / bufferLength) * width;
-    
-    // Dampen amplitude towards edges so it connects smoothly to the center
-    const distanceToCenter = Math.abs(x - cx);
-    const dampening = Math.max(0, 1 - (distanceToCenter / (width / 2)));
-    const y = cy + (amplitude * dampening);
-    
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  
-  // Create a faded gradient for the horizontal line
-  const horizGradient = ctx.createLinearGradient(0, cy, width, cy);
-  horizGradient.addColorStop(0, 'transparent');
-  horizGradient.addColorStop(0.3, '#00d2ff');
-  horizGradient.addColorStop(0.7, '#ff3cb4');
-  horizGradient.addColorStop(1, 'transparent');
-  
-  ctx.strokeStyle = horizGradient;
-  ctx.lineWidth = lineWidth * 0.8;
-  ctx.shadowBlur = 10;
-  ctx.stroke();
 }
-
-// --- Event Listeners ---
-btnHome.addEventListener('click', cleanupAndExit);
-
-btnStop.addEventListener('click', () => {
-  stopMicrophone();
-  updateUIState('processing'); // Usually stopping triggers processing in AI
-  
-  // Simulate AI Response after 2 seconds (REMOVE THIS IN PRODUCTION)
-  setTimeout(() => {
-    // In your real app, call playAIResponse(audioUrl) here
-    updateUIState('idle'); 
-  }, 2000);
-});
-
-// Start listening immediately on load (Note: Browsers might block this until user interaction)
-window.addEventListener('DOMContentLoaded', () => {
-  resizeCanvas();
-  // We trigger it here, but if blocked, they can click the Home/Stop button to reset.
-  startListening(); 
-});
-// Inside Voice visulization Js
-function cleanupAndExit() {
-  cancelAnimationFrame(animationId);
-  stopMicrophone();
-  if (aiAudioElement) {
-    aiAudioElement.pause();
-    aiAudioElement.src = "";
-  }
-  if (audioCtx) {
-    audioCtx.close();
-    audioCtx = null;
-  }
-  
-  // This takes you back to your main app!
-  window.location.href = 'index.html'; 
-}
-
