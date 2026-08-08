@@ -4,61 +4,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!avatarBtn || !face) return;
 
-  // The 15 expressions defined in the CSS
   const expressions = [
-    'normal', 
-    'happy', 
-    'winking', 
-    'surprised', 
-    'thinking', 
-    'excited', 
-    'sad', 
-    'angry', 
-    'sleepy', 
-    'dizzy', 
-    'shocked', 
-    'suspicious', 
-    'relieved', 
-    'determined', 
-    'laughing'
+    'normal', 'happy', 'winking', 'surprised', 'thinking', 
+    'excited', 'sad', 'angry', 'sleepy', 'dizzy', 
+    'shocked', 'neutral', 'skeptical', 'laughing', 'focused'
   ];
 
   let currentIndex = 0;
 
   avatarBtn.addEventListener('click', (e) => {
-    // Prevent the click from triggering other sidebar events if necessary
-    e.stopPropagation();
-
-    // 1. Remove the current expression class
+    e.preventDefault(); // Stop any default link behavior just in case
+    
+    // Remove current expression
     face.classList.remove(expressions[currentIndex]);
     
-    // 2. Calculate the next index (loops back to 0 after 14)
+    // Increment and loop back to 0 if at the end
     currentIndex = (currentIndex + 1) % expressions.length;
     
-    // 3. Add the new expression class
+    // Add the new expression
     face.classList.add(expressions[currentIndex]);
   });
 });
-document.addEventListener('DOMContentLoaded', () => {
-  // IMPORTANT: Change 'profileCircle' to whatever ID your actual outer ring uses
-  const outerContainer = document.getElementById('profileCircle'); 
-  const face = document.getElementById('aiFaceMini');
-
-  if (!outerContainer || !face) return;
-
-  const expressions = [
-    'normal', 'happy', 'winking', 'surprised', 'thinking', 
-    'excited', 'sad', 'angry', 'sleepy', 'dizzy', 
-    'shocked', 'suspicious', 'relieved', 'determined', 'laughing'
-  ];
-
-  let currentIndex = 0;
-
-  outerContainer.addEventListener('click', (e) => {
-    e.stopPropagation(); // Prevents messing with sidebar toggle events
-    face.classList.remove(expressions[currentIndex]);
-    currentIndex = (currentIndex + 1) % expressions.length;
-    face.classList.add(expressions[currentIndex]);
-  });
-});
-
