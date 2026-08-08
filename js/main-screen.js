@@ -176,3 +176,21 @@ function escapeHtml(str) {
 function getAssistantReply(prompt) {
   return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend in <code>getAssistantReply()</code> (main-screen.js) to replace this placeholder with live answers.`;
 }
+// Grab the buttons
+const navVoiceBtn = document.getElementById('nav-voice-btn');
+const chatMicBtn = document.getElementById('chat-mic-btn');
+
+// Function to open the voice screen
+function openVoiceInterface() {
+  window.location.href = 'voice_visualization.html';
+}
+
+// Attach click events (check if they exist first so it doesn't crash)
+if (navVoiceBtn) {
+  navVoiceBtn.addEventListener('click', openVoiceInterface);
+}
+
+if (chatMicBtn) {
+  chatMicBtn.addEventListener('click', openVoiceInterface);
+}
+
