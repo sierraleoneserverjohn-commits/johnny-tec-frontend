@@ -257,35 +257,3 @@ document.addEventListener('click', function(e) {
     }
 });
 
-async function loadView(viewName, rootElement) {
-  // Map short nav names from left-bar.html to your actual component filenames
-  const viewMap = {
-    'chat': 'main-screen',
-    'code': 'code-assistant',    // Maps data-nav="code" to components/code-assistant.html
-    'image': 'image-generator',  // Maps data-nav="image" to components/image-generator.html
-    'dashboard': 'main-screen',  // Or create dashboard.html later
-    'documents': 'documents',
-    'knowledge': 'knowledge',
-    'history': 'history'
-  };
-
-  const fileName = viewMap[viewName] || viewName;
-  
-  try {
-    const response = await fetch(`components/${fileName}.html`);
-    if (!response.ok) throw new Error(`Component ${fileName} not found`);
-    
-    const html = await response.text();
-    rootElement.innerHTML = html;
-    
-    // Re-bind chat logic if returning to chat/dashboard
-    if (viewName === 'chat' || viewName === 'dashboard') {
-      setTimeout(init, 50); 
-    }
-  } catch (error) {
-    console.error("Routing Error:", error);
-    rootElement.innerHTML = `<div class="error" style="padding: 2rem; color: #ff5555; text-align: center;">Failed to load UI view: ${viewName}. Make sure components/${fileName}.html exists.</div>`;
-  }
-}
-
-    
