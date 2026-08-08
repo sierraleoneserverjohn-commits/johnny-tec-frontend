@@ -1,51 +1,37 @@
 /**
- * Isolated Avatar Interaction Handler
+ * js/avatar.js — Interactive Avatar Component
  */
 export function initAvatar() {
   const container = document.getElementById('avatarContainer');
   
-  // Render html dynamically if empty
-  if (container && !container.innerHTML.trim()) {
-    container.innerHTML = `
-      <div class="brand-ring" id="brandAvatarBtn" role="button" aria-label="Tap to change expression" tabindex="0">
-        <div class="ai-face-mini normal" id="aiFaceMini">
-          <div class="ai-eyes-mini">
-            <div class="ai-eye-mini left"></div>
-            <div class="ai-eye-mini right"></div>
-          </div>
-          <div class="ai-mouth-mini"></div>
-        </div>
-      </div>
-    `;
+  if (!container) {
+    console.warn('avatarContainer element not found in DOM.');
+    return;
   }
 
-  const brandAvatarBtn = document.getElementById('brandAvatarBtn');
-  const aiFaceMini = document.getElementById('aiFaceMini');
-  
-  if (!brandAvatarBtn || !aiFaceMini) return;
+  // Inject the avatar markup directly into the container
+  container.innerHTML = `
+    <div class="avatar-wrapper">
+      <div class="avatar-glow"></div>
+      <div class="avatar-face" id="avatarFace">
+        <svg viewBox="0 0 100 100" class="avatar-svg">
+          <defs>
+            <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00d2ff" />
+              <stop offset="100%" stop-color="#b026ff" />
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="42" fill="url(#avatarGrad)" />
+          <circle cx="35" cy="42" r="4" fill="#ffffff" class="eye eye-left" />
+          <circle cx="65" cy="42" r="4" fill="#ffffff" class="eye eye-right" />
+          <path d="M 36 62 Q 50 72 64 62" stroke="#ffffff" stroke-width="3.5" fill="none" stroke-linecap="round" class="avatar-mouth" />
+        </svg>
+      </div>
+    </div>
+  `;
+}
 
-  const expressions = ['normal', 'happy', 'winking', 'surprised', 'thinking', 'excited', 'sad', 'angry', 'sleepy', 'dizzy'];
-  let currentIndex = 0;
-  let autoExpressionTimer = null;
-
-  brandAvatarBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    
-    brandAvatarBtn.style.transform = 'scale(0.92)';
-    setTimeout(() => { brandAvatarBtn.style.transform = 'scale(1)'; }, 150);
-
-    if (autoExpressionTimer) {
-      clearInterval(autoExpressionTimer);
-      autoExpressionTimer = null;
-      aiFaceMini.className = 'ai-face-mini normal';
-      currentIndex = 0;
-    } else {
-      currentIndex = 1;
-      aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
-      autoExpressionTimer = setInterval(() => {
-        currentIndex = (currentIndex + 1) % expressions.length;
-        aiFaceMini.className = `ai-face-mini ${expressions[currentIndex]}`;
-      }, 1800);
-    }
-  });
+// Automatically try initializing if loaded after DOM is ready
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(initAvatar, 50);
 }
