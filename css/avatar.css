@@ -1,38 +1,30 @@
-/* ===================== AVATAR COMPONENT ===================== */
-.brand-ring {
-  width: 64px; height: 64px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  display: grid; place-items: center;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--bg-raised, #0f0f1a), var(--bg-raised, #0f0f1a)) padding-box,
-    var(--gradient, linear-gradient(135deg, #00d2ff, #b026ff)) border-box;
-  box-shadow: 0 0 22px rgba(0, 210, 255, 0.25), 0 0 22px rgba(176, 38, 255, 0.15);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.brand-ring:active { transform: scale(0.92); }
-
-/* Mini AI Face */
+/* ===================== MINI AI FACE BASE ===================== */
+/* This will perfectly center inside your existing circle */
 .ai-face-mini {
-  width: 100%; height: 100%;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
+  width: 100%; 
+  height: 100%;
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
   gap: 5px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: subtleIdle 4s ease-in-out infinite;
 }
 
-.ai-eyes-mini { display: flex; gap: 10px; align-items: center; transition: all 0.3s ease; }
+.ai-eyes-mini { 
+  display: flex; 
+  gap: 10px; 
+  align-items: center; 
+  transition: all 0.4s ease; 
+}
+
 .ai-eye-mini {
   width: 7px; height: 7px;
   background: #00d2ff;
   border-radius: 50%;
-  box-shadow: 0 0 6px rgba(0, 210, 255, 0.8);
-  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.9);
+  transition: all 0.4s ease;
   animation: miniBlink 4s infinite;
 }
 
@@ -40,11 +32,11 @@
   width: 10px; height: 3px;
   background: #00d2ff;
   border-radius: 4px;
-  box-shadow: 0 0 6px rgba(0, 210, 255, 0.8);
-  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.9);
+  transition: all 0.4s ease;
 }
 
-/* 10 Expressions */
+/* ===================== 15 EXPRESSIONS ===================== */
 .ai-face-mini.normal .ai-mouth-mini { border-radius: 2px 2px 8px 8px; height: 5px; }
 .ai-face-mini.happy .ai-eye-mini { height: 3px; border-radius: 4px 4px 0 0; transform: translateY(-1px); }
 .ai-face-mini.happy .ai-mouth-mini { width: 14px; height: 7px; border-radius: 2px 2px 10px 10px; }
@@ -57,49 +49,37 @@
 .ai-face-mini.thinking .ai-eye-mini.left { width: 5px; height: 5px; }
 .ai-face-mini.thinking .ai-mouth-mini { width: 7px; height: 3px; transform: translateX(-2px) rotate(15deg); }
 .ai-face-mini.excited .ai-eye-mini { width: 9px; height: 5px; border-radius: 2px 2px 8px 8px; animation: none; }
-.ai-face-mini.excited .ai-mouth-mini { width: 12px; height: 8px; border-radius: 2px 2px 12px 12px; }
+.ai-face-mini.excited .ai-mouth-mini { width: 14px; height: 9px; border-radius: 2px 2px 12px 12px; }
 .ai-face-mini.sad .ai-eye-mini { height: 4px; transform: translateY(2px); border-radius: 4px 4px 0 0; }
 .ai-face-mini.sad .ai-mouth-mini { width: 10px; height: 5px; border-radius: 8px 8px 2px 2px; transform: translateY(2px); }
 .ai-face-mini.angry .ai-eyes-mini { gap: 6px; }
 .ai-face-mini.angry .ai-eye-mini.left { transform: rotate(15deg); border-radius: 0 4px 4px 4px; }
 .ai-face-mini.angry .ai-eye-mini.right { transform: rotate(-15deg); border-radius: 4px 0 4px 4px; }
 .ai-face-mini.angry .ai-mouth-mini { width: 8px; height: 2px; border-radius: 2px; }
-.ai-face-mini.sleepy .ai-eye-mini { height: 2px; animation: none; }
-.ai-face-mini.sleepy .ai-mouth-mini { width: 6px; height: 6px; border-radius: 50%; }
+.ai-face-mini.sleepy .ai-eye-mini { height: 2px; animation: none; transform: translateY(3px); }
+.ai-face-mini.sleepy .ai-mouth-mini { width: 6px; height: 6px; border-radius: 50%; transform: translateY(2px); }
 .ai-face-mini.dizzy .ai-eye-mini.left { width: 5px; height: 5px; }
 .ai-face-mini.dizzy .ai-eye-mini.right { width: 8px; height: 8px; }
 .ai-face-mini.dizzy .ai-mouth-mini { width: 10px; height: 3px; transform: rotate(-10deg); }
+.ai-face-mini.shocked .ai-eyes-mini { gap: 14px; transform: translateY(-2px); }
+.ai-face-mini.shocked .ai-eye-mini { width: 6px; height: 9px; border-radius: 50%; }
+.ai-face-mini.shocked .ai-mouth-mini { width: 8px; height: 12px; border-radius: 50%; }
+.ai-face-mini.suspicious .ai-eye-mini { height: 2px; border-radius: 2px; }
+.ai-face-mini.suspicious .ai-mouth-mini { width: 12px; height: 2px; transform: translateX(-2px); }
+.ai-face-mini.relieved .ai-eye-mini { height: 3px; border-radius: 0 0 4px 4px; }
+.ai-face-mini.relieved .ai-mouth-mini { width: 10px; height: 4px; border-radius: 2px 2px 6px 6px; }
+.ai-face-mini.determined .ai-eye-mini.left { transform: rotate(10deg); }
+.ai-face-mini.determined .ai-eye-mini.right { transform: rotate(-10deg); }
+.ai-face-mini.determined .ai-mouth-mini { width: 12px; height: 2px; }
+.ai-face-mini.laughing .ai-eye-mini { height: 3px; border-radius: 4px 4px 0 0; transform: translateY(-2px); animation: none; }
+.ai-face-mini.laughing .ai-mouth-mini { width: 16px; height: 10px; border-radius: 2px 2px 14px 14px; }
 
-@keyframes miniBlink { 0%, 45%, 55%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
-@keyframes subtleIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-/* Ensure avatarContainer has a fixed height */
-#avatarContainer {
-  width: 100%;
-  min-height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 8px;
+/* ===================== ANIMATIONS ===================== */
+@keyframes miniBlink { 
+  0%, 45%, 55%, 100% { transform: scaleY(1); } 
+  50% { transform: scaleY(0.1); } 
 }
-
-.avatar-wrapper {
-  position: relative;
-  width: 70px;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes subtleIdle { 
+  0%, 100% { transform: translateY(0); } 
+  50% { transform: translateY(-3px); } 
 }
-
-.avatar-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 12px rgba(0, 210, 255, 0.4));
-  transition: transform 0.2s ease;
-}
-
-.avatar-wrapper:hover .avatar-svg {
-  transform: scale(1.05);
-                                    }
-
-                                     
