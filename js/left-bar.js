@@ -1,5 +1,5 @@
 /**
- * Left sidebar — nav switching, new chat, usage bar animation on mount.
+ * Left sidebar — nav switching, new chat, usage bar animation, and interactive AI avatar.
  */
 export function init() {
   const root = document.getElementById('left-bar');
@@ -22,6 +22,39 @@ export function init() {
     document.dispatchEvent(new CustomEvent('jt:toggle-right-bar'));
   });
 
+  // Interactive AI Avatar Expression Cycler
+  const avatarBtn = root.querySelector('#aiAvatarBtn');
+  const aiFace = root.querySelector('#aiFace');
+  const statusText = root.querySelector('#aiStatusText');
+  
+  if (avatarBtn && aiFace) {
+    const expressions = [
+      { name: 'normal', label: 'Building Digital Excellence' },
+      { name: 'happy', label: 'Feeling awesome! 😊' },
+      { name: 'surprised', label: 'Whoa, check that out! 😮' },
+      { name: 'thinking', label: 'Processing code... 🤔' },
+      { name: 'sleepy', label: 'Low power mode... 😴' }
+    ];
+    
+    let currentIndex = 0;
+
+    avatarBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % expressions.length;
+      const current = expressions[currentIndex];
+
+      // Remove all expression classes and add the new one
+      aiFace.className = `ai-face ${current.name}`;
+
+      // Update subtitle status text dynamically
+      if (statusText) {
+        statusText.textContent = current.label;
+      }
+
+      // Optional feedback event dispatch
+      document.dispatchEvent(new CustomEvent('jt:ai-expression', { detail: current.name }));
+    });
+  }
+
   // Animate the usage fill in from 0 for a bit of life on load.
   const fill = root.querySelector('#usageFill');
   if (fill) {
@@ -29,27 +62,5 @@ export function init() {
     fill.style.width = '0%';
     requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = target; }));
   }
-}
-// Add this to the bottom of js/left-bar.js
-window.addEventListener('jt-api-offline', () => {
-    const statusIndicator = document.querySelector('.status-indicator');
-    const statusText = document.querySelector('.status-header h4');
-    if (statusIndicator && statusText) {
-        statusIndicator.style.backgroundColor = '#ff2a2a'; // Neon Red
-        statusIndicator.style.boxShadow = '0 0 8px #ff2a2a';
-        statusText.textContent = "JT API: OFFLINE";
-    }
-});
-// Open Left bar Js
-const sidebarVoiceBtn = document.getElementById('YOUR_SIDEBAR_VOICE_BUTTON_ID'); // Change to your actual ID
-
-if (sidebarVoiceBtn) {
-  sidebarVoiceBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    // Navigate to the voice visualizer page
-    // If you are using iframes, use window.parent.location.href instead
-    window.location.href = 'voice_visualizer.html';
-  });
-}
-
-
+      }
+  
