@@ -5,11 +5,8 @@
  *   1. Fetch + inject the loading screen, run its progress animation.
  *   2. In parallel, fetch + inject every other component's HTML.
  *   3. Once all HTML is in the DOM, dynamically import + init() each
- *      component's JS module (so querySelector calls inside init()
- *      never race against missing markup).
+ *      component's JS module.
  *   4. Reveal the app shell and fade out the loading screen.
- *
- * Adding a new component later: add one entry to COMPONENTS below.
  */
 
 const COMPONENTS = [
@@ -19,8 +16,11 @@ const COMPONENTS = [
   { name: 'voice-visualizer', mount: '#voice-visualizer', js: './js/voice-visualizer.js' },
 ];
 
-// JS-only modules that don't own a mounted HTML fragment.
-const SCRIPT_ONLY_MODULES = ['./js/easter-egg.js'];
+// Added avatar.js here! It will load independently and inject its own HTML.
+const SCRIPT_ONLY_MODULES = [
+  './js/easter-egg.js',
+  './js/avatar.js'
+];
 
 async function fetchHtml(path) {
   const res = await fetch(path);
@@ -58,7 +58,15 @@ async function boot() {
     [...COMPONENTS.map((c) => c.js), ...SCRIPT_ONLY_MODULES].map(async (js) => {
       try {
         const mod = await import(js);
-        mod.init?.();
+        
+        // SMART INIT: Looks for init(), initLeftBar(), initRightBar(), or initAvatar()
+        if (typeof mod.init === 'function') {
+          mod.init();
+        } else {
+          // Finds any exported function that starts with 'init' and runs it
+          const initFn = Object.keys(mod).find(key => key.startsWith('init') && typeof mod[key] === 'function');
+          if (initFn) mod[initFn]();
+        }
       } catch (err) {
         console.error(`Failed to init ${js}`, err);
       }
@@ -88,6 +96,7 @@ function wireGlobalEvents() {
     leftBar?.classList.toggle('is-open');
     syncScrim();
   });
+  
   document.addEventListener('jt:toggle-right-bar', syncScrim);
 
   scrim.addEventListener('click', () => {
@@ -96,12 +105,19 @@ function wireGlobalEvents() {
     syncScrim();
   });
 
-  document.addEventListener('jt:navigate', (e) => {
+  // FIXED: Changed this to 'jt:nav-change' to match your left-bar.js buttons!
+  document.addEventListener('jt:nav-change', (e) => {
     if (e.detail === 'voice') {
       document.dispatchEvent(new CustomEvent('jt:open-voice'));
     }
+    // Close the sidebar when a navigation item is tapped
     leftBar?.classList.remove('is-open');
     syncScrim();
+  });
+  
+  // Fallback listener just in case older buttons still use jt:navigate
+  document.addEventListener('jt:navigate', (e) => {
+      document.dispatchEvent(new CustomEvent('jt:nav-change', { detail: e.detail }));
   });
 }
 
