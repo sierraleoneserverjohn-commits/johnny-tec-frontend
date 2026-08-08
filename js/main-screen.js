@@ -30,18 +30,22 @@ export function init() {
   composerInput = root.querySelector('#composerInput');
   const composer = root.querySelector('#composer');
 
-  composer.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const text = composerInput.value.trim();
-    if (!text) return;
-    sendMessage(text);
-    composerInput.value = '';
-  });
+  if (composer) {
+    composer.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = composerInput.value.trim();
+      if (!text) return;
+      sendMessage(text);
+      composerInput.value = '';
+    });
+  }
 
   root.querySelectorAll('.quick-card').forEach((card) => {
     card.addEventListener('click', () => {
-      composerInput.value = card.dataset.prompt || '';
-      composerInput.focus();
+      if (composerInput) {
+        composerInput.value = card.dataset.prompt || '';
+        composerInput.focus();
+      }
     });
   });
 
@@ -58,6 +62,36 @@ export function init() {
   });
 
   document.addEventListener('jt:new-chat', resetChat);
+
+  // --- NEW WIRING: Listen for Sidebar Navigation ---
+  document.addEventListener('jt:switch-view', (e) => {
+    loadView(e.detail, root);
+  });
+
+  // Wire up the standalone mic buttons if they exist in the UI
+  wireVoiceButtons(root);
+}
+
+// --- NEW WIRING: Router logic to swap sub-files ---
+async function loadView(viewName, rootElement) {
+  // Map the 'chat' button back to the main-screen component
+  const fileName = viewName === 'chat' ? 'main-screen' : viewName;
+  
+  try {
+    const response = await fetch(`components/${fileName}.html`);
+    if (!response.ok) throw new Error(`Component ${fileName} not found`);
+    
+    const html = await response.text();
+    rootElement.innerHTML = html;
+    
+    // Re-bind all the buttons and chat logic if we navigate back to the main chat
+    if (viewName === 'chat') {
+      setTimeout(init, 50); 
+    }
+  } catch (error) {
+    console.error("Routing Error:", error);
+    rootElement.innerHTML = `<div class="error" style="padding: 2rem; color: #ff5555; text-align: center;">Failed to load UI view: ${viewName}. Make sure components/${fileName}.html exists.</div>`;
+  }
 }
 
 function sendMessage(text) {
@@ -144,6 +178,7 @@ function assistantActionsHtml() {
 }
 
 function renderSuggestions() {
+  if (!suggestions) return;
   suggestions.innerHTML = FOLLOW_UPS
     .map((q) => `<button class="suggestion-chip" type="button">${q}</button>`)
     .join('');
@@ -154,15 +189,17 @@ function renderSuggestions() {
 }
 
 function resetChat() {
-  chatLog.innerHTML = '';
-  suggestions.hidden = true;
-  suggestions.innerHTML = '';
+  if (chatLog) chatLog.innerHTML = '';
+  if (suggestions) {
+    suggestions.hidden = true;
+    suggestions.innerHTML = '';
+  }
   greeting?.removeAttribute('hidden');
 }
 
 function scrollToBottom() {
   requestAnimationFrame(() => {
-    chatScroll.scrollTop = chatScroll.scrollHeight;
+    if (chatScroll) chatScroll.scrollTop = chatScroll.scrollHeight;
   });
 }
 
@@ -176,32 +213,47 @@ function escapeHtml(str) {
 function getAssistantReply(prompt) {
   return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend in <code>getAssistantReply()</code> (main-screen.js) to replace this placeholder with live answers.`;
 }
-// Grab the buttons
-const navVoiceBtn = document.getElementById('nav-voice-btn');
-const chatMicBtn = document.getElementById('chat-mic-btn');
 
-// Function to open the voice screen
-function openVoiceInterface() {
-  window.location.href = 'voice_visualization.html';
+// --- WIRING UP THE VOICE INTERFACE BUTTONS ---
+function wireVoiceButtons(root) {
+  const navVoiceBtn = root.querySelector('#nav-voice-btn');
+  const chatMicBtn = root.querySelector('#chat-mic-btn');
+
+  if (navVoiceBtn) {
+    navVoiceBtn.addEventListener('click', openVoiceInterface);
+  }
+  if (chatMicBtn) {
+    chatMicBtn.addEventListener('click', openVoiceInterface);
+  }
 }
-// js/main-screen.js
 
+function openVoiceInterface() {
+  // Replaced window.location.href with the central SPA event
+  document.dispatchEvent(new CustomEvent('jt:open-voice'));
+}
+
+
+// --- WIRING UP THE READ ALOUD BUTTON ---
 document.addEventListener('click', function(e) {
-    // Check if the clicked element has the read-aloud class
-    if (e.target.closest('.read-aloud-btn')) {
+    // WIRED: Updated class to match the button in assistantActionsHtml()
+    const readAloudBtn = e.target.closest('.read-aloud');
+    
+    if (readAloudBtn) {
+        // WIRED: Updated classes to match the structure in appendMessage()
+        const messageBox = e.target.closest('.msg-body');
         
-        // Find the text of the message closest to the button
-        const messageBox = e.target.closest('.message-container');
-        const textToRead = messageBox.querySelector('.message-text').innerText;
-        
-        // Use the browser's built-in voice
-        const speech = new SpeechSynthesisUtterance(textToRead);
-        
-        // Optional: Make it sound a bit more robotic/AI-like
-        speech.rate = 1.0; 
-        speech.pitch = 1.1; 
-        
-        window.speechSynthesis.speak(speech);
+        if (messageBox) {
+            const textToRead = messageBox.querySelector('.msg-bubble').innerText;
+            
+            // Use the browser's built-in voice
+            const speech = new SpeechSynthesisUtterance(textToRead);
+            
+            // Optional: Make it sound a bit more robotic/AI-like
+            speech.rate = 1.0; 
+            speech.pitch = 1.1; 
+            
+            window.speechSynthesis.speak(speech);
+        }
     }
 });
-
+    
