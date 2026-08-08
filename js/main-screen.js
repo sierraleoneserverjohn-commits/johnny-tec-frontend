@@ -184,13 +184,16 @@ const chatMicBtn = document.getElementById('chat-mic-btn');
 function openVoiceInterface() {
   window.location.href = 'voice_visualization.html';
 }
-
-// Attach click events (check if they exist first so it doesn't crash)
-if (navVoiceBtn) {
-  navVoiceBtn.addEventListener('click', openVoiceInterface);
-}
+// Open Main scree Js
+const chatMicBtn = document.getElementById('YOUR_CHAT_MIC_BUTTON_ID'); // Change this to your actual button ID
 
 if (chatMicBtn) {
-  chatMicBtn.addEventListener('click', openVoiceInterface);
+  chatMicBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    // Navigate to your voice visualizer file
+    // Make sure the filename exactly matches what is on your computer
+    window.location.href = 'voice_visualizer.html'; 
+  });
 }
+
 
