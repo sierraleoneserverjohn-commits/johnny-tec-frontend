@@ -1,37 +1,41 @@
-/**
- * js/avatar.js — Interactive Avatar Component
- */
-export function initAvatar() {
-  const container = document.getElementById('avatarContainer');
-  
-  if (!container) {
-    console.warn('avatarContainer element not found in DOM.');
-    return;
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  const avatarBtn = document.getElementById('brandAvatarBtn');
+  const face = document.getElementById('aiFaceMini');
 
-  // Inject the avatar markup directly into the container
-  container.innerHTML = `
-    <div class="avatar-wrapper">
-      <div class="avatar-glow"></div>
-      <div class="avatar-face" id="avatarFace">
-        <svg viewBox="0 0 100 100" class="avatar-svg">
-          <defs>
-            <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00d2ff" />
-              <stop offset="100%" stop-color="#b026ff" />
-            </linearGradient>
-          </defs>
-          <circle cx="50" cy="50" r="42" fill="url(#avatarGrad)" />
-          <circle cx="35" cy="42" r="4" fill="#ffffff" class="eye eye-left" />
-          <circle cx="65" cy="42" r="4" fill="#ffffff" class="eye eye-right" />
-          <path d="M 36 62 Q 50 72 64 62" stroke="#ffffff" stroke-width="3.5" fill="none" stroke-linecap="round" class="avatar-mouth" />
-        </svg>
-      </div>
-    </div>
-  `;
-}
+  if (!avatarBtn || !face) return;
 
-// Automatically try initializing if loaded after DOM is ready
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  setTimeout(initAvatar, 50);
-}
+  // The 15 expressions defined in the CSS
+  const expressions = [
+    'normal', 
+    'happy', 
+    'winking', 
+    'surprised', 
+    'thinking', 
+    'excited', 
+    'sad', 
+    'angry', 
+    'sleepy', 
+    'dizzy', 
+    'shocked', 
+    'suspicious', 
+    'relieved', 
+    'determined', 
+    'laughing'
+  ];
+
+  let currentIndex = 0;
+
+  avatarBtn.addEventListener('click', (e) => {
+    // Prevent the click from triggering other sidebar events if necessary
+    e.stopPropagation();
+
+    // 1. Remove the current expression class
+    face.classList.remove(expressions[currentIndex]);
+    
+    // 2. Calculate the next index (loops back to 0 after 14)
+    currentIndex = (currentIndex + 1) % expressions.length;
+    
+    // 3. Add the new expression class
+    face.classList.add(expressions[currentIndex]);
+  });
+});
