@@ -256,6 +256,7 @@ document.addEventListener('click', function(e) {
         }
     }
 });
+
 async function loadView(viewName, rootElement) {
   // Map short nav names from left-bar.html to your actual component filenames
   const viewMap = {
