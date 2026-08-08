@@ -276,3 +276,20 @@ window.addEventListener('DOMContentLoaded', () => {
   // We trigger it here, but if blocked, they can click the Home/Stop button to reset.
   startListening(); 
 });
+// Inside Voice visulization Js
+function cleanupAndExit() {
+  cancelAnimationFrame(animationId);
+  stopMicrophone();
+  if (aiAudioElement) {
+    aiAudioElement.pause();
+    aiAudioElement.src = "";
+  }
+  if (audioCtx) {
+    audioCtx.close();
+    audioCtx = null;
+  }
+  
+  // This takes you back to your main app!
+  window.location.href = 'index.html'; 
+}
+
