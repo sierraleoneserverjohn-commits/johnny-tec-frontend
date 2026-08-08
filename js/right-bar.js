@@ -68,3 +68,28 @@ function drawSparkline(canvas) {
   resize();
   window.addEventListener('resize', resize);
 }
+// js/right-bar.js
+
+// We store the selected model here
+window.currentAIModel = 'GPT-4.1'; // Default
+
+const modelOptions = document.querySelectorAll('.model-option');
+
+modelOptions.forEach(option => {
+    option.addEventListener('click', (e) => {
+        // 1. Hide the checkmark on ALL models
+        document.querySelectorAll('.check-icon').forEach(icon => {
+            icon.style.opacity = '0'; 
+        });
+
+        // 2. Show the checkmark on the CLICKED model
+        const checkmark = e.currentTarget.querySelector('.check-icon');
+        if (checkmark) checkmark.style.opacity = '1';
+
+        // 3. Update the system with the new choice
+        // Assume your HTML has data-model="gemini-1.5"
+        window.currentAIModel = e.currentTarget.getAttribute('data-model');
+        console.log("Model switched to:", window.currentAIModel);
+    });
+});
+
