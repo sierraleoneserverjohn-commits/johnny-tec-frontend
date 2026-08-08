@@ -1,186 +1,192 @@
-/* ===================== AI AVATAR ORB STYLES ===================== */
-.ai-avatar-container {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto 12px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  position: relative;
-  border-radius: 50%;
-  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  -webkit-tap-highlight-color: transparent;
-}
+/* ===================== LEFT SIDEBAR ===================== */
 
-.ai-avatar-container:hover {
-  transform: scale(1.08);
+/* Always an off-canvas drawer within the fixed mobile screen —
+   opened via the topbar menu button, closed via the scrim or a nav tap. */
+#left-bar {
+  position: absolute; inset: 0 auto 0 0;
+  width: 84%;
+  max-width: 300px;
+  z-index: 200;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  transform: translateX(-100%);
+  transition: transform var(--med) var(--ease);
+  min-height: 0;
 }
+#left-bar.is-open { transform: translateX(0); box-shadow: 20px 0 60px rgba(0,0,0,0.5); }
 
-.ai-avatar-container:active {
-  transform: scale(0.95);
-}
-
-.ai-orb {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #5ac8ff 0%, #0072ff 50%, #7000ff 100%);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    inset 0 0 12px rgba(255, 255, 255, 0.6),
-    0 0 20px rgba(0, 210, 255, 0.5),
-    0 0 35px rgba(176, 38, 255, 0.3);
-  animation: orbFloat 4s ease-in-out infinite;
-}
-
-.ai-orb-glow {
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--cyan), var(--purple));
-  opacity: 0.4;
-  filter: blur(8px);
-  z-index: -1;
-  animation: pulseGlow 3s ease-in-out infinite alternate;
-}
-
-/* Facial Container */
-.ai-face {
-  width: 100%;
+.left-bar {
   height: 100%;
-  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 300ms ease;
+  padding: 22px 16px;
+  gap: 16px;
+  overflow-y: auto;
 }
 
-.ai-eyes {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  transition: all 300ms ease;
-}
+.text-dim { color: var(--text-dim); font-weight: 500; }
 
-.ai-eye {
-  width: 7px;
-  height: 7px;
-  background: #ffffff;
+/* Brand */
+.brand { text-align: center; padding-bottom: 8px; }
+.brand-ring {
+  width: 64px; height: 64px;
+  margin: 0 auto 12px;
   border-radius: 50%;
-  box-shadow: 0 0 6px #ffffff;
-  animation: naturalBlink 4s infinite;
-  transition: all 300ms ease;
+  display: grid; place-items: center;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--bg-raised), var(--bg-raised)) padding-box,
+    var(--gradient) border-box;
+  box-shadow: 0 0 22px rgba(0, 210, 255, 0.25), 0 0 22px rgba(176, 38, 255, 0.15);
 }
+.brand-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.brand-name { font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.brand-tagline { font-size: 11px; color: var(--text-faint); letter-spacing: 0.03em; margin-top: 2px; }
 
-.ai-mouth {
-  width: 10px;
-  height: 4px;
-  background: #ffffff;
+/* New chat */
+.new-chat-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--r-md);
+  background: var(--gradient);
+  color: #04040c;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 6px 20px rgba(0, 210, 255, 0.25);
+  transition: transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.new-chat-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(176, 38, 255, 0.35); }
+.new-chat-btn:active { transform: translateY(0); }
+.icon-plus { font-size: 16px; line-height: 1; }
+
+/* Nav list */
+.nav-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.nav-item.is-active {
+  color: var(--text);
+  background: linear-gradient(90deg, rgba(0,210,255,0.14), rgba(176,38,255,0.1));
+  border-color: rgba(0,210,255,0.25);
+  position: relative;
+}
+.nav-item.is-active::before {
+  content: '';
+  position: absolute; left: -16px; top: 8px; bottom: 8px; width: 3px;
+  background: var(--gradient);
   border-radius: var(--r-full);
-  box-shadow: 0 0 6px #ffffff;
-  transition: all 300ms ease;
+  box-shadow: 0 0 8px var(--cyan);
 }
+.nav-icon { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-item span:not(.nav-chevron) { flex: 1; }
+.nav-chevron { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; opacity: .5; }
 
-/* ===================== EXPRESSION STATES ===================== */
+/* Upgrade card */
+.upgrade-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: linear-gradient(160deg, rgba(176,38,255,0.14), rgba(0,210,255,0.06));
+  padding: 14px;
+}
+.upgrade-head { display: flex; align-items: center; gap: 6px; font-size: 13.5px; margin-bottom: 6px; }
+.upgrade-crown { color: #ffc247; }
+.upgrade-head .nav-chevron { margin-left: auto; opacity: .6; }
+.upgrade-card p { font-size: 12px; color: var(--text-dim); line-height: 1.4; max-width: 75%; margin-bottom: 12px; }
+.upgrade-btn {
+  padding: 8px 14px;
+  border: none; border-radius: var(--r-sm);
+  background: var(--gradient);
+  color: #04040c;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.upgrade-crystal {
+  position: absolute;
+  right: -6px; bottom: -10px;
+  width: 52px; height: 52px;
+  background: var(--gradient);
+  clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 20% 100%, 0% 35%);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 12px rgba(176,38,255,.6));
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(4deg); } }
 
-/* Normal Expression */
-.ai-face.normal .ai-eye {
-  width: 7px;
-  height: 7px;
+/* Usage card */
+.usage-card {
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  padding: 14px;
+}
+.usage-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13.5px; }
+.usage-spark { width: 16px; height: 16px; stroke: var(--cyan); stroke-width: 2; fill: none; }
+.usage-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 8px; }
+.usage-pct { color: var(--cyan); font-family: var(--font-mono); font-weight: 500; }
+.usage-track { height: 6px; border-radius: var(--r-full); background: rgba(255,255,255,0.06); overflow: hidden; margin-bottom: 8px; }
+.usage-fill { height: 100%; background: var(--gradient); border-radius: var(--r-full); transition: width 500ms var(--ease); }
+.usage-card small { color: var(--text-faint); font-size: 11px; }
+
+/* Profile footer */
+.profile-footer {
+  margin-top: auto;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-raised);
+  text-align: left;
+  transition: border-color var(--fast) var(--ease);
+}
+.profile-footer:hover { border-color: var(--border-strong); }
+.avatar-ring {
+  position: relative;
+  width: 40px; height: 40px;
   border-radius: 50%;
+  padding: 2px;
+  background: var(--gradient);
+  flex-shrink: 0;
 }
-.ai-face.normal .ai-mouth {
-  width: 10px;
-  height: 4px;
+.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--bg-raised); }
+.status-dot {
+  position: absolute; right: -1px; bottom: -1px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--success);
+  border: 2px solid var(--bg-raised);
+}
+.profile-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.profile-meta b { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pro-badge {
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px;
   border-radius: var(--r-full);
+  background: rgba(176, 38, 255, 0.2);
+  color: #d9a5ff;
 }
-
-/* Happy Expression 😊 */
-.ai-face.happy .ai-eye {
-  width: 8px;
-  height: 4px;
-  border-radius: 4px 4px 0 0;
-  transform: translateY(-1px);
-}
-.ai-face.happy .ai-mouth {
-  width: 16px;
-  height: 8px;
-  border-radius: 0 0 16px 16px;
-  background: #ffffff;
-}
-
-/* Surprised Expression 😮 */
-.ai-face.surprised .ai-eyes {
-  gap: 14px;
-}
-.ai-face.surprised .ai-eye {
-  width: 6px;
-  height: 10px;
-  border-radius: 50%;
-}
-.ai-face.surprised .ai-mouth {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-/* Thinking Expression 🤔 */
-.ai-face.thinking .ai-eyes {
-  transform: translateY(-2px);
-}
-.ai-face.thinking .ai-eye.left {
-  width: 6px;
-  height: 6px;
-  transform: scaleY(0.7);
-}
-.ai-face.thinking .ai-eye.right {
-  width: 8px;
-  height: 6px;
-  transform: translateY(-2px);
-}
-.ai-face.thinking .ai-mouth {
-  width: 8px;
-  height: 3px;
-  border-radius: 2px;
-  transform: translateX(3px) rotate(-10deg);
-}
-
-/* Sleepy Expression 😴 */
-.ai-face.sleepy .ai-eye {
-  width: 8px;
-  height: 2px;
-  border-radius: 1px;
-}
-.ai-face.sleepy .ai-mouth {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  opacity: 0.8;
-  animation: sleepyBreath 2s infinite ease-in-out;
-}
-
-/* ===================== ANIMATIONS ===================== */
-@keyframes orbFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-
-@keyframes pulseGlow {
-  0% { opacity: 0.3; transform: scale(0.96); }
-  100% { opacity: 0.7; transform: scale(1.04); }
-}
-
-@keyframes naturalBlink {
-  0%, 45%, 55%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.1); }
-}
-
-@keyframes sleepyBreath {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.3); }
-}
+.settings-icon { width: 18px; height: 18px; stroke: var(--text-faint); stroke-width: 1.8; fill: none; flex-shrink: 0; }
+              
