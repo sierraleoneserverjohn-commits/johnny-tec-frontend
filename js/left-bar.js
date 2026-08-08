@@ -1,74 +1,52 @@
 /**
- * Isolated Left Sidebar Logic
+ * js/left-bar.js — Handles left sidebar navigation and drawer events
  */
-export function initLeftBar() {
+
+export function init() {
   const navList = document.getElementById('navList');
   const newChatBtn = document.getElementById('newChatBtn');
   const upgradeBtn = document.getElementById('upgradeBtn');
   const profileBtn = document.getElementById('profileBtn');
 
-  // Navigation tab click handlers
+  // 1. Handle Navigation Menu Clicks (.nav-item buttons using data-nav)
   if (navList) {
     const items = navList.querySelectorAll('.nav-item');
     items.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
+        
+        // Update active highlight
         items.forEach((item) => item.classList.remove('is-active'));
         btn.classList.add('is-active');
 
+        // Grab destination (e.g. "image", "code", "dashboard", "voice")
         const navTarget = btn.dataset.nav;
-        document.dispatchEvent(new CustomEvent('jt:nav-change', { detail: navTarget }));
+
+        // Tell app.js to switch views or open voice visualizer
+        if (navTarget) {
+          document.dispatchEvent(new CustomEvent('jt:nav-change', { detail: navTarget }));
+        }
       });
     });
   }
 
-  // Action Buttons
+  // 2. New Chat Button: Resets highlight to "AI Chat" and switches view
   newChatBtn?.addEventListener('click', () => {
-    document.dispatchEvent(new CustomEvent('jt:new-chat'));
+    if (navList) {
+      navList.querySelectorAll('.nav-item').forEach((item) => item.classList.remove('is-active'));
+      const chatBtn = navList.querySelector('[data-nav="chat"]');
+      chatBtn?.classList.add('is-active');
+    }
+    document.dispatchEvent(new CustomEvent('jt:nav-change', { detail: 'chat' }));
   });
 
+  // 3. Upgrade Button
   upgradeBtn?.addEventListener('click', () => {
     document.dispatchEvent(new CustomEvent('jt:open-upgrade'));
   });
 
+  // 4. Profile Button: Opens the Right Sidebar Settings Drawer
   profileBtn?.addEventListener('click', () => {
-    document.dispatchEvent(new CustomEvent('jt:open-profile'));
+    document.dispatchEvent(new CustomEvent('jt:toggle-right-bar'));
   });
 }
-// js/left-bar.js
-
-// This function fetches your sub-files and injects them into the main screen
-async function loadView(viewName) {
-    const mainContainer = document.getElementById('main-content'); // Make sure your center screen has this ID!
-    
-    try {
-        // Fetch the HTML sub-file from the components folder
-        const response = await fetch(`components/${viewName}.html`);
-        if (!response.ok) throw new Error("Component not found");
-        
-        const html = await response.text();
-        mainContainer.innerHTML = html; // Swap the UI instantly
-        
-    } catch (error) {
-        console.error("Routing Error:", error);
-        mainContainer.innerHTML = `<div class="error">Failed to load ${viewName} UI.</div>`;
-    }
-}
-
-// Attach click listeners to all menu items in the left sidebar
-document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-        const targetView = e.currentTarget.getAttribute('data-view');
-        
-        if (targetView) {
-            // Remove 'active' highlight from all buttons
-            document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
-            // Add 'active' highlight to the clicked button
-            e.currentTarget.classList.add('active');
-            
-            // Load the new sub-file
-            loadView(targetView);
-        }
-    });
-});
-
