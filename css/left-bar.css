@@ -75,6 +75,8 @@
   transition: all 0.3s ease;
 }
 
+/* --- 10 EXPRESSION STATES --- */
+
 /* 1. Normal */
 .ai-face-mini.normal .ai-mouth-mini { border-radius: 2px 2px 8px 8px; height: 5px; }
 
@@ -100,6 +102,26 @@
 .ai-face-mini.excited .ai-eye-mini { width: 9px; height: 5px; border-radius: 2px 2px 8px 8px; animation: none; }
 .ai-face-mini.excited .ai-mouth-mini { width: 12px; height: 8px; border-radius: 2px 2px 12px 12px; }
 
+/* 7. Sad */
+.ai-face-mini.sad .ai-eye-mini { height: 4px; transform: translateY(2px); border-radius: 4px 4px 0 0; }
+.ai-face-mini.sad .ai-mouth-mini { width: 10px; height: 5px; border-radius: 8px 8px 2px 2px; transform: translateY(2px); }
+
+/* 8. Angry */
+.ai-face-mini.angry .ai-eyes-mini { gap: 6px; }
+.ai-face-mini.angry .ai-eye-mini.left { transform: rotate(15deg); border-radius: 0 4px 4px 4px; }
+.ai-face-mini.angry .ai-eye-mini.right { transform: rotate(-15deg); border-radius: 4px 0 4px 4px; }
+.ai-face-mini.angry .ai-mouth-mini { width: 8px; height: 2px; border-radius: 2px; }
+
+/* 9. Sleepy */
+.ai-face-mini.sleepy .ai-eye-mini { height: 2px; animation: none; }
+.ai-face-mini.sleepy .ai-mouth-mini { width: 6px; height: 6px; border-radius: 50%; }
+
+/* 10. Dizzy / Processing */
+.ai-face-mini.dizzy .ai-eye-mini.left { width: 5px; height: 5px; }
+.ai-face-mini.dizzy .ai-eye-mini.right { width: 8px; height: 8px; }
+.ai-face-mini.dizzy .ai-mouth-mini { width: 10px; height: 3px; transform: rotate(-10deg); }
+
+/* Animations */
 @keyframes miniBlink { 0%, 45%, 55%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
 @keyframes subtleIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
@@ -244,4 +266,4 @@
   color: #d9a5ff;
 }
 .settings-icon { width: 18px; height: 18px; stroke: var(--text-faint); stroke-width: 1.8; fill: none; flex-shrink: 0; }
-   
+                                                                               
