@@ -72,4 +72,34 @@
 
 @keyframes miniBlink { 0%, 45%, 55%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
 @keyframes subtleIdle { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+/* Ensure avatarContainer has a fixed height */
+#avatarContainer {
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 12px rgba(0, 210, 255, 0.4));
+  transition: transform 0.2s ease;
+}
+
+.avatar-wrapper:hover .avatar-svg {
+  transform: scale(1.05);
+                                    }
+
                                      
