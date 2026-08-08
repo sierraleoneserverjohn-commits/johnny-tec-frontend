@@ -16,7 +16,6 @@ const COMPONENTS = [
   { name: 'voice-visualizer', mount: '#voice-visualizer', js: './js/voice-visualizer.js' },
 ];
 
-// Added avatar.js here! It will load independently and inject its own HTML.
 const SCRIPT_ONLY_MODULES = [
   './js/easter-egg.js',
   './js/avatar.js'
@@ -83,39 +82,58 @@ async function boot() {
 function wireGlobalEvents() {
   const leftBar = document.getElementById('left-bar');
   const rightBar = document.getElementById('right-bar');
-  const scrim = document.createElement('div');
-  scrim.className = 'sidebar-scrim';
-  document.getElementById('app-shell').appendChild(scrim);
+  
+  // Create or select scrim backdrop
+  let scrim = document.querySelector('.sidebar-scrim');
+  if (!scrim) {
+    scrim = document.createElement('div');
+    scrim.className = 'sidebar-scrim';
+    document.getElementById('app-shell')?.appendChild(scrim);
+  }
 
   const syncScrim = () => {
     const open = leftBar?.classList.contains('is-open') || rightBar?.classList.contains('is-open');
     scrim.classList.toggle('is-visible', !!open);
   };
 
+  // Toggle Left Sidebar
   document.addEventListener('jt:toggle-left-bar', () => {
     leftBar?.classList.toggle('is-open');
+    rightBar?.classList.remove('is-open'); // Close right bar if open
     syncScrim();
   });
   
-  document.addEventListener('jt:toggle-right-bar', syncScrim);
+  // FIXED: Toggle Right Sidebar
+  document.addEventListener('jt:toggle-right-bar', () => {
+    rightBar?.classList.toggle('is-open');
+    leftBar?.classList.remove('is-open'); // Close left bar if open
+    syncScrim();
+  });
 
+  // Tap background backdrop to close both sidebars
   scrim.addEventListener('click', () => {
     leftBar?.classList.remove('is-open');
     rightBar?.classList.remove('is-open');
     syncScrim();
   });
 
-  // FIXED: Changed this to 'jt:nav-change' to match your left-bar.js buttons!
+  // Handle Menu Navigation Switches
   document.addEventListener('jt:nav-change', (e) => {
-    if (e.detail === 'voice') {
+    const targetView = e.detail;
+
+    if (targetView === 'voice') {
       document.dispatchEvent(new CustomEvent('jt:open-voice'));
+    } else {
+      // Forward view change to main-screen listener
+      document.dispatchEvent(new CustomEvent('jt:switch-view', { detail: targetView }));
     }
-    // Close the sidebar when a navigation item is tapped
+
+    // Close sidebar on item tap
     leftBar?.classList.remove('is-open');
     syncScrim();
   });
   
-  // Fallback listener just in case older buttons still use jt:navigate
+  // Fallback listener for older event names
   document.addEventListener('jt:navigate', (e) => {
       document.dispatchEvent(new CustomEvent('jt:nav-change', { detail: e.detail }));
   });
@@ -125,14 +143,17 @@ function revealApp() {
   const shell = document.getElementById('app-shell');
   const loadingMount = document.getElementById('loading-screen');
 
-  shell.hidden = false;
-  requestAnimationFrame(() => {
-    loadingMount.classList.add('hide');
-  });
+  if (shell) shell.hidden = false;
+  
+  if (loadingMount) {
+    requestAnimationFrame(() => {
+      loadingMount.classList.add('hide');
+    });
 
-  setTimeout(() => {
-    loadingMount.remove();
-  }, 500);
+    setTimeout(() => {
+      loadingMount.remove();
+    }, 500);
+  }
 }
 
 boot();
