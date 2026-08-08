@@ -39,3 +39,26 @@ document.addEventListener('DOMContentLoaded', () => {
     face.classList.add(expressions[currentIndex]);
   });
 });
+document.addEventListener('DOMContentLoaded', () => {
+  // IMPORTANT: Change 'profileCircle' to whatever ID your actual outer ring uses
+  const outerContainer = document.getElementById('profileCircle'); 
+  const face = document.getElementById('aiFaceMini');
+
+  if (!outerContainer || !face) return;
+
+  const expressions = [
+    'normal', 'happy', 'winking', 'surprised', 'thinking', 
+    'excited', 'sad', 'angry', 'sleepy', 'dizzy', 
+    'shocked', 'suspicious', 'relieved', 'determined', 'laughing'
+  ];
+
+  let currentIndex = 0;
+
+  outerContainer.addEventListener('click', (e) => {
+    e.stopPropagation(); // Prevents messing with sidebar toggle events
+    face.classList.remove(expressions[currentIndex]);
+    currentIndex = (currentIndex + 1) % expressions.length;
+    face.classList.add(expressions[currentIndex]);
+  });
+});
+
