@@ -1,7 +1,5 @@
 /* ===================== LEFT SIDEBAR ===================== */
 
-/* Always an off-canvas drawer within the fixed mobile screen —
-   opened via the topbar menu button, closed via the scrim or a nav tap. */
 #left-bar {
   position: absolute; inset: 0 auto 0 0;
   width: 84%;
@@ -77,46 +75,36 @@
 
 /* --- 10 EXPRESSION STATES --- */
 
-/* 1. Normal */
 .ai-face-mini.normal .ai-mouth-mini { border-radius: 2px 2px 8px 8px; height: 5px; }
 
-/* 2. Happy */
 .ai-face-mini.happy .ai-eye-mini { height: 3px; border-radius: 4px 4px 0 0; transform: translateY(-1px); }
 .ai-face-mini.happy .ai-mouth-mini { width: 14px; height: 7px; border-radius: 2px 2px 10px 10px; }
 
-/* 3. Winking */
 .ai-face-mini.winking .ai-eye-mini.left { height: 2px; border-radius: 2px; animation: none; }
 .ai-face-mini.winking .ai-mouth-mini { width: 10px; border-radius: 2px 2px 8px 8px; height: 5px; transform: translateX(2px) rotate(-8deg); }
 
-/* 4. Surprised */
 .ai-face-mini.surprised .ai-eyes-mini { gap: 12px; }
 .ai-face-mini.surprised .ai-eye-mini { width: 8px; height: 8px; }
 .ai-face-mini.surprised .ai-mouth-mini { width: 7px; height: 7px; border-radius: 50%; }
 
-/* 5. Thinking */
 .ai-face-mini.thinking .ai-eyes-mini { transform: translateX(3px) translateY(-2px); }
 .ai-face-mini.thinking .ai-eye-mini.left { width: 5px; height: 5px; }
 .ai-face-mini.thinking .ai-mouth-mini { width: 7px; height: 3px; transform: translateX(-2px) rotate(15deg); }
 
-/* 6. Excited */
 .ai-face-mini.excited .ai-eye-mini { width: 9px; height: 5px; border-radius: 2px 2px 8px 8px; animation: none; }
 .ai-face-mini.excited .ai-mouth-mini { width: 12px; height: 8px; border-radius: 2px 2px 12px 12px; }
 
-/* 7. Sad */
 .ai-face-mini.sad .ai-eye-mini { height: 4px; transform: translateY(2px); border-radius: 4px 4px 0 0; }
 .ai-face-mini.sad .ai-mouth-mini { width: 10px; height: 5px; border-radius: 8px 8px 2px 2px; transform: translateY(2px); }
 
-/* 8. Angry */
 .ai-face-mini.angry .ai-eyes-mini { gap: 6px; }
 .ai-face-mini.angry .ai-eye-mini.left { transform: rotate(15deg); border-radius: 0 4px 4px 4px; }
 .ai-face-mini.angry .ai-eye-mini.right { transform: rotate(-15deg); border-radius: 4px 0 4px 4px; }
 .ai-face-mini.angry .ai-mouth-mini { width: 8px; height: 2px; border-radius: 2px; }
 
-/* 9. Sleepy */
 .ai-face-mini.sleepy .ai-eye-mini { height: 2px; animation: none; }
 .ai-face-mini.sleepy .ai-mouth-mini { width: 6px; height: 6px; border-radius: 50%; }
 
-/* 10. Dizzy / Processing */
 .ai-face-mini.dizzy .ai-eye-mini.left { width: 5px; height: 5px; }
 .ai-face-mini.dizzy .ai-eye-mini.right { width: 8px; height: 8px; }
 .ai-face-mini.dizzy .ai-mouth-mini { width: 10px; height: 3px; transform: rotate(-10deg); }
@@ -266,4 +254,3 @@
   color: #d9a5ff;
 }
 .settings-icon { width: 18px; height: 18px; stroke: var(--text-faint); stroke-width: 1.8; fill: none; flex-shrink: 0; }
-                                                                               
