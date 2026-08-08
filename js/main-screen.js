@@ -184,3 +184,24 @@ const chatMicBtn = document.getElementById('chat-mic-btn');
 function openVoiceInterface() {
   window.location.href = 'voice_visualization.html';
 }
+// js/main-screen.js
+
+document.addEventListener('click', function(e) {
+    // Check if the clicked element has the read-aloud class
+    if (e.target.closest('.read-aloud-btn')) {
+        
+        // Find the text of the message closest to the button
+        const messageBox = e.target.closest('.message-container');
+        const textToRead = messageBox.querySelector('.message-text').innerText;
+        
+        // Use the browser's built-in voice
+        const speech = new SpeechSynthesisUtterance(textToRead);
+        
+        // Optional: Make it sound a bit more robotic/AI-like
+        speech.rate = 1.0; 
+        speech.pitch = 1.1; 
+        
+        window.speechSynthesis.speak(speech);
+    }
+});
+
