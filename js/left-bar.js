@@ -1,89 +1,44 @@
 /**
- * Right Sidebar — Model selection, toggle, and sparkline.
+ * Isolated Left Sidebar Logic
  */
-export function initRightBar() {
-  const root = document.getElementById('right-bar');
-  if (!root) return;
+export function initLeftBar() {
+  const leftBar = document.getElementById('left-bar');
+  const navList = document.getElementById('navList');
+  const newChatBtn = document.getElementById('newChatBtn');
+  const upgradeBtn = document.getElementById('upgradeBtn');
+  const profileBtn = document.getElementById('profileBtn');
 
-  // 1. Model Selection Logic
-  const models = root.querySelectorAll('.rb-model');
-  models.forEach((item) => {
-    item.addEventListener('click', () => {
-      // Remove active class and checkmark from all models
-      models.forEach((m) => {
-        m.classList.remove('is-active');
-        m.querySelector('.model-check')?.remove();
+  // Navigation tab click handlers
+  if (navList) {
+    const items = navList.querySelectorAll('.nav-item');
+    items.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        items.forEach((item) => item.classList.remove('is-active'));
+        btn.classList.add('is-active');
+
+        const navTarget = btn.dataset.nav;
+        document.dispatchEvent(new CustomEvent('jt:nav-change', { detail: navTarget }));
       });
-      
-      // Add active class and checkmark to the tapped model
-      item.classList.add('is-active');
-      if (!item.querySelector('.model-check')) {
-        item.insertAdjacentHTML('beforeend', `<svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>`);
-      }
-      
-      // Dispatch custom event for your app
-      document.dispatchEvent(new CustomEvent('jt:model-change', { detail: item.dataset.model }));
     });
+  }
+
+  // Action Buttons
+  newChatBtn?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('jt:new-chat'));
   });
 
-  // 2. Right Bar Close Button
-  const closeBtn = root.querySelector('#rightBarClose');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      root.classList.remove('is-open');
-    });
-  }
+  upgradeBtn?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('jt:open-upgrade'));
+  });
 
-  // 3. Status Sparkline
-  const sparkCanvas = root.querySelector('#statusSpark');
-  if (sparkCanvas) {
-    drawSparkline(sparkCanvas);
-  }
+  profileBtn?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('jt:open-profile'));
+  });
 }
 
-// Global toggle listener for the right bar
-document.addEventListener('jt:toggle-right-bar', () => {
-  const root = document.getElementById('right-bar');
-  if (root) root.classList.toggle('is-open');
+// Global Toggle Event listener for opening/closing Left Bar
+document.addEventListener('jt:toggle-left-bar', () => {
+  const leftBar = document.getElementById('left-bar');
+  if (leftBar) leftBar.classList.toggle('is-open');
 });
-
-/**
- * Sparkline Drawing Logic
- */
-function drawSparkline(canvas) {
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-
-  function resize() {
-    const w = canvas.clientWidth || canvas.parentElement.clientWidth;
-    canvas.width = w * dpr;
-    canvas.height = 46 * dpr;
-    ctx.scale(dpr, dpr);
-    draw(w);
-  }
-
-  function draw(w) {
-    const h = 46;
-    const points = 40;
-    ctx.clearRect(0, 0, w, h);
-
-    const grad = ctx.createLinearGradient(0, 0, w, 0);
-    grad.addColorStop(0, '#00d2ff');
-    grad.addColorStop(1, '#b026ff');
-
-    ctx.beginPath();
-    for (let i = 0; i < points; i++) {
-      const x = (i / (points - 1)) * w;
-      const y = h / 2 + Math.sin(i * 0.9) * (h * 0.28) * Math.random() * 0.9 + Math.cos(i * 0.4) * 4;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = 1.6;
-    ctx.lineJoin = 'round';
-    ctx.stroke();
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-}
