@@ -1,22 +1,10 @@
-<aside class="right-bar" aria-label="Profile and system status">
+<aside id="right-bar" class="right-bar" aria-label="System status">
 
-  <button class="right-bar-close" id="rightBarClose" aria-label="Close panel">
-    <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
-  </button>
-
-  <div class="rb-profile">
-    <span class="rb-avatar-ring">
-      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Johnny&backgroundColor=0a0a1c" alt="">
-      <span class="status-dot" aria-hidden="true"></span>
-    </span>
-    <h3>Johnny Tec<span class="text-dim">.Dev</span></h3>
-    <span class="pro-badge"><span aria-hidden="true">♛</span> Pro User</span>
-
-    <div class="rb-stats">
-      <div><b>1,247</b><small>Messages</small></div>
-      <div><b>98</b><small>Projects</small></div>
-      <div><b>32</b><small>Days Active</small></div>
-    </div>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h3 style="margin: 0; font-family: var(--font-display); font-size: 18px;">Settings</h3>
+    <button class="right-bar-close" id="rightBarClose" aria-label="Close panel">
+      <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
   </div>
 
   <section class="rb-section">
@@ -67,5 +55,4 @@
       <li><span>Storage</span><b class="ok">Operational</b></li>
     </ul>
   </section>
-
 </aside>
