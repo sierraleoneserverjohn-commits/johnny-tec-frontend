@@ -178,5 +178,74 @@ document.addEventListener('click', (e) => {
     document.querySelectorAll('.is-open').forEach(el => el.classList.remove('is-open'));
   }
 });
+// Replace this with your exact Render backend URL
+const BACKEND_URL = 'https://johnny-tec-backend-in37.onrender.com';
+const WS_URL = 'wss://johnny-tec-backend-in37.onrender.com';
+
+// 1. CHAT FUNCTION
+async function sendChatMessage(userMessage) {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        sessionId: 'johnny-session',
+        message: userMessage,
+        provider: 'groq' // 'groq', 'gpt', or 'claude'
+      })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      console.log('AI Reply:', data.reply);
+      return data.reply;
+    }
+  } catch (error) {
+    console.error('Chat Connection Error:', error);
+  }
+}
+
+// 2. IMAGE GENERATION FUNCTION
+async function generateImage(promptText) {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/generate-image`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt: promptText })
+    });
+
+    const data = await response.json();
+    if (data.success && data.imageUrl) {
+      console.log('Generated Image URL:', data.imageUrl);
+      return data.imageUrl;
+    }
+  } catch (error) {
+    console.error('Image Generation Error:', error);
+  }
+}
+
+// 3. LIVE VOICE WEBSOCKET CONNECTION
+function connectVoiceSocket() {
+  const socket = new WebSocket(WS_URL);
+
+  socket.onopen = () => {
+    console.log('🎙️ Connected to Live Voice Stream');
+  };
+
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Voice Socket Data:', data);
+  };
+
+  socket.onerror = (error) => {
+    console.error('WebSocket Error:', error);
+  };
+
+  return socket;
+}
 
 boot();
