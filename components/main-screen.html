@@ -18,9 +18,14 @@
       <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
         <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></svg>
       </button>
-      <button class="topbar-avatar" id="rightBarToggle" aria-label="Open profile panel">
-        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Johnny&backgroundColor=0a0a1c" alt="">
-        <span class="status-dot" aria-hidden="true"></span>
+      
+      <!-- UPDATED: 3-Dots Button replacing the Avatar -->
+      <button class="icon-btn" id="rightBarToggle" aria-label="Open settings panel">
+        <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: currentColor;">
+          <circle cx="12" cy="5" r="2.5"/>
+          <circle cx="12" cy="12" r="2.5"/>
+          <circle cx="12" cy="19" r="2.5"/>
+        </svg>
       </button>
     </div>
   </header>
@@ -66,9 +71,12 @@
         <svg viewBox="0 0 24 24"><path d="m21.4 11.4-8.5 8.5a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5L10.9 17a2 2 0 1 1-3-3l7-7"/></svg>
       </button>
       <input type="text" id="composerInput" class="composer-input" placeholder="Type your message..." autocomplete="off">
-      <button type="button" class="composer-icon" id="micBtn" aria-label="Voice input">
+      
+      <!-- UPDATED: ID changed to chat-mic-btn to connect to the JS -->
+      <button type="button" class="composer-icon" id="chat-mic-btn" aria-label="Voice input">
         <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg>
       </button>
+      
       <button type="button" class="composer-icon" aria-label="Smart suggestions">
         <svg viewBox="0 0 24 24"><path d="m12 2 2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6Z"/></svg>
       </button>
@@ -77,4 +85,5 @@
       </button>
     </div>
   </form>
-</section>
+ </section>
+    
