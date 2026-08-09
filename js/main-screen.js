@@ -1,8 +1,3 @@
-/**
- * Main chat screen — composer submission, quick-action prompts,
- * message rendering, topbar controls, and VIEW ROUTING.
- */
-
 const FOLLOW_UPS = [
   'Can you give an example?',
   'How does this work in practice?',
@@ -11,8 +6,6 @@ const FOLLOW_UPS = [
 ];
 
 let chatLog, chatScroll, greeting, suggestions, composerInput;
-
-// SYSTEM STATE: Set this to true when you hook up your local API or OpenAI/Gemini
 let isApiConnected = false; 
 
 export function init() {
@@ -53,52 +46,82 @@ export function init() {
     document.body.classList.toggle('theme-light');
   });
 
-  root.querySelector('#rightBarToggle')?.addEventListener('click', () => {
-    document.dispatchEvent(new CustomEvent('jt:toggle-right-bar'));
-  });
-
   document.addEventListener('jt:new-chat', resetChat);
 
-  // --- WIRING: Listen for Sidebar Navigation ---
-  // Ensure we don't attach multiple listeners if init() runs twice
-  if (!window.hasNavListener) {
+  // --- FIX 1: BULLETPROOF ROUTING & EVENT DELEGATION ---
+  if (!window.hasGlobalListeners) {
+    
+    // 1. Sidebar Navigation Listener
     document.addEventListener('jt:switch-view', (e) => {
       loadView(e.detail, document.getElementById('main-screen'));
     });
-    window.hasNavListener = true;
+
+    // 2. Fixed 3-Dots Right Bar Toggle (Works on every page!)
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#rightBarToggle')) {
+        document.dispatchEvent(new CustomEvent('jt:toggle-right-bar'));
+      }
+    });
+
+    // 3. FAKE VOICE API HOOK
+    // This listens for any button that says "Stop Listening"
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (btn && btn.textContent.includes('Stop Listening')) {
+        // Hide visualizer (assumes you have a way to close it, or we force it)
+        const visualizer = document.getElementById('voice-visualizer');
+        if (visualizer) visualizer.hidden = true;
+        
+        // Jump back to chat and send fake voice message
+        document.dispatchEvent(new CustomEvent('jt:switch-view', { detail: 'chat' }));
+        setTimeout(() => {
+          sendMessage("🎤 [Voice Note Captured]");
+        }, 300);
+      }
+    });
+
+    // 4. Read Aloud Listener
+    document.addEventListener('click', function(e) {
+      const readAloudBtn = e.target.closest('.read-aloud');
+      if (readAloudBtn) {
+          const messageBox = e.target.closest('.msg-body');
+          if (messageBox) {
+              const textToRead = messageBox.querySelector('.msg-bubble').innerText;
+              const speech = new SpeechSynthesisUtterance(textToRead);
+              speech.rate = 1.0; 
+              speech.pitch = 1.1; 
+              window.speechSynthesis.speak(speech);
+          }
+      }
+    });
+
+    window.hasGlobalListeners = true;
   }
 
-  // Wire up the standalone mic buttons if they exist in the UI
   wireVoiceButtons(root);
 }
 
-// --- WIRING: Router logic to swap sub-files ---
+// --- ROUTER LOGIC ---
 async function loadView(viewName, rootElement) {
-  // ROUTER MAP: Matches data-nav="..." to your actual HTML filenames
   const viewMap = {
     'chat': 'main-screen',
-    'code': 'code-assistant',      // Looks for components/code-assistant.html
-    'image': 'image-generator',    // Looks for components/image-generator.html
-    'dashboard': 'dashboard',      // Looks for components/dashboard.html
-    'documents': 'documents',      // Looks for components/documents.html
-    'knowledge': 'knowledge',      // Looks for components/knowledge.html
-    'history': 'history'           // Looks for components/history.html
+    'code': 'code-assistant',      
+    'image': 'image-generator',    
+    'documents': 'documents',      
+    'knowledge': 'knowledge',      
+    'voice': 'voice-assistant',
+    'history': 'history'           
   };
 
-  // Get the mapped filename, or just use the viewName if not in map
   const fileName = viewMap[viewName] || viewName;
   
   try {
     const response = await fetch(`components/${fileName}.html`);
-    
-    if (!response.ok) {
-      throw new Error(`Component ${fileName}.html not found`);
-    }
+    if (!response.ok) throw new Error(`Component ${fileName}.html not found`);
     
     const html = await response.text();
     rootElement.innerHTML = html;
     
-    // Re-bind all the buttons and chat logic if we navigate back to the main chat
     if (viewName === 'chat') {
       setTimeout(init, 50); 
     }
@@ -106,9 +129,8 @@ async function loadView(viewName, rootElement) {
     console.error("Routing Error:", error);
     rootElement.innerHTML = `
       <div class="error" style="padding: 2rem; color: #ff5555; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-        <h3>404: View Not Found</h3>
-        <p>Failed to load: <b>${viewName}</b></p>
-        <p>Make sure you have created the file: <code>components/${fileName}.html</code></p>
+        <h3>View Not Found</h3>
+        <p>Make sure you created: <code>components/${fileName}.html</code></p>
       </div>`;
   }
 }
@@ -118,28 +140,28 @@ function sendMessage(text) {
   appendMessage('user', text);
   const typingEl = appendTyping();
 
-  // Simulated latency before the assistant "responds"
   setTimeout(() => {
     if (!isApiConnected) {
-      const offlineReply = "⚠️ SYSTEM ALERT: JT API Engine is currently disconnected. Please configure your API endpoint in the Right Sidebar settings to initiate live data stream.";
-      resolveTyping(typingEl, offlineReply);
-      window.dispatchEvent(new Event('jt-api-offline'));
+      // Custom fake response if they used the microphone
+      if (text.includes("Voice Note Captured")) {
+        resolveTyping(typingEl, "I heard you, bro! But my Voice-to-Text API and main brain aren't connected to the server yet. Hook up the API keys in the settings to enable live voice processing!");
+      } else {
+        const offlineReply = "⚠️ SYSTEM ALERT: JT API Engine is currently disconnected. Please configure your API endpoint in the Right Sidebar settings.";
+        resolveTyping(typingEl, offlineReply);
+      }
     } else {
       const reply = getAssistantReply(text);
       resolveTyping(typingEl, reply);
       renderSuggestions();
     }
-  }, 900 + Math.random() * 500);
+  }, 1000 + Math.random() * 500);
 }
 
 function appendMessage(role, text) {
   const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const el = document.createElement('div');
   el.className = `msg msg-${role}`;
-
-  const avatar = role === 'user'
-    ? `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Johnny&backgroundColor=0a0a1c" alt="">`
-    : `🤖`;
+  const avatar = role === 'user' ? `<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Johnny&backgroundColor=0a0a1c" alt="">` : `🤖`;
 
   el.innerHTML = `
     <span class="msg-avatar">${avatar}</span>
@@ -186,17 +208,13 @@ function assistantActionsHtml() {
       </button>
       <button type="button" aria-label="Copy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
       <button type="button" aria-label="Regenerate"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 4v6h6"/></svg></button>
-      <button type="button" aria-label="Good response"><svg viewBox="0 0 24 24"><path d="M7 11v10H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h3Zm0 0 4-8a2 2 0 0 1 4 2v5h4.5a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 18.1 21H7"/></svg></button>
-      <button type="button" aria-label="Poor response"><svg viewBox="0 0 24 24"><path d="M17 13V3h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-3Zm0 0-4 8a2 2 0 0 1-4-2v-5H4.5a2 2 0 0 1-2-2.4l1.4-7A2 2 0 0 1 5.9 3H17"/></svg></button>
     </div>
   `;
 }
 
 function renderSuggestions() {
   if (!suggestions) return;
-  suggestions.innerHTML = FOLLOW_UPS
-    .map((q) => `<button class="suggestion-chip" type="button">${q}</button>`)
-    .join('');
+  suggestions.innerHTML = FOLLOW_UPS.map((q) => `<button class="suggestion-chip" type="button">${q}</button>`).join('');
   suggestions.hidden = false;
   suggestions.querySelectorAll('.suggestion-chip').forEach((chip) => {
     chip.addEventListener('click', () => sendMessage(chip.textContent));
@@ -228,14 +246,8 @@ function getAssistantReply(prompt) {
   return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend to replace this placeholder.`;
 }
 
-// --- WIRING UP THE VOICE INTERFACE BUTTONS ---
 function wireVoiceButtons(root) {
-  const navVoiceBtn = root.querySelector('#nav-voice-btn');
   const chatMicBtn = root.querySelector('#chat-mic-btn');
-
-  if (navVoiceBtn) {
-    navVoiceBtn.addEventListener('click', openVoiceInterface);
-  }
   if (chatMicBtn) {
     chatMicBtn.addEventListener('click', openVoiceInterface);
   }
@@ -243,27 +255,4 @@ function wireVoiceButtons(root) {
 
 function openVoiceInterface() {
   document.dispatchEvent(new CustomEvent('jt:open-voice'));
-}
-
-// --- WIRING UP THE READ ALOUD BUTTON ---
-// Only attach this once at the document level
-if (!window.hasReadAloudListener) {
-  document.addEventListener('click', function(e) {
-      const readAloudBtn = e.target.closest('.read-aloud');
-      
-      if (readAloudBtn) {
-          const messageBox = e.target.closest('.msg-body');
-          
-          if (messageBox) {
-              const textToRead = messageBox.querySelector('.msg-bubble').innerText;
-              
-              const speech = new SpeechSynthesisUtterance(textToRead);
-              speech.rate = 1.0; 
-              speech.pitch = 1.1; 
-              
-              window.speechSynthesis.speak(speech);
-          }
-      }
-  });
-  window.hasReadAloudListener = true;
-}
+    }
