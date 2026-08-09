@@ -1,43 +1,29 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const userInput = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const chatConsole = document.getElementById('chatConsole');
-  const welcomeSection = document.getElementById('welcomeSection');
-  const autoApiToggle = document.getElementById('autoApiToggle');
-  const providerSelect = document.getElementById('providerSelect');
+const ApiModule = {
+  detectIntent(prompt) {
+    const text = prompt.toLowerCase();
+    if (text.includes("generate image") || text.includes("draw") || text.includes("create image")) return 'image';
+    if (text.includes("text to audio") || text.includes("speak this") || text.includes("say out loud")) return 'tts';
+    if (text.includes("scan url") || text.includes("virustotal") || text.includes("shodan")) return 'cyber';
+    return 'chat';
+  },
 
-  // Voice setup
-  VoiceModule.init((transcribedText) => {
-    userInput.value = transcribedText;
-  });
+  async execute(prompt, isAuto = true, provider = 'gemini') {
+    const type = isAuto ? this.detectIntent(prompt) : 'chat';
 
-  document.getElementById('speechToTextBtn').addEventListener('click', () => VoiceModule.startMic());
-  document.getElementById('liveVoiceBtn').addEventListener('click', () => VoiceModule.openLiveOverlay());
-  document.getElementById('closeLiveVoiceBtn').addEventListener('click', () => VoiceModule.closeLiveOverlay());
-  document.getElementById('stopLiveListeningBtn').addEventListener('click', () => VoiceModule.closeLiveOverlay());
+    if (type === 'image') {
+      const res = await fetch('/api/generate-image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+      const data = await res.json();
+      return { type, html: `${data.reply || 'Image Generated:'}<br><img src="${data.imageUrl}" style="max-width:100%;border-radius:8px;margin-top:10px;">` };
+    }
 
-  // Chat Submission
-  sendBtn.addEventListener('click', handleSubmit);
-  userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSubmit(); });
+    if (type === 'tts') {
+      const res = await fetch('/api/text-to-audio', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: prompt }) });
+      const data = await res.json();
+      return { type, html: `Generated Audio:<br><audio controls src="${data.audioUrl}"></audio>` };
+    }
 
-  async function handleSubmit() {
-    const text = userInput.value.trim();
-    if (!text) return;
-
-    welcomeSection.classList.add('hidden');
-    appendMsg(text, 'user');
-    userInput.value = '';
-
-    const response = await ApiModule.execute(text, autoApiToggle.checked, providerSelect.value);
-    appendMsg(response.html, 'ai');
+    const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: prompt, provider }) });
+    const data = await res.json();
+    return { type: 'chat', html: data.reply || data.error };
   }
-
-  function appendMsg(content, sender) {
-    const div = document.createElement('div');
-    div.className = `chat-msg ${sender}`;
-    div.innerHTML = content;
-    chatConsole.appendChild(div);
-    chatConsole.scrollTop = chatConsole.scrollHeight;
-  }
-});
-                          
+};
