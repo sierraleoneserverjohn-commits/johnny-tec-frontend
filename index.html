@@ -3,77 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Johnny TEC AI Command Center</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+  <title>Johnny Tec AI Assistant</title>
+  
+  <!-- Modular CSS Imports -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/voice.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Background Cyber Grid Animation -->
-  <div class="cyber-grid"></div>
-
-  <!-- Command Center Header -->
-  <header class="header">
-    <div class="logo">
-      <span class="bolt">⚡</span> JOHNNY TEC <span class="sub">AI COMMAND CENTER</span>
+  <!-- LOADING MODULE -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="jt-circle-wrap">
+      <div class="ring outer-ring"></div>
+      <div class="ring inner-ring"></div>
+      <div class="jt-logo">JT</div>
     </div>
-    <div class="status-pill" id="backendStatus">
-      <span class="dot pulse"></span> BACKEND ACTIVE
+    <h1 class="brand-title">Johnny Tec <span>AI</span></h1>
+    <p class="brand-subtitle">SMART. FAST. RELIABLE.</p>
+    <div class="progress-bar-container">
+      <div id="progressFill" class="progress-fill"></div>
     </div>
-  </header>
+    <div id="progressText" class="progress-text">LOADING ... 0%</div>
+  </div>
 
-  <main class="dashboard">
+  <!-- MAIN APP CONTAINER -->
+  <div id="appContainer" class="app-container hidden">
 
-    <!-- Left Column: Key Health Scan & Provider Switcher -->
-    <section class="card neon-border">
-      <div class="card-header">
-        <h2>🔑 API Keys & Credit Health Monitor</h2>
-        <button id="scanKeysBtn" class="cyber-btn sm">Scan API Key Status</button>
-      </div>
-      <div id="keysGrid" class="keys-grid">
-        <!-- Key status badges will be injected here dynamically by app.js -->
-        <span class="key-badge pending">Checking system keys...</span>
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">Johnny <span>Tec.Dev</span></div>
+        <button id="closeSidebarBtn" class="icon-btn sm-only"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div class="divider"></div>
+      <button id="newChatBtn" class="cyber-btn primary full-width"><i class="fa-solid fa-plus"></i> New Chat</button>
 
-      <h2>🤖 Multi-LLM Model Router</h2>
-      <div class="form-group">
-        <label for="providerSelect">Select Active AI Engine:</label>
-        <select id="providerSelect" class="cyber-select">
-          <option value="gemini" selected>Google Gemini 1.5 Flash</option>
-          <option value="groq">Groq (Llama 3.3 70B)</option>
-          <option value="openrouter">OpenRouter (DeepSeek R1 Free)</option>
-          <option value="huggingface">HuggingFace (Llama 3.2)</option>
-          <option value="claude">Anthropic Claude 3.5 Sonnet</option>
-          <option value="gpt">OpenAI GPT-4o Mini</option>
-        </select>
-      </div>
-    </section>
-
-    <!-- Right Column: Interactive Multi-Tool Workstation -->
-    <section class="card neon-border">
-      <div class="card-header">
-        <h2>💬 Main Command Console</h2>
-        <div class="live-mic-status">
-          <button id="voiceSocketBtn" class="cyber-btn voice">🎙️ Live Voice Stream</button>
+      <!-- AUTO API ROUTER SWITCH -->
+      <div class="auto-mode-card">
+        <div class="auto-mode-title">
+          <span><i class="fa-solid fa-wand-magic-sparkles"></i> Auto API Router</span>
+          <label class="switch">
+            <input type="checkbox" id="autoApiToggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <p class="auto-desc" id="autoStatusText">AI automatically selects the best API per prompt.</p>
+        
+        <div id="manualProviderBox" class="manual-provider-box hidden">
+          <select id="providerSelect" class="cyber-select">
+            <option value="gemini">Google Gemini 1.5</option>
+            <option value="groq">Groq (Llama 3.3)</option>
+            <option value="openrouter">OpenRouter (DeepSeek R1)</option>
+            <option value="huggingface">HuggingFace Inference</option>
+            <option value="claude">Anthropic Claude</option>
+            <option value="gpt">OpenAI GPT-4o Mini</option>
+          </select>
         </div>
       </div>
 
-      <!-- Output Screen -->
-      <div id="chatConsole" class="console-box">
-        <div class="system-msg">⚡ [SYSTEM]: Johnny TEC Multi-API Neural Core Connected. System Ready.</div>
+      <!-- SIDEBAR NAV -->
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="#" id="menuImageGen" class="nav-item"><i class="fa-solid fa-image"></i> Image Generator</a>
+        <a href="#" id="menuTextAudio" class="nav-item"><i class="fa-solid fa-volume-high"></i> Text to Audio</a>
+        <a href="#" id="menuCyberScan" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Cyber Scanner</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="downloadOutputBtn" class="cyber-btn outline full-width"><i class="fa-solid fa-download"></i> Download Media / Logs</button>
+      </div>
+    </aside>
+
+    <!-- MAIN CHAT & DASHBOARD -->
+    <main class="main-content">
+      <header class="top-nav">
+        <button id="openSidebarBtn" class="icon-btn"><i class="fa-solid fa-bars"></i></button>
+        <div class="top-title"><i class="fa-solid fa-bolt text-cyan"></i> AI Assistant</div>
+      </header>
+
+      <div id="welcomeSection" class="welcome-section">
+        <h2 class="user-greeting">👋 Hey Johnny,</h2>
+        <h1 class="main-prompt-heading">How can I help you today?</h1>
+
+        <div class="quick-cards">
+          <div class="q-card" data-prompt="Generate code for a REST API in Node.js">
+            <i class="fa-solid fa-code"></i>
+            <div><h3>Code</h3><p>Generate code</p></div>
+          </div>
+          <div class="q-card" data-prompt="Explain quantum computing simply">
+            <i class="fa-solid fa-bars-staggered"></i>
+            <div><h3>Explain</h3><p>Explain anything</p></div>
+          </div>
+          <div class="q-card" data-prompt="Generate image of a cyber neon assistant logo">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <div><h3>Create</h3><p>Create content</p></div>
+          </div>
+          <div class="q-card" data-prompt="Scan website example.com for open ports">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div><h3>Solve</h3><p>Solve problems</p></div>
+          </div>
+        </div>
       </div>
 
-      <!-- User Command Bar -->
-      <div class="input-bar">
-        <input type="text" id="userInput" placeholder="Type a message or trigger an API..." autocomplete="off">
-        <button id="sendBtn" class="cyber-btn glow">Send Command</button>
-      </div>
-    </section>
+      <!-- CHAT CONSOLE LOG -->
+      <div id="chatConsole" class="chat-console"></div>
 
-  </main>
+      <!-- TYPING BAR -->
+      <footer class="bottom-bar">
+        <div class="input-wrap">
+          <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+          <button id="speechToTextBtn" class="icon-action-btn mic-btn" title="Voice to Text"><i class="fa-solid fa-microphone"></i></button>
+          <button id="liveVoiceBtn" class="icon-action-btn live-btn" title="Live Conversation Mode"><i class="fa-solid fa-wave-square"></i></button>
+          <button id="sendBtn" class="send-btn"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </footer>
+    </main>
+  </div>
 
+  <!-- LIVE VOICE OVERLAY MODULE -->
+  <div id="liveVoiceOverlay" class="live-voice-overlay hidden">
+    <button id="closeLiveVoiceBtn" class="close-overlay-btn"><i class="fa-solid fa-xmark"></i></button>
+    <div class="live-status-badge"><span class="pulse-dot"></span> Listening...</div>
+    
+    <div class="mic-wave-container">
+      <div class="wave-ring ring-1"></div>
+      <div class="wave-ring ring-2"></div>
+      <div class="live-mic-icon"><i class="fa-solid fa-microphone"></i></div>
+    </div>
+
+    <h2 class="live-title">I'm listening</h2>
+    <p class="live-subtitle">Speak now, I'm here to help</p>
+
+    <button id="stopLiveListeningBtn" class="cyber-btn danger"><i class="fa-solid fa-square"></i> Stop Listening</button>
+  </div>
+
+  <!-- Modular JavaScript Scripts -->
+  <script src="js/loading.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/voice.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
