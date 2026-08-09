@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Johnny TEC AI Command Center</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Background Cyber Grid Animation -->
+  <div class="cyber-grid"></div>
+
+  <!-- Command Center Header -->
+  <header class="header">
+    <div class="logo">
+      <span class="bolt">⚡</span> JOHNNY TEC <span class="sub">AI COMMAND CENTER</span>
+    </div>
+    <div class="status-pill" id="backendStatus">
+      <span class="dot pulse"></span> BACKEND ACTIVE
+    </div>
+  </header>
+
+  <main class="dashboard">
+
+    <!-- Left Column: Key Health Scan & Provider Switcher -->
+    <section class="card neon-border">
+      <div class="card-header">
+        <h2>🔑 API Keys & Credit Health Monitor</h2>
+        <button id="scanKeysBtn" class="cyber-btn sm">Scan API Key Status</button>
+      </div>
+      <div id="keysGrid" class="keys-grid">
+        <!-- Key status badges will be injected here dynamically by app.js -->
+        <span class="key-badge pending">Checking system keys...</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>🤖 Multi-LLM Model Router</h2>
+      <div class="form-group">
+        <label for="providerSelect">Select Active AI Engine:</label>
+        <select id="providerSelect" class="cyber-select">
+          <option value="gemini" selected>Google Gemini 1.5 Flash</option>
+          <option value="groq">Groq (Llama 3.3 70B)</option>
+          <option value="openrouter">OpenRouter (DeepSeek R1 Free)</option>
+          <option value="huggingface">HuggingFace (Llama 3.2)</option>
+          <option value="claude">Anthropic Claude 3.5 Sonnet</option>
+          <option value="gpt">OpenAI GPT-4o Mini</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Right Column: Interactive Multi-Tool Workstation -->
+    <section class="card neon-border">
+      <div class="card-header">
+        <h2>💬 Main Command Console</h2>
+        <div class="live-mic-status">
+          <button id="voiceSocketBtn" class="cyber-btn voice">🎙️ Live Voice Stream</button>
+        </div>
+      </div>
+
+      <!-- Output Screen -->
+      <div id="chatConsole" class="console-box">
+        <div class="system-msg">⚡ [SYSTEM]: Johnny TEC Multi-API Neural Core Connected. System Ready.</div>
+      </div>
+
+      <!-- User Command Bar -->
+      <div class="input-bar">
+        <input type="text" id="userInput" placeholder="Type a message or trigger an API..." autocomplete="off">
+        <button id="sendBtn" class="cyber-btn glow">Send Command</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
