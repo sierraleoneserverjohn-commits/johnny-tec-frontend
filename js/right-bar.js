@@ -1,33 +1,54 @@
-/**
- * Right sidebar — model selection, mobile slide-in toggle, status sparkline.
- */
+// js/right-bar.js
+
+// Initialize global state for the AI model
+window.currentAIModel = 'gpt-4.1';
+
 export function init() {
   const root = document.getElementById('right-bar');
   if (!root) return;
 
+  // Handle Model Switching
   const models = root.querySelectorAll('.rb-model');
   models.forEach((item) => {
     item.addEventListener('click', () => {
+      // 1. Reset all models to unselected state (swap check for chevron)
       models.forEach((m) => {
         m.classList.remove('is-active');
-        m.querySelector('.model-check')?.remove();
+        const checkIcon = m.querySelector('.model-check');
+        if (checkIcon) {
+          checkIcon.outerHTML = `<svg class="nav-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></svg>`;
+        }
       });
+
+      // 2. Set the clicked model to active
       item.classList.add('is-active');
-      if (!item.querySelector('.model-check')) {
+      
+      // 3. Swap chevron for checkmark on the selected model
+      const chevron = item.querySelector('.nav-chevron');
+      if (chevron) {
+        chevron.outerHTML = `<svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>`;
+      } else if (!item.querySelector('.model-check')) {
         item.insertAdjacentHTML('beforeend', `<svg class="model-check" viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg>`);
       }
-      document.dispatchEvent(new CustomEvent('jt:model-change', { detail: item.dataset.model }));
+
+      // 4. Update system with new choice
+      window.currentAIModel = item.dataset.model;
+      console.log("Model switched to:", window.currentAIModel);
+      document.dispatchEvent(new CustomEvent('jt:model-change', { detail: window.currentAIModel }));
     });
   });
 
+  // Handle Closing Right Bar
   root.querySelector('#rightBarClose')?.addEventListener('click', () => {
     root.classList.remove('is-open');
   });
 
+  // Handle Opening Right Bar via the 3-dots top nav event
   document.addEventListener('jt:toggle-right-bar', () => {
     root.classList.toggle('is-open');
   });
 
+  // Draw the cool sparkline chart
   drawSparkline(root.querySelector('#statusSpark'));
 }
 
@@ -68,28 +89,3 @@ function drawSparkline(canvas) {
   resize();
   window.addEventListener('resize', resize);
 }
-// js/right-bar.js
-
-// We store the selected model here
-window.currentAIModel = 'GPT-4.1'; // Default
-
-const modelOptions = document.querySelectorAll('.model-option');
-
-modelOptions.forEach(option => {
-    option.addEventListener('click', (e) => {
-        // 1. Hide the checkmark on ALL models
-        document.querySelectorAll('.check-icon').forEach(icon => {
-            icon.style.opacity = '0'; 
-        });
-
-        // 2. Show the checkmark on the CLICKED model
-        const checkmark = e.currentTarget.querySelector('.check-icon');
-        if (checkmark) checkmark.style.opacity = '1';
-
-        // 3. Update the system with the new choice
-        // Assume your HTML has data-model="gemini-1.5"
-        window.currentAIModel = e.currentTarget.getAttribute('data-model');
-        console.log("Model switched to:", window.currentAIModel);
-    });
-});
-
