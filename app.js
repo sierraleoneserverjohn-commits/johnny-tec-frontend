@@ -155,5 +155,28 @@ function revealApp() {
     }, 500);
   }
 }
+// MASTER UI CONTROLLER - Put this in your main app.js
+document.addEventListener('click', (e) => {
+  // 1. Right Sidebar (3-Dots Toggle)
+  const rightToggle = e.target.closest('#rightBarToggle');
+  if (rightToggle) {
+    const rightAside = document.querySelector('#right-bar aside, .right-bar, .right-panel');
+    if (rightAside) rightAside.classList.toggle('is-open');
+    return; // Stop execution after handling
+  }
+
+  // 2. Left Sidebar (Menu Toggle)
+  const leftToggle = e.target.closest('#menuToggle');
+  if (leftToggle) {
+    const leftAside = document.querySelector('#left-bar aside, .left-sidebar');
+    if (leftAside) leftAside.classList.toggle('is-open');
+    return;
+  }
+
+  // 3. Close Sidebars when clicking outside (Optional but recommended)
+  if (!e.target.closest('#right-bar') && !e.target.closest('#left-bar') && !e.target.closest('aside') && !e.target.closest('button')) {
+    document.querySelectorAll('.is-open').forEach(el => el.classList.remove('is-open'));
+  }
+});
 
 boot();
