@@ -63,22 +63,7 @@ export function init() {
       }
     });
 
-    // 3. FAKE VOICE API HOOK
-    // This listens for any button that says "Stop Listening"
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('button');
-      if (btn && btn.textContent.includes('Stop Listening')) {
-        // Hide visualizer (assumes you have a way to close it, or we force it)
-        const visualizer = document.getElementById('voice-visualizer');
-        if (visualizer) visualizer.hidden = true;
-        
-        // Jump back to chat and send fake voice message
-        document.dispatchEvent(new CustomEvent('jt:switch-view', { detail: 'chat' }));
-        setTimeout(() => {
-          sendMessage("🎤 [Voice Note Captured]");
-        }, 300);
-      }
-    });
+
 
     // 4. Read Aloud Listener
     document.addEventListener('click', function(e) {
@@ -100,7 +85,49 @@ export function init() {
 
   wireVoiceButtons(root);
 }
+    // 3. TRUE LIVE VOICE CONVERSATION HOOK
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      
+      // Look for the stop listening button on the voice screen
+      if (btn && btn.textContent.includes('Stop Listening')) {
+        
+        // 1. Change UI to show the AI is processing your voice
+        btn.innerHTML = '🤖 AI is thinking...';
+        btn.style.backgroundColor = '#b026ff'; // Purple processing color
+        btn.style.color = '#fff';
+        btn.style.pointerEvents = 'none'; // Prevent double clicking
+        
+        setTimeout(() => {
+          // 2. The response the AI will speak out loud
+          const aiResponse = "Hey Johnny. I hear you loud and clear. However, my live server API is not connected yet. Please link my backend so we can have a real conversation.";
+          
+          // 3. Trigger the browser's native text-to-speech engine
+          const speech = new SpeechSynthesisUtterance(aiResponse);
+          speech.rate = 1.0; 
+          speech.pitch = 1.1; 
+          
+          // Update UI to show it's talking
+          btn.innerHTML = '🔊 AI is speaking...';
+          
+          // 4. When the AI finishes talking, close the voice screen automatically
+          speech.onend = () => {
+            const visualizer = document.getElementById('voice-visualizer');
+            if (visualizer) visualizer.hidden = true;
+            
+            // Reset button back to normal for next time
+            btn.innerHTML = '<span class="stop-square"></span> Stop Listening'; 
+            btn.style.backgroundColor = ''; 
+            btn.style.pointerEvents = 'auto';
+          };
+          
+          // Speak!
+          window.speechSynthesis.speak(speech);
 
+        }, 1200); // 1.2 second pause to simulate "thinking"
+      }
+    });
+            
 // --- ROUTER LOGIC ---
 async function loadView(viewName, rootElement) {
   const viewMap = {
