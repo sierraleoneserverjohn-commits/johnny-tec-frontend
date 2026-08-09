@@ -273,4 +273,102 @@ export function connectAIAudio(audioElement) {
     setUIState('ai-speaking');
   }
 }
+// REAL-TIME VOICE ENGINE (API READY)
+let recognition;
+let isVoiceActive = false;
+
+function initLiveVoice() {
+  // Check for browser support
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  
+  if (!window.SpeechRecognition) {
+    console.error("Speech Recognition is not supported in this browser.");
+    return;
+  }
+
+  recognition = new window.SpeechRecognition();
+  recognition.continuous = false; // Stops automatically when you finish a sentence
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+
+  recognition.onstart = () => {
+    isVoiceActive = true;
+    console.log("Listening...");
+    updateVoiceUI("Listening...", "#00d2ff"); // Cyan for listening
+  };
+
+  recognition.onresult = (event) => {
+    // Capture what the user said
+    const userSpeech = event.results[0][0].transcript;
+    console.log("User said:", userSpeech);
+    
+    // Switch UI to processing mode
+    updateVoiceUI("Thinking...", "#b026ff"); // Purple for processing
+    
+    // SEND TO API DIRECTLY (No chat log)
+    processVoiceThroughAPI(userSpeech);
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Voice Error:", event.error);
+    updateVoiceUI("Tap to speak", "transparent");
+    isVoiceActive = false;
+  };
+
+  recognition.onend = () => {
+    isVoiceActive = false;
+  };
+}
+
+// THE API HOOK - Wire this to your backend later
+function processVoiceThroughAPI(text) {
+  // Simulate API delay (e.g., waiting for Sana API or your server)
+  setTimeout(() => {
+    const aiResponse = `I heard you clearly. I am processing your request: ${text}. My audio interface is active and awaiting server connection.`;
+    speakOutLoud(aiResponse);
+  }, 800); // Super fast 0.8s fake API delay
+}
+
+// THE AI SPEAKING BACK
+function speakOutLoud(text) {
+  const synth = window.speechSynthesis;
+  const utterance = new SpeechSynthesisUtterance(text);
+  
+  utterance.rate = 1.05; // Slightly faster for a snappy feel
+  utterance.pitch = 1.0;
+
+  utterance.onstart = () => {
+    updateVoiceUI("Speaking...", "#ff007f"); // Neon pink for speaking
+  };
+
+  utterance.onend = () => {
+    // Reset UI when AI finishes talking, ready for you to speak again
+    updateVoiceUI("Tap to speak", "transparent");
+  };
+
+  synth.speak(utterance);
+}
+
+// UI HELPER FUNCTION
+function updateVoiceUI(text, color) {
+  const visualizerText = document.querySelector('.voice-status-text'); // Update this selector to match your HTML
+  const visualizerRing = document.querySelector('.voice-ring'); // Update this selector to match your HTML
+  
+  if (visualizerText) visualizerText.innerText = text;
+  if (visualizerRing) visualizerRing.style.borderColor = color;
+}
+
+// BIND TO YOUR MICROPHONE BUTTON
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#chat-mic-btn')) {
+    if (!recognition) initLiveVoice();
+    
+    if (!isVoiceActive) {
+      recognition.start();
+    } else {
+      recognition.stop();
+    }
+  }
+});
+
   
