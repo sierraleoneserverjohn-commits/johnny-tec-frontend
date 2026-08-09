@@ -1,10 +1,6 @@
 /**
  * Main chat screen — composer submission, quick-action prompts,
- * message rendering, and the topbar controls (menu / theme / avatar).
- *
- * NOTE: `getAssistantReply()` is a stub. Swap its body for a real call
- * to your AI backend/API when one is wired up — everything else
- * (rendering, scrolling, typing indicator) already works against it.
+ * message rendering, topbar controls, and VIEW ROUTING.
  */
 
 const FOLLOW_UPS = [
@@ -63,23 +59,41 @@ export function init() {
 
   document.addEventListener('jt:new-chat', resetChat);
 
-  // --- NEW WIRING: Listen for Sidebar Navigation ---
-  document.addEventListener('jt:switch-view', (e) => {
-    loadView(e.detail, root);
-  });
+  // --- WIRING: Listen for Sidebar Navigation ---
+  // Ensure we don't attach multiple listeners if init() runs twice
+  if (!window.hasNavListener) {
+    document.addEventListener('jt:switch-view', (e) => {
+      loadView(e.detail, document.getElementById('main-screen'));
+    });
+    window.hasNavListener = true;
+  }
 
   // Wire up the standalone mic buttons if they exist in the UI
   wireVoiceButtons(root);
 }
 
-// --- NEW WIRING: Router logic to swap sub-files ---
+// --- WIRING: Router logic to swap sub-files ---
 async function loadView(viewName, rootElement) {
-  // Map the 'chat' button back to the main-screen component
-  const fileName = viewName === 'chat' ? 'main-screen' : viewName;
+  // ROUTER MAP: Matches data-nav="..." to your actual HTML filenames
+  const viewMap = {
+    'chat': 'main-screen',
+    'code': 'code-assistant',      // Looks for components/code-assistant.html
+    'image': 'image-generator',    // Looks for components/image-generator.html
+    'dashboard': 'dashboard',      // Looks for components/dashboard.html
+    'documents': 'documents',      // Looks for components/documents.html
+    'knowledge': 'knowledge',      // Looks for components/knowledge.html
+    'history': 'history'           // Looks for components/history.html
+  };
+
+  // Get the mapped filename, or just use the viewName if not in map
+  const fileName = viewMap[viewName] || viewName;
   
   try {
     const response = await fetch(`components/${fileName}.html`);
-    if (!response.ok) throw new Error(`Component ${fileName} not found`);
+    
+    if (!response.ok) {
+      throw new Error(`Component ${fileName}.html not found`);
+    }
     
     const html = await response.text();
     rootElement.innerHTML = html;
@@ -90,7 +104,12 @@ async function loadView(viewName, rootElement) {
     }
   } catch (error) {
     console.error("Routing Error:", error);
-    rootElement.innerHTML = `<div class="error" style="padding: 2rem; color: #ff5555; text-align: center;">Failed to load UI view: ${viewName}. Make sure components/${fileName}.html exists.</div>`;
+    rootElement.innerHTML = `
+      <div class="error" style="padding: 2rem; color: #ff5555; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+        <h3>404: View Not Found</h3>
+        <p>Failed to load: <b>${viewName}</b></p>
+        <p>Make sure you have created the file: <code>components/${fileName}.html</code></p>
+      </div>`;
   }
 }
 
@@ -101,15 +120,11 @@ function sendMessage(text) {
 
   // Simulated latency before the assistant "responds"
   setTimeout(() => {
-    // API CHECK FALLBACK LOGIC
     if (!isApiConnected) {
       const offlineReply = "⚠️ SYSTEM ALERT: JT API Engine is currently disconnected. Please configure your API endpoint in the Right Sidebar settings to initiate live data stream.";
       resolveTyping(typingEl, offlineReply);
-      
-      // Dispatch offline event so the left-sidebar can turn the status dot red
       window.dispatchEvent(new Event('jt-api-offline'));
     } else {
-      // Normal flow when API is connected
       const reply = getAssistantReply(text);
       resolveTyping(typingEl, reply);
       renderSuggestions();
@@ -209,9 +224,8 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-// Stub reply generator — swap for a real API call.
 function getAssistantReply(prompt) {
-  return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend in <code>getAssistantReply()</code> (main-screen.js) to replace this placeholder with live answers.`;
+  return `Here's a starting point on "${escapeHtml(prompt)}" — connect a real AI backend to replace this placeholder.`;
 }
 
 // --- WIRING UP THE VOICE INTERFACE BUTTONS ---
@@ -228,32 +242,28 @@ function wireVoiceButtons(root) {
 }
 
 function openVoiceInterface() {
-  // Replaced window.location.href with the central SPA event
   document.dispatchEvent(new CustomEvent('jt:open-voice'));
 }
 
-
 // --- WIRING UP THE READ ALOUD BUTTON ---
-document.addEventListener('click', function(e) {
-    // WIRED: Updated class to match the button in assistantActionsHtml()
-    const readAloudBtn = e.target.closest('.read-aloud');
-    
-    if (readAloudBtn) {
-        // WIRED: Updated classes to match the structure in appendMessage()
-        const messageBox = e.target.closest('.msg-body');
-        
-        if (messageBox) {
-            const textToRead = messageBox.querySelector('.msg-bubble').innerText;
-            
-            // Use the browser's built-in voice
-            const speech = new SpeechSynthesisUtterance(textToRead);
-            
-            // Optional: Make it sound a bit more robotic/AI-like
-            speech.rate = 1.0; 
-            speech.pitch = 1.1; 
-            
-            window.speechSynthesis.speak(speech);
-        }
-    }
-});
-
+// Only attach this once at the document level
+if (!window.hasReadAloudListener) {
+  document.addEventListener('click', function(e) {
+      const readAloudBtn = e.target.closest('.read-aloud');
+      
+      if (readAloudBtn) {
+          const messageBox = e.target.closest('.msg-body');
+          
+          if (messageBox) {
+              const textToRead = messageBox.querySelector('.msg-bubble').innerText;
+              
+              const speech = new SpeechSynthesisUtterance(textToRead);
+              speech.rate = 1.0; 
+              speech.pitch = 1.1; 
+              
+              window.speechSynthesis.speak(speech);
+          }
+      }
+  });
+  window.hasReadAloudListener = true;
+}
