@@ -4,16 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!avatarBtn || !face) return;
 
+  // 30 Unique Expressions
   const expressions = [
     'normal', 'happy', 'winking', 'surprised', 'thinking', 
     'excited', 'sad', 'angry', 'sleepy', 'dizzy', 
-    'shocked', 'neutral', 'skeptical', 'laughing', 'focused'
+    'shocked', 'neutral', 'skeptical', 'laughing', 'focused',
+    'pleading', 'annoyed', 'smug', 'curious', 'scared',
+    'zen', 'mischievous', 'loading', 'glitch', 'aww',
+    'exhausted', 'cheeky', 'proud', 'shifty', 'in_love'
   ];
 
   let currentIndex = 0;
 
   avatarBtn.addEventListener('click', (e) => {
-    e.preventDefault(); // Stop any default link behavior just in case
+    e.preventDefault();
     
     // Remove current expression
     face.classList.remove(expressions[currentIndex]);
