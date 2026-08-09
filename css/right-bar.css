@@ -1,18 +1,19 @@
 /* ===================== RIGHT SIDEBAR ===================== */
-
-/* Always an off-canvas drawer within the fixed mobile screen —
-   opened via the avatar/profile button, closed via the scrim or ✕. */
 #right-bar {
-  position: absolute; inset: 0 0 0 auto;
+  position: fixed; /* FIXED: ensures it overlays everything */
+  top: 0; right: 0; bottom: 0;
   width: 88%;
   max-width: 320px;
-  z-index: 200;
-  background: var(--bg);
-  border-left: 1px solid var(--border);
+  z-index: 9999; /* FIXED: high z-index to stay on top */
+  background: var(--bg, #0a0a1c);
+  border-left: 1px solid var(--border, #1f1f3a);
   transform: translateX(100%);
-  transition: transform var(--med) var(--ease);
+  transition: transform 0.3s ease; /* FIXED: removed missing css variables */
 }
-#right-bar.is-open { transform: translateX(0); box-shadow: -20px 0 60px rgba(0,0,0,0.5); }
+#right-bar.is-open { 
+  transform: translateX(0); 
+  box-shadow: -20px 0 60px rgba(0,0,0,0.8); 
+}
 
 .right-bar {
   height: 100%;
@@ -27,90 +28,60 @@
   display: grid; place-items: center;
   width: 32px; height: 32px;
   border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--bg-raised);
-  margin-bottom: 6px;
+  border: 1px solid var(--border, #1f1f3a);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
 }
-.right-bar-close svg { width: 16px; height: 16px; stroke: var(--text-dim); fill: none; stroke-width: 2; }
-
-.rb-profile { text-align: center; padding-bottom: 4px; }
-.rb-avatar-ring {
-  position: relative;
-  display: block;
-  width: 76px; height: 76px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  padding: 3px;
-  background: var(--gradient);
-  box-shadow: 0 0 24px rgba(0,210,255,0.2);
-}
-.rb-avatar-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--bg-raised); }
-.rb-avatar-ring .status-dot {
-  position: absolute; right: 2px; bottom: 2px;
-  width: 12px; height: 12px; border-radius: 50%;
-  background: var(--success);
-  border: 3px solid var(--bg);
-}
-.rb-profile h3 { font-family: var(--font-display); font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-
-.rb-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-.rb-stats div { display: flex; flex-direction: column; gap: 2px; }
-.rb-stats b { font-family: var(--font-display); font-size: 17px; }
-.rb-stats small { font-size: 10.5px; color: var(--text-faint); }
+.right-bar-close svg { width: 16px; height: 16px; stroke: #888; fill: none; stroke-width: 2; }
 
 .rb-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-.rb-link { border: none; background: none; color: var(--cyan); font-size: 11.5px; font-weight: 500; }
+.rb-link { border: none; background: none; color: #00d2ff; font-size: 11.5px; font-weight: 500; cursor: pointer;}
 
-.rb-models { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.rb-models { list-style: none; display: flex; flex-direction: column; gap: 6px; padding: 0; margin: 0; }
 .rb-model {
   display: flex; align-items: center; gap: 10px;
   padding: 10px;
-  border-radius: var(--r-sm);
-  border: 1px solid var(--border);
+  border-radius: 8px;
+  border: 1px solid var(--border, #1f1f3a);
   cursor: pointer;
-  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+  transition: all 0.2s ease;
 }
-.rb-model:hover { border-color: var(--border-strong); }
+.rb-model:hover { border-color: #444; }
 .rb-model.is-active { background: rgba(0,210,255,0.08); border-color: rgba(0,210,255,0.3); }
 .model-icon {
   width: 30px; height: 30px; border-radius: 8px;
   display: grid; place-items: center;
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border, #1f1f3a);
   font-size: 14px;
   flex-shrink: 0;
 }
 .model-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.model-meta b { font-size: 13px; font-weight: 600; }
-.model-meta small { font-size: 10.5px; color: var(--text-faint); }
-.model-check { width: 18px; height: 18px; stroke: var(--cyan); stroke-width: 2.4; fill: none; flex-shrink: 0; }
-.rb-model .nav-chevron { width: 15px; height: 15px; stroke: var(--text-faint); fill: none; stroke-width: 2; flex-shrink: 0; }
+.model-meta b { font-size: 13px; font-weight: 600; color: #fff;}
+.model-meta small { font-size: 10.5px; color: #888; }
+.model-check { width: 18px; height: 18px; stroke: #00d2ff; stroke-width: 2.4; fill: none; flex-shrink: 0; }
+.rb-model .nav-chevron { width: 15px; height: 15px; stroke: #888; fill: none; stroke-width: 2; flex-shrink: 0; }
 
-.rb-chats { list-style: none; display: flex; flex-direction: column; gap: 3px; }
+.rb-chats { list-style: none; display: flex; flex-direction: column; gap: 3px; padding: 0; margin: 0;}
 .rb-chats li {
   display: flex; align-items: center; gap: 9px;
   padding: 8px 6px;
-  border-radius: var(--r-sm);
+  border-radius: 6px;
   font-size: 12.5px;
   cursor: pointer;
+  color: #ddd;
 }
 .rb-chats li:hover { background: rgba(255,255,255,0.04); }
 .chat-icon { font-size: 12px; opacity: .7; }
 .rb-chats li span:nth-child(2) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rb-chats li small { color: var(--text-faint); font-size: 10.5px; flex-shrink: 0; }
+.rb-chats li small { color: #888; font-size: 10.5px; flex-shrink: 0; }
 
 .rb-status { margin-top: auto; }
-.status-live { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--success); margin-bottom: 10px; }
-.status-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); animation: blink 1.6s infinite ease-in-out; }
+.status-live { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #4CAF50; margin-bottom: 10px; }
+.status-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4CAF50; box-shadow: 0 0 6px #4CAF50; }
 .status-spark { width: 100%; height: 46px; display: block; margin-bottom: 12px; opacity: .9; }
 
-.rb-services { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.rb-services { list-style: none; display: flex; flex-direction: column; gap: 9px; padding: 0; margin: 0; }
 .rb-services li { display: flex; justify-content: space-between; font-size: 12.5px; }
-.rb-services span { color: var(--text-dim); }
-.rb-services b.ok { color: var(--success); font-weight: 500; font-size: 11.5px; }
+.rb-services span { color: #888; }
+.rb-services b.ok { color: #4CAF50; font-weight: 500; font-size: 11.5px; }
