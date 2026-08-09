@@ -1,22 +1,165 @@
-<div class="view-wrapper" style="padding: 20px; display: flex; flex-direction: column; height: 100%; color: #fff; box-sizing: border-box;">
-  
-  <header style="margin-bottom: 20px;">
-    <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem;">
-      <span class="gradient-text" style="background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Code</span> Assistant
-    </h2>
-    <p style="color: #888; font-size: 0.9rem; margin-top: 5px; font-family: 'Inter', sans-serif;">Build, debug, and deploy your architecture.</p>
+<div class="view-wrapper" style="padding: 20px; display: flex; flex-direction: column; height: 100%; color: #fff; box-sizing: border-box; font-family: 'Inter', sans-serif; overflow-y: auto;">
+
+  <!-- Header -->
+  <header style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 6px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem;">
+        <span style="background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Code</span> Assistant
+      </h2>
+      <span style="display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); font-size: 0.75rem; color: #10b981;">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Online
+      </span>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button id="formatBtn" style="display: flex; align-items: center; gap: 6px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #ccc; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;">
+        <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2;"><path d="m8 6-6 6 6 6"/><path d="m16 6 6 6-6 6"/></svg>
+        Format
+      </button>
+      <button id="explainBtn" style="display: flex; align-items: center; gap: 6px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #ccc; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem;">
+        <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: none; stroke: #b026ff; stroke-width: 2;"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+        Explain
+      </button>
+    </div>
   </header>
 
-  <div style="flex: 1; background: #050510; border: 1px solid #1f1f3a; border-radius: 12px; padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-y: auto; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
-    <div style="color: #4CAF50;">// JT Code Engine Online.</div>
-    <div style="color: #55b5db; margin-top: 5px;">// Python 3, Node.js, & local environments synchronized.</div>
-    <div style="color: #888; margin-top: 15px;">> Ready to analyze your full-stack platform code...</div>
+  <p style="color: #888; font-size: 0.9rem; margin: 0 0 20px 0;">Build, debug, and deploy your architecture.</p>
+
+  <!-- Code editor -->
+  <div style="background: #050510; border: 1px solid #b026ff55; border-radius: 12px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 20px rgba(176,38,255,0.08); overflow: hidden; margin-bottom: 16px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #1f1f3a;">
+      <div style="display: flex; gap: 6px;">
+        <span style="width: 11px; height: 11px; border-radius: 50%; background: #ff5f56; display: inline-block;"></span>
+        <span style="width: 11px; height: 11px; border-radius: 50%; background: #ffbd2e; display: inline-block;"></span>
+        <span style="width: 11px; height: 11px; border-radius: 50%; background: #27c93f; display: inline-block;"></span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <select id="langSelect" style="background: #0a0a1c; border: 1px solid #2a2a4a; color: #fff; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem;">
+          <option>🐍 Python</option>
+          <option>🟨 JavaScript</option>
+          <option>🟢 Node.js</option>
+          <option>🔷 TypeScript</option>
+        </select>
+        <button id="copyCodeBtn" style="background: #0a0a1c; border: 1px solid #2a2a4a; color: #ccc; width: 30px; height: 30px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2;"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="codeArea" style="padding: 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-height: 200px;">
+      <div style="color: #4CAF50;">// JT Code Engine Online.</div>
+      <div style="color: #55b5db; margin-top: 5px;">// Python 3, Node.js, &amp; local environments synchronized.</div>
+      <div style="color: #888; margin-top: 15px;">&gt; Ready to analyze your full-stack platform code...</div>
+      <div style="display: inline-block; width: 8px; height: 16px; background: #00d2ff; margin-top: 6px; animation: blink 1s step-start infinite;"></div>
+    </div>
   </div>
 
-  <div style="margin-top: 20px; display: flex; gap: 10px;">
-    <input type="text" placeholder="Paste your script or describe the bug..." style="flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #2a2a4a; background: #0a0a1c; color: #fff; font-family: 'Inter', sans-serif; outline: none;">
-    <button style="padding: 0 20px; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Space Grotesk', sans-serif;">Analyze</button>
+  <!-- Action toolbar -->
+  <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 24px;">
+    <button class="tool-btn" data-action="debug" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #55b5db; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-size: 0.7rem;">🐛 Debug</button>
+    <button class="tool-btn" data-action="optimize" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #d9a5ff; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-size: 0.7rem;">⚡ Optimize</button>
+    <button class="tool-btn" data-action="refactor" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #00d2ff; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-size: 0.7rem;">&lt;/&gt; Refactor</button>
+    <button class="tool-btn" data-action="document" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #ccc; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-size: 0.7rem;">📄 Document</button>
+    <button class="tool-btn" data-action="test" style="display: flex; flex-direction: column; align-items: center; gap: 4px; background: #0a0a1c; border: 1px solid #2a2a4a; color: #b026ff; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-size: 0.7rem;">🛡️ Test</button>
+  </div>
+
+  <!-- Help cards -->
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+    <h3 style="margin: 0; font-size: 1rem; color: #00d2ff;">What can I help with?</h3>
+    <select style="background: transparent; border: none; color: #888; font-size: 0.8rem;">
+      <option>Popular</option>
+      <option>Recent</option>
+      <option>All</option>
+    </select>
+  </div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px;">
+    <button class="help-card" data-help="findbugs" style="text-align: left; background: #0a0a1c; border: 1px solid #2a2a4a; border-radius: 12px; padding: 14px; cursor: pointer; color: #fff;">
+      <div style="font-size: 1.3rem; margin-bottom: 6px;">🐛</div>
+      <div style="font-weight: 600; font-size: 0.85rem;">Find Bugs</div>
+      <div style="color: #888; font-size: 0.75rem; margin-top: 2px;">Detect &amp; fix issues</div>
+    </button>
+    <button class="help-card" data-help="explaincode" style="text-align: left; background: #0a0a1c; border: 1px solid #2a2a4a; border-radius: 12px; padding: 14px; cursor: pointer; color: #fff;">
+      <div style="font-size: 1.3rem; margin-bottom: 6px;">💬</div>
+      <div style="font-weight: 600; font-size: 0.85rem;">Explain Code</div>
+      <div style="color: #888; font-size: 0.75rem; margin-top: 2px;">Understand code</div>
+    </button>
+    <button class="help-card" data-help="improvecode" style="text-align: left; background: #0a0a1c; border: 1px solid #2a2a4a; border-radius: 12px; padding: 14px; cursor: pointer; color: #fff;">
+      <div style="font-size: 1.3rem; margin-bottom: 6px;">📈</div>
+      <div style="font-weight: 600; font-size: 0.85rem;">Improve Code</div>
+      <div style="color: #888; font-size: 0.75rem; margin-top: 2px;">Enhance quality</div>
+    </button>
+    <button class="help-card" data-help="generatecode" style="text-align: left; background: #0a0a1c; border: 1px solid #2a2a4a; border-radius: 12px; padding: 14px; cursor: pointer; color: #fff;">
+      <div style="font-size: 1.3rem; margin-bottom: 6px;">✨</div>
+      <div style="font-weight: 600; font-size: 0.85rem;">Generate Code</div>
+      <div style="color: #888; font-size: 0.75rem; margin-top: 2px;">Create from scratch</div>
+    </button>
+  </div>
+
+  <!-- Input area -->
+  <div style="background: #0a0a1c; border: 1px solid #2a2a4a; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+      <input id="codeInput" type="text" placeholder="Paste your script or describe the task..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #2a2a4a; background: #050510; color: #fff; outline: none; min-width: 0;">
+      <select style="background: #050510; border: 1px solid #2a2a4a; color: #ccc; border-radius: 8px; padding: 0 10px; font-size: 0.8rem;">
+        <option>Auto Detect</option>
+        <option>Python</option>
+        <option>JavaScript</option>
+        <option>Node.js</option>
+      </select>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 8px;">
+        <button id="attachBtn" style="width: 34px; height: 34px; background: #050510; border: 1px solid #2a2a4a; border-radius: 8px; color: #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2;"><path d="M21.44 11.05 12.25 20.24a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24L9.41 17.41a1 1 0 0 1-1.42-1.42l8-8"/></svg>
+        </button>
+        <button id="folderBtn" style="width: 34px; height: 34px; background: #050510; border: 1px solid #2a2a4a; border-radius: 8px; color: #ccc; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2;"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>
+        </button>
+        <button id="aiToggleBtn" style="width: 34px; height: 34px; background: linear-gradient(135deg, #00d2ff33, #b026ff33); border: 1px solid #b026ff; border-radius: 8px; color: #d9a5ff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: currentColor;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></svg>
+        </button>
+      </div>
+      <button id="analyzeBtn" style="display: flex; align-items: center; gap: 8px; padding: 11px 22px; background: linear-gradient(90deg, #00d2ff 0%, #b026ff 100%); color: #04040c; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+        <svg viewBox="0 0 24 24" style="width: 15px; height: 15px; fill: none; stroke: #04040c; stroke-width: 2;"><path d="m22 2-7 20-4-9-9-4 20-7Z"/></svg>
+        Analyze
+      </button>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; padding: 10px 4px; color: #888; font-size: 0.75rem;">
+    <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Engine: JT Code Engine</span>
+    <span>🐍 Python 3.11</span>
+    <span>🟢 Node.js 20</span>
+    <span style="color: #10b981;">🛡️ Secure</span>
   </div>
 
 </div>
 
+<style>
+@keyframes blink { 50% { opacity: 0; } }
+</style>
+
+<script>
+  document.getElementById('formatBtn')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('jt:code-format'));
+  });
+  document.getElementById('explainBtn')?.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('jt:code-explain'));
+  });
+  document.getElementById('copyCodeBtn')?.addEventListener('click', () => {
+    const text = document.getElementById('codeArea').innerText;
+    navigator.clipboard.writeText(text);
+  });
+  document.querySelectorAll('.tool-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('jt:code-tool', { detail: btn.dataset.action }));
+    });
+  });
+  document.querySelectorAll('.help-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('jt:code-help', { detail: card.dataset.help }));
+    });
+  });
+  document.getElementById('analyzeBtn')?.addEventListener('click', () => {
+    const input = document.getElementById('codeInput').value.trim();
+    if (input) document.dispatchEvent(new CustomEvent('jt:code-analyze', { detail: input }));
+  });
+        </script>
