@@ -1,1 +1,52 @@
+<!-- loading.html — full-screen boot loader. Injected into #mount-loading by app.js. -->
+<div class="loading-screen" role="status" aria-live="polite">
+
+  <div class="loading-rings" aria-hidden="true">
+    <svg class="loading-rings-svg" viewBox="0 0 200 200">
+      <path class="loading-ring loading-ring-a"
+        d="M100,18 C133,16 168,34 179,66 C190,98 178,133 152,157 C126,181 88,186 58,170 C28,154 12,118 19,84 C26,50 55,20 100,18 Z" />
+      <path class="loading-ring loading-ring-b"
+        d="M101,26 C128,22 158,42 166,70 C176,100 170,132 145,153 C119,175 82,178 55,161 C29,145 17,112 26,80 C34,50 62,30 101,26 Z" />
+      <path class="loading-ring loading-ring-c"
+        d="M99,33 C122,30 148,48 155,72 C163,98 156,124 136,142 C115,161 83,163 60,148 C38,134 28,106 35,79 C42,53 65,36 99,33 Z" />
+    </svg>
+  </div>
+
+  <div class="loading-content">
+
+    <div class="loading-orb">
+      <svg class="loading-spinner" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="jt-spinner-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="var(--jt-purple)" />
+            <stop offset="100%" stop-color="var(--jt-cyan)" />
+          </linearGradient>
+        </defs>
+        <circle class="loading-spinner-arc" cx="60" cy="60" r="52" />
+      </svg>
+      <span class="loading-orb-glow" aria-hidden="true"></span>
+      <span class="loading-logo-text font-display">JT</span>
+    </div>
+
+    <h1 class="loading-brand font-display">
+      Johnny Tec <span class="neon-text-gradient">AI</span>
+    </h1>
+    <p class="loading-tagline">Smart. Fast. Reliable.</p>
+
+    <div class="loading-status">
+      <span class="loading-status-label">Loading</span>
+      <span class="loading-dots" aria-hidden="true">
+        <span class="loading-dot"></span>
+        <span class="loading-dot"></span>
+        <span class="loading-dot"></span>
+      </span>
+    </div>
+
+    <div class="loading-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="loading-bar-fill"></div>
+    </div>
+    <span class="loading-percent font-mono">0%</span>
+
+  </div>
+</div>
 
