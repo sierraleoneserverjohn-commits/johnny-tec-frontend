@@ -158,18 +158,19 @@
 
     await Promise.all(coreNames.map(mountComponent));
 
-    // Reveal the shell, retire the loading screen.
+    // Reveal the shell underneath the loading screen (still on top, z-index
+    // 100) and let the loading component's own JS decide when it's actually
+    // safe to fade out — it paces itself off real network speed and gates
+    // on these same "jt:component-ready" events, so it knows best.
     const appShell = document.getElementById('app-shell');
     const loadingMount = document.getElementById('mount-loading');
     appShell.hidden = false;
     window.JT.emit('jt:boot-complete');
 
-    // The loading component's own JS may want to animate itself out;
-    // give it a beat via the event above, then remove it from the DOM.
-    window.setTimeout(() => {
+    window.JT.on('jt:loading-exit-complete', () => {
       loadingMount.hidden = true;
       loadingMount.innerHTML = '';
-    }, 400);
+    });
 
     // Deferred components (things opened on demand, like the voice
     // visualizer overlay) load quietly in the background afterward.
@@ -183,3 +184,4 @@
     boot();
   }
 })();
+      
