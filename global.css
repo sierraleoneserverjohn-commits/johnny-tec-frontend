@@ -1,0 +1,270 @@
+/* ============================================================
+   JOHNNY TEC AI — GLOBAL DESIGN SYSTEM
+   Deep space-black cyber-neon aesthetic. Every component CSS
+   file should consume these tokens rather than hardcoding colors,
+   spacing, or radii, so the whole app stays visually coherent.
+   ============================================================ */
+
+:root {
+  /* ---- Core palette ---- */
+  --jt-bg-void:        #05070a;   /* deepest background layer */
+  --jt-bg-base:        #0a0e14;   /* primary app background */
+  --jt-bg-surface:     #10151d;   /* panels, sidebars */
+  --jt-bg-surface-2:   #161c26;   /* raised cards within panels */
+
+  --jt-cyan:           #00d2ff;
+  --jt-cyan-dim:       #00d2ff66;
+  --jt-purple:         #b026ff;
+  --jt-purple-dim:     #b026ff66;
+  --jt-gradient-neon:  linear-gradient(135deg, var(--jt-cyan) 0%, var(--jt-purple) 100%);
+
+  --jt-text-primary:   #eaf2f7;
+  --jt-text-secondary: #93a3b3;
+  --jt-text-muted:     #5c6b7a;
+
+  --jt-success:        #29ffb0;
+  --jt-warning:        #ffb020;
+  --jt-danger:         #ff3d6e;
+
+  /* ---- Glassmorphism ---- */
+  --jt-glass-bg:        rgba(16, 21, 29, 0.55);
+  --jt-glass-border:     rgba(0, 210, 255, 0.16);
+  --jt-glass-blur:      14px;
+
+  /* ---- Elevation / glow ---- */
+  --jt-ring-glow:       0 0 0 1px rgba(0, 210, 255, 0.25), 0 0 24px rgba(0, 210, 255, 0.15);
+  --jt-ring-glow-purple:0 0 0 1px rgba(176, 38, 255, 0.25), 0 0 24px rgba(176, 38, 255, 0.15);
+  --jt-shadow-soft:     0 8px 30px rgba(0, 0, 0, 0.45);
+
+  /* ---- Type scale ---- */
+  --jt-font-display:    'Chakra Petch', sans-serif;
+  --jt-font-body:       'Inter', sans-serif;
+  --jt-font-mono:       'JetBrains Mono', monospace;
+
+  --jt-fs-xs:   0.75rem;
+  --jt-fs-sm:   0.875rem;
+  --jt-fs-base: 1rem;
+  --jt-fs-lg:   1.125rem;
+  --jt-fs-xl:   1.5rem;
+  --jt-fs-2xl:  2rem;
+
+  /* ---- Spacing scale ---- */
+  --jt-space-1: 4px;
+  --jt-space-2: 8px;
+  --jt-space-3: 12px;
+  --jt-space-4: 16px;
+  --jt-space-5: 24px;
+  --jt-space-6: 32px;
+  --jt-space-7: 48px;
+
+  /* ---- Radii ---- */
+  --jt-radius-sm: 8px;
+  --jt-radius-md: 14px;
+  --jt-radius-lg: 20px;
+  --jt-radius-full: 999px;
+
+  /* ---- Layout ---- */
+  --jt-left-bar-width: 280px;
+  --jt-right-bar-width: 320px;
+
+  /* ---- Motion ---- */
+  --jt-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --jt-duration-fast: 150ms;
+  --jt-duration-base: 300ms;
+  --jt-duration-slow: 600ms;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at 20% 0%, #0d1622 0%, var(--jt-bg-void) 55%);
+  color: var(--jt-text-primary);
+  font-family: var(--jt-font-body);
+  font-size: var(--jt-fs-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden; /* app shell manages its own internal scroll regions */
+}
+
+img, svg, canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--jt-purple-dim);
+  color: var(--jt-text-primary);
+}
+
+/* Visible keyboard focus everywhere — never remove outline without replacing it */
+:focus-visible {
+  outline: 2px solid var(--jt-cyan);
+  outline-offset: 2px;
+  border-radius: var(--jt-radius-sm);
+}
+
+/* ---- Scrollbars (webkit) ---- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 210, 255, 0.25);
+  border-radius: var(--jt-radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 210, 255, 0.45);
+}
+
+/* ============================================================
+   Shared utility classes — reusable across component stylesheets
+   ============================================================ */
+
+.glass-panel {
+  background: var(--jt-glass-bg);
+  border: 1px solid var(--jt-glass-border);
+  backdrop-filter: blur(var(--jt-glass-blur));
+  -webkit-backdrop-filter: blur(var(--jt-glass-blur));
+  border-radius: var(--jt-radius-lg);
+  box-shadow: var(--jt-shadow-soft);
+}
+
+.neon-ring {
+  box-shadow: var(--jt-ring-glow);
+}
+
+.neon-text-gradient {
+  background: var(--jt-gradient-neon);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.font-display {
+  font-family: var(--jt-font-display);
+  letter-spacing: 0.02em;
+}
+
+.font-mono {
+  font-family: var(--jt-font-mono);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   App shell layout — the 3-column grid that hosts components.
+   Individual component CSS files style their own internals only.
+   ============================================================ */
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--jt-left-bar-width) 1fr var(--jt-right-bar-width);
+  height: 100vh;
+  width: 100vw;
+}
+
+.mount {
+  min-width: 0;
+  min-height: 0;
+}
+
+.mount-left-bar,
+.mount-right-bar {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.mount-main-screen {
+  height: 100vh;
+  overflow: hidden; /* main-screen.css defines its own internal scroll region for the chat log */
+}
+
+.mount-voice-visualizer {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none; /* the component itself opts elements back in */
+}
+
+.mount-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- Responsive: collapse side bars below tablet width ---- */
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .mount-left-bar,
+  .mount-right-bar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform var(--jt-duration-base) var(--jt-ease);
+  }
+  .mount-right-bar {
+    right: 0;
+    left: auto;
+    transform: translateX(100%);
+  }
+  .mount-left-bar.is-open,
+  .mount-right-bar.is-open {
+    transform: translateX(0);
+  }
+}
