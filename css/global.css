@@ -88,6 +88,7 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh; /* accounts for mobile browser toolbars that shrink/grow the viewport */
   background: radial-gradient(circle at 20% 0%, #0d1622 0%, var(--jt-bg-void) 55%);
   color: var(--jt-text-primary);
   font-family: var(--jt-font-body);
@@ -200,6 +201,7 @@ a {
   display: grid;
   grid-template-columns: var(--jt-left-bar-width) 1fr var(--jt-right-bar-width);
   height: 100vh;
+  height: 100dvh; /* real visible height on mobile, so the input bar is never clipped under the browser's toolbar */
   width: 100vw;
 }
 
@@ -211,11 +213,13 @@ a {
 .mount-left-bar,
 .mount-right-bar {
   height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
 }
 
 .mount-main-screen {
   height: 100vh;
+  height: 100dvh;
   overflow: hidden; /* main-screen.css defines its own internal scroll region for the chat log */
 }
 
