@@ -1,0 +1,26 @@
+<!-- ai-profile.html — the AI's own avatar/identity, shown at the side of the chat header.
+     Separate from components/profile.html, which is the human user's account. -->
+<div class="ai-profile">
+  <button type="button" class="ai-profile-btn" id="aiProfileBtn" aria-haspopup="true" aria-expanded="false" aria-label="About Johnny Tec AI">
+    <span class="ai-profile-ring">
+      <img src="assets/jt-ai-avatar.png" alt="Johnny Tec AI" class="ai-profile-img" />
+    </span>
+    <span class="ai-profile-status" aria-hidden="true"></span>
+  </button>
+
+  <div class="ai-profile-popover" id="aiProfilePopover" role="menu" hidden>
+    <div class="ai-profile-popover-head">
+      <img src="assets/jt-ai-avatar.png" alt="" class="ai-profile-popover-img" />
+      <div class="ai-profile-popover-meta">
+        <p class="ai-profile-popover-name">Johnny Tec AI</p>
+        <p class="ai-profile-popover-sub">
+          <span class="ai-profile-popover-dot" aria-hidden="true"></span>
+          Multi-LLM · Online
+        </p>
+      </div>
+    </div>
+    <p class="ai-profile-popover-desc">
+      Routes every request across Gemini, GPT, Claude, Groq, and the rest of the stack — whichever fits best.
+    </p>
+  </div>
+</div>
