@@ -1,0 +1,31 @@
+/**
+ * ai-profile.js — the AI's own avatar/identity in the chat header.
+ * Just an info popover for now (name, status, what it routes to).
+ */
+
+(() => {
+  'use strict';
+
+  const root = document.querySelector('.ai-profile');
+  if (!root) return;
+
+  const btn = root.querySelector('#aiProfileBtn');
+  const popover = root.querySelector('#aiProfilePopover');
+  if (!btn || !popover) return;
+
+  function close() {
+    popover.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+  }
+  function open() {
+    popover.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (popover.hidden) open(); else close();
+  });
+  popover.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', close);
+})();
