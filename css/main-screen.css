@@ -303,10 +303,21 @@
 
 .ms-bubble-row {
   display: flex;
+  align-items: flex-end;
+  gap: 8px;
   animation: fade-slide-in var(--jt-duration-fast) var(--jt-ease) both;
 }
 .ms-bubble-row.is-user { justify-content: flex-end; }
 .ms-bubble-row.is-assistant { justify-content: flex-start; }
+
+.ms-bubble-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--jt-radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
+}
 
 .ms-bubble {
   max-width: 82%;
@@ -517,5 +528,5 @@
   .ms-quick-grid { grid-template-columns: 1fr 1fr; gap: var(--jt-space-2); }
   .ms-quick-card { padding: var(--jt-space-3); }
   .ms-brand-title { font-size: var(--jt-fs-base); }
-}
-
+   }
+   
