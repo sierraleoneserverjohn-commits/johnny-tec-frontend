@@ -92,6 +92,15 @@
       core: true,
       dependsOn: 'left-bar',
     },
+    // The AI's own avatar/identity — mount point lives inside main-screen.html.
+    'ai-profile': {
+      mount: '#mount-ai-profile',
+      html: 'components/ai-profile.html',
+      css: 'css/ai-profile.css',
+      js: 'js/ai-profile.js',
+      core: true,
+      dependsOn: 'main-screen',
+    },
     'voice-visualizer': {
       mount: '#mount-voice-visualizer',
       html: 'components/voice-visualizer.html',
@@ -211,4 +220,3 @@
     boot();
   }
 })();
-  
