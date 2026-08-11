@@ -380,5 +380,29 @@
   });
 
   syncSendButtonState();
+
+  // ==================================================================
+  // 9. Sidebar integration — New Chat reset + module nav placeholder
+  //    Voice & Audio / Image Generator / Security Recon each become
+  //    their own dedicated component (own HTML/CSS/JS) in a later
+  //    step; until then, this just confirms the nav actually works.
+  // ==================================================================
+  function resetConversation() {
+    chatLogEl.innerHTML = '';
+    chatLogEl.hidden = true;
+    welcomeEl.classList.remove('is-hidden');
+    conversationStarted = false;
+    inputEl.value = '';
+    syncSendButtonState();
+    loadGreeting();
+  }
+
+  window.JT?.on('jt:new-chat', resetConversation);
+
+  window.JT?.on('jt:navigate', ({ view, label }) => {
+    if (view === 'chat') { resetConversation(); return; }
+    activateConversationView();
+    appendBubble('assistant', `${label} is coming online as its own module next — for now, ask me anything below and I'll route it for you.`);
+  });
 })();
-    
+ 
