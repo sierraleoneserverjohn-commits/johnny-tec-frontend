@@ -23,11 +23,19 @@
   if (!root) return;
 
   // ----------------------------------------------------------------
-  // Config — point these at the real backend when ready
+  // Config — Sierra Leone Server backend
   // ----------------------------------------------------------------
-  const GREETING_ENDPOINT = '/api/assistant/greeting';
-  const ROUTE_ENDPOINT = '/api/route';
-  const FETCH_TIMEOUT_MS = 2500;
+  // Route paths below (/api/chat, /api/assistant/greeting) are my best
+  // guess based on the dashboard at this URL — I couldn't read your
+  // server's actual route definitions from here (the command-center
+  // page is JS-rendered, so the exact fetch() paths it uses aren't
+  // visible to me). If these don't match your real routes, tell me
+  // the exact paths (or paste the relevant app.post(...) lines from
+  // your server file) and this is a one-line fix.
+  const BACKEND_BASE_URL = 'https://johnny-tec-backend-in37.onrender.com';
+  const GREETING_ENDPOINT = `${BACKEND_BASE_URL}/api/assistant/greeting`;
+  const ROUTE_ENDPOINT = `${BACKEND_BASE_URL}/api/chat`;
+  const FETCH_TIMEOUT_MS = 12000; // Render free-tier instances cold-start slowly — give it real time before falling back
 
   // This app is public-facing — every visitor is a stranger until real
   // auth says otherwise, so nothing here may assume a specific person's
@@ -329,6 +337,13 @@
   function appendBubble(role, text) {
     const row = document.createElement('div');
     row.className = `ms-bubble-row is-${role}`;
+    if (role === 'assistant') {
+      const avatar = document.createElement('img');
+      avatar.src = 'assets/jt-ai-avatar.png';
+      avatar.alt = '';
+      avatar.className = 'ms-bubble-avatar';
+      row.appendChild(avatar);
+    }
     const bubble = document.createElement('div');
     bubble.className = 'ms-bubble';
     bubble.textContent = text;
@@ -341,7 +356,15 @@
   function appendTypingBubble() {
     const row = document.createElement('div');
     row.className = 'ms-bubble-row is-assistant';
-    row.innerHTML = `<div class="ms-bubble is-typing"><span class="ms-typing-dot"></span><span class="ms-typing-dot"></span><span class="ms-typing-dot"></span></div>`;
+    const avatar = document.createElement('img');
+    avatar.src = 'assets/jt-ai-avatar.png';
+    avatar.alt = '';
+    avatar.className = 'ms-bubble-avatar';
+    row.appendChild(avatar);
+    const bubble = document.createElement('div');
+    bubble.className = 'ms-bubble is-typing';
+    bubble.innerHTML = `<span class="ms-typing-dot"></span><span class="ms-typing-dot"></span><span class="ms-typing-dot"></span>`;
+    row.appendChild(bubble);
     chatLogEl.appendChild(row);
     chatLogEl.parentElement.scrollTop = chatLogEl.parentElement.scrollHeight;
     return row;
@@ -358,15 +381,22 @@
       const res = await fetchWithTimeout(ROUTE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, message: text, prompt: text }),
       });
       if (!res.ok) throw new Error(`route endpoint returned ${res.status}`);
       const data = await res.json();
-      return data.content || 'Done.';
+      // Contract isn't confirmed yet, so accept whichever common shape
+      // the backend actually replies with rather than assuming one.
+      const content =
+        data.content ?? data.reply ?? data.response ?? data.message ??
+        data.text ?? data.output ?? data?.choices?.[0]?.message?.content;
+      if (!content) throw new Error('unrecognized response shape');
+      return content;
     } catch (err) {
-      // Backend not wired up yet — a clear placeholder so the flow is
-      // demonstrable end to end without blocking on that work.
-      return `(Demo response — connect ${ROUTE_ENDPOINT} to route this to the real AI stack.)\n\nYou said: "${text}"`;
+      // Backend unreachable, cold-starting, or the route path above
+      // doesn't match yet — a clear placeholder so the flow is still
+      // demonstrable end to end.
+      return `(Demo response — ${ROUTE_ENDPOINT} didn't return a usable reply yet: ${err.message}.)\n\nYou said: "${text}"`;
     }
   }
 
@@ -421,4 +451,4 @@
     appendBubble('assistant', `${label} is coming online as its own module next — for now, ask me anything below and I'll route it for you.`);
   });
 })();
-    
+  
