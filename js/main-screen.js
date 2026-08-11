@@ -27,8 +27,16 @@
   // ----------------------------------------------------------------
   const GREETING_ENDPOINT = '/api/assistant/greeting';
   const ROUTE_ENDPOINT = '/api/route';
-  const USER_NAME = 'Johnny';
   const FETCH_TIMEOUT_MS = 2500;
+
+  // This app is public-facing — every visitor is a stranger until real
+  // auth says otherwise, so nothing here may assume a specific person's
+  // name. Wire this up once accounts/auth exist (e.g. read from a
+  // signed-in session); until then it stays null and the AI introduces
+  // itself instead of presuming who it's talking to.
+  function getUserDisplayName() {
+    return null;
+  }
 
   function fetchWithTimeout(url, options = {}) {
     const controller = new AbortController();
@@ -40,21 +48,28 @@
   // 1. AI-generated greeting — different phrasing every time it opens
   // ==================================================================
   const greetingLineEl = root.querySelector('#msGreetingLine');
-  const greetingNameEl = root.querySelector('#msGreetingName');
   const headlineEl = root.querySelector('#msHeadline');
   const sublineEl = root.querySelector('#msSubline');
 
   // Local fallback pool, used instantly if the backend isn't reachable
-  // (or hasn't been wired up yet). Mixes "greets the user" and
-  // "introduces itself" styles per the brief.
+  // (or hasn't been wired up yet). No visitor name is assumed — the AI
+  // introduces itself, since (without real auth) it's talking to
+  // whoever happens to land on the page, not a specific person.
   const GREETING_POOL = [
-    { wave: '👋', line: `Hey ${USER_NAME},`, headline: 'How can I help you today?', sub: 'Your AI assistant is ready to help you with anything you need.' },
-    { wave: '⚡', line: `Hey ${USER_NAME}, I'm Johnny Tec —`, headline: 'What are we building today?', sub: 'Ask me anything, or drop in an image, file, or voice note.' },
-    { wave: '✨', line: `Welcome back, ${USER_NAME}.`, headline: 'Where should we start?', sub: 'Code, writing, research, or just talk it through — I\'m ready.' },
-    { wave: '🌙', line: `Late one, ${USER_NAME}?`, headline: 'Let\'s make it count.', sub: 'I\'m fully online — Gemini, GPT, Claude, and the rest of the stack are ready.' },
-    { wave: '🚀', line: `Hi ${USER_NAME}, Johnny Tec here —`, headline: 'Ready when you are.', sub: 'Type, talk, or attach something to get started.' },
-    { wave: '👋', line: `Good to see you, ${USER_NAME}.`, headline: 'What\'s on your mind?', sub: 'I can write, explain, create, or help you solve something tricky.' },
+    { wave: '👋', line: `Hey, I'm Johnny Tec AI —`, headline: 'How can I help you today?', sub: 'Ask me anything, or drop in an image, file, or voice note.' },
+    { wave: '⚡', line: `Hi there, Johnny Tec AI here —`, headline: 'What are we building today?', sub: 'Code, writing, research, or just talk it through — I\'m ready.' },
+    { wave: '✨', line: `Welcome —`, headline: 'Where should we start?', sub: 'I\'m fully online — Gemini, GPT, Claude, and the rest of the stack are ready.' },
+    { wave: '🚀', line: `Hey, Johnny Tec AI here —`, headline: 'Ready when you are.', sub: 'Type, talk, or attach something to get started.' },
+    { wave: '👋', line: `Hi, I'm Johnny Tec —`, headline: 'What\'s on your mind?', sub: 'I can write, explain, create, or help you solve something tricky.' },
+    { wave: '🤖', line: `Hello — Johnny Tec AI, at your service.`, headline: 'How can I help?', sub: 'Smart, fast, and ready for whatever you throw at me.' },
   ];
+
+  // Used only once real auth supplies a name — kept separate so the
+  // no-name pool above never has to interpolate anything.
+  function personalize(pick, name) {
+    if (!name) return pick;
+    return { ...pick, line: `Hey ${name},`, headline: pick.headline };
+  }
 
   function renderGreeting({ wave, line, headline, sub }) {
     greetingLineEl.style.opacity = '0';
@@ -72,18 +87,19 @@
   }
 
   async function loadGreeting() {
+    const name = getUserDisplayName();
     try {
       const res = await fetchWithTimeout(GREETING_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: USER_NAME }),
+        body: JSON.stringify({ name }),
       });
       if (!res.ok) throw new Error(`greeting endpoint returned ${res.status}`);
       const data = await res.json();
       if (!data || !data.headline) throw new Error('malformed greeting response');
       renderGreeting({
         wave: data.wave || '👋',
-        line: data.line || `Hey ${USER_NAME},`,
+        line: data.line || (name ? `Hey ${name},` : `Hey, I'm Johnny Tec AI —`),
         headline: data.headline,
         sub: data.sub || '',
       });
@@ -91,7 +107,7 @@
       // Backend not reachable yet (or still being built) — a random
       // local variation keeps the "different every time" promise.
       const pick = GREETING_POOL[Math.floor(Math.random() * GREETING_POOL.length)];
-      renderGreeting(pick);
+      renderGreeting(personalize(pick, name));
     }
   }
 
@@ -405,4 +421,4 @@
     appendBubble('assistant', `${label} is coming online as its own module next — for now, ask me anything below and I'll route it for you.`);
   });
 })();
- 
+    
