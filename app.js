@@ -80,6 +80,18 @@
       js: 'js/right-bar.js',
       core: true,
     },
+    // Profile's mount point (#mount-profile) lives inside left-bar.html,
+    // so it doesn't exist in the DOM until left-bar's HTML is injected —
+    // see the explicit sequencing in boot() below, not the generic
+    // Promise.all used for the other core components.
+    profile: {
+      mount: '#mount-profile',
+      html: 'components/profile.html',
+      css: 'css/profile.css',
+      js: 'js/profile.js',
+      core: true,
+      dependsOn: 'left-bar',
+    },
     'voice-visualizer': {
       mount: '#mount-voice-visualizer',
       html: 'components/voice-visualizer.html',
@@ -154,9 +166,24 @@
     await mountComponent('loading');
     window.JT.emit('jt:boot-start');
 
-    const coreNames = Object.keys(COMPONENTS).filter((name) => COMPONENTS[name].core && name !== 'loading');
+    const coreNames = Object.keys(COMPONENTS).filter(
+      (name) => COMPONENTS[name].core && name !== 'loading' && !COMPONENTS[name].dependsOn
+    );
 
-    await Promise.all(coreNames.map(mountComponent));
+    // Track each mountComponent() call by name so dependents can await the
+    // *same* in-flight promise rather than triggering a second fetch (a
+    // second injection would wipe out the first copy's DOM after its JS
+    // already attached listeners to it).
+    const mountPromises = {};
+    coreNames.forEach((name) => { mountPromises[name] = mountComponent(name); });
+
+    const dependentNames = Object.keys(COMPONENTS).filter((name) => COMPONENTS[name].dependsOn);
+    dependentNames.forEach((name) => {
+      const depName = COMPONENTS[name].dependsOn;
+      mountPromises[name] = mountPromises[depName].then(() => mountComponent(name));
+    });
+
+    await Promise.all(Object.values(mountPromises));
 
     // Reveal the shell underneath the loading screen (still on top, z-index
     // 100) and let the loading component's own JS decide when it's actually
@@ -184,4 +211,4 @@
     boot();
   }
 })();
-      
+  
