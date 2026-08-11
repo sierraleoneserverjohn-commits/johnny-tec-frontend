@@ -1,1 +1,58 @@
+<!-- left-bar.html — primary navigation sidebar. Injected into #mount-left-bar by app.js. -->
+<div class="left-bar">
+
+  <div class="lb-top">
+    <div class="lb-logo">
+      <span class="lb-logo-mark font-display">JT</span>
+      <span class="lb-logo-text font-display">Johnny Tec <span class="neon-text-gradient">AI</span></span>
+    </div>
+    <button type="button" class="lb-close-btn" id="lbCloseBtn" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+
+  <button type="button" class="lb-new-chat" id="lbNewChatBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+    New Chat
+  </button>
+
+  <nav class="lb-nav" aria-label="Modules">
+    <button type="button" class="lb-nav-item is-active" data-view="chat" aria-current="page">
+      <span class="lb-nav-icon lb-nav-icon-chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19v-2.4C4 14 4 12.8 4 11a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7 7 7 0 0 1-7 7H8l-4 2Z"/></svg>
+      </span>
+      <span class="lb-nav-label">Chat</span>
+    </button>
+
+    <button type="button" class="lb-nav-item" data-view="voice-audio">
+      <span class="lb-nav-icon lb-nav-icon-voice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </span>
+      <span class="lb-nav-label">Voice &amp; Audio</span>
+    </button>
+
+    <button type="button" class="lb-nav-item" data-view="image-generator">
+      <span class="lb-nav-icon lb-nav-icon-image">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5.5-5.5L4 21"/></svg>
+      </span>
+      <span class="lb-nav-label">Image Generator</span>
+    </button>
+
+    <button type="button" class="lb-nav-item" data-view="security-recon">
+      <span class="lb-nav-icon lb-nav-icon-recon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l2 2 3.5-4"/></svg>
+      </span>
+      <span class="lb-nav-label">Security Recon</span>
+    </button>
+  </nav>
+
+  <div class="lb-recent">
+    <p class="lb-recent-label">Recent</p>
+    <div class="lb-recent-list" id="lbRecentList"></div>
+  </div>
+
+  <!-- Profile is its own component: components/profile.html, css/profile.css, js/profile.js — mounted here by app.js, not inline. -->
+  <div id="mount-profile" class="mount mount-profile" data-component="profile"></div>
+
+</div>
 
