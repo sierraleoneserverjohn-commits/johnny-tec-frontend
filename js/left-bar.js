@@ -13,6 +13,10 @@
   const root = document.querySelector('.left-bar');
   if (!root) return;
 
+  // The mobile show/hide transform (see global.css) lives on the outer
+  // mount wrapper, not this inner element — .is-open toggles there.
+  const mountEl = document.getElementById('mount-left-bar') || root;
+
   // ==================================================================
   // 1. New Chat
   // ==================================================================
@@ -91,7 +95,7 @@
   }
 
   function openMobile() {
-    root.classList.add('is-open');
+    mountEl.classList.add('is-open');
     if (!scrimEl) {
       scrimEl = document.createElement('div');
       scrimEl.className = 'lb-scrim';
@@ -106,7 +110,7 @@
   }
 
   function closeMobile() {
-    root.classList.remove('is-open');
+    mountEl.classList.remove('is-open');
     scrimEl?.remove();
     scrimEl = null;
     document.removeEventListener('keydown', onEscape);
@@ -118,10 +122,9 @@
 
   window.JT?.on('jt:toggle-left-bar', () => {
     if (!isMobileLayout()) return; // desktop: sidebar is always visible, nothing to toggle
-    if (root.classList.contains('is-open')) closeMobile();
+    if (mountEl.classList.contains('is-open')) closeMobile();
     else openMobile();
   });
 
   root.querySelector('#lbCloseBtn')?.addEventListener('click', closeMobile);
 })();
-      
