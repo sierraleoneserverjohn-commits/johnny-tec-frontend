@@ -1,1 +1,264 @@
+/* ============================================================
+   left-bar.css — primary navigation sidebar
+   Glassy panel, glowing gradient New Chat CTA, per-module neon
+   icon colors, and a scrollable Recent list. Profile lives in
+   its own component (profile.css) mounted at the bottom.
+   ============================================================ */
+
+.left-bar {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(16, 21, 29, 0.9) 0%, rgba(10, 14, 20, 0.96) 100%);
+  border-right: 1px solid rgba(0, 210, 255, 0.1);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Ambient glow behind the logo — subtle, static (this panel is
+   persistent on screen, so we keep motion reserved for interaction). */
+.left-bar::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.14) 0%, rgba(176, 38, 255, 0.08) 55%, transparent 75%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ---- Top: logo + mobile close ---- */
+.lb-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--jt-space-5) var(--jt-space-4) var(--jt-space-4);
+}
+
+.lb-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--jt-space-2);
+  min-width: 0;
+}
+
+.lb-logo-mark {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--jt-radius-md);
+  font-size: var(--jt-fs-sm);
+  font-weight: 700;
+  background: var(--jt-gradient-neon);
+  color: #06111a;
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.4);
+}
+
+.lb-logo-text {
+  font-size: var(--jt-fs-base);
+  font-weight: 700;
+  color: var(--jt-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-close-btn {
+  display: none;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--jt-radius-sm);
+  color: var(--jt-text-secondary);
+  flex-shrink: 0;
+}
+.lb-close-btn svg { width: 18px; height: 18px; }
+.lb-close-btn:hover { color: var(--jt-cyan); }
+
+/* ---- New Chat CTA ---- */
+.lb-new-chat {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--jt-space-2);
+  margin: 0 var(--jt-space-4) var(--jt-space-5);
+  padding: 11px var(--jt-space-4);
+  border-radius: var(--jt-radius-md);
+  background: var(--jt-gradient-neon);
+  color: #06111a;
+  font-weight: 600;
+  font-size: var(--jt-fs-sm);
+  box-shadow: 0 0 18px rgba(0, 210, 255, 0.35), 0 0 30px rgba(176, 38, 255, 0.18);
+  transition: transform var(--jt-duration-fast) var(--jt-ease), box-shadow var(--jt-duration-fast) var(--jt-ease);
+}
+.lb-new-chat svg { width: 17px; height: 17px; }
+
+.lb-new-chat:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 24px rgba(0, 210, 255, 0.5), 0 0 40px rgba(176, 38, 255, 0.28);
+}
+.lb-new-chat:active { transform: translateY(0); }
+
+/* ---- Nav ---- */
+.lb-nav {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--jt-space-3);
+}
+
+.lb-nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--jt-space-3);
+  padding: 10px var(--jt-space-3);
+  border-radius: var(--jt-radius-md);
+  color: var(--jt-text-secondary);
+  font-size: var(--jt-fs-sm);
+  font-weight: 500;
+  text-align: left;
+  transition: background var(--jt-duration-fast) var(--jt-ease), color var(--jt-duration-fast) var(--jt-ease);
+}
+
+.lb-nav-item::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 20%;
+  bottom: 20%;
+  width: 3px;
+  border-radius: var(--jt-radius-full);
+  background: var(--jt-gradient-neon);
+  opacity: 0;
+  transition: opacity var(--jt-duration-fast) var(--jt-ease);
+}
+
+.lb-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--jt-text-primary);
+}
+
+.lb-nav-item.is-active {
+  background: rgba(0, 210, 255, 0.08);
+  color: var(--jt-text-primary);
+}
+.lb-nav-item.is-active::before { opacity: 1; }
+
+.lb-nav-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--jt-radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  transition: background var(--jt-duration-fast) var(--jt-ease), box-shadow var(--jt-duration-fast) var(--jt-ease), color var(--jt-duration-fast) var(--jt-ease);
+}
+.lb-nav-icon svg { width: 16px; height: 16px; }
+
+/* Per-module glow color, lit up when that item is active or hovered */
+.lb-nav-icon-chat  { color: var(--jt-cyan); }
+.lb-nav-icon-voice { color: #8fa0ff; }
+.lb-nav-icon-image { color: var(--jt-purple); }
+.lb-nav-icon-recon { color: var(--jt-danger); }
+
+.lb-nav-item:hover .lb-nav-icon,
+.lb-nav-item.is-active .lb-nav-icon-chat  { background: rgba(0, 210, 255, 0.16); box-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+.lb-nav-item.is-active .lb-nav-icon-voice { background: rgba(143, 160, 255, 0.18); box-shadow: 0 0 10px rgba(143, 160, 255, 0.3); }
+.lb-nav-item.is-active .lb-nav-icon-image { background: rgba(176, 38, 255, 0.18); box-shadow: 0 0 10px rgba(176, 38, 255, 0.35); }
+.lb-nav-item.is-active .lb-nav-icon-recon { background: rgba(255, 61, 110, 0.18); box-shadow: 0 0 10px rgba(255, 61, 110, 0.35); }
+
+/* ---- Recent ---- */
+.lb-recent {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--jt-space-5);
+  padding: 0 var(--jt-space-3);
+}
+
+.lb-recent-label {
+  padding: 0 var(--jt-space-3) var(--jt-space-2);
+  font-family: var(--jt-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--jt-text-muted);
+  flex-shrink: 0;
+}
+
+.lb-recent-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: var(--jt-space-3);
+}
+
+.lb-recent-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px var(--jt-space-3);
+  border-radius: var(--jt-radius-sm);
+  text-align: left;
+  color: var(--jt-text-secondary);
+  transition: background var(--jt-duration-fast) var(--jt-ease), color var(--jt-duration-fast) var(--jt-ease);
+}
+
+.lb-recent-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--jt-text-primary);
+}
+
+.lb-recent-item-title {
+  font-size: var(--jt-fs-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-recent-item-time {
+  font-size: 0.7rem;
+  color: var(--jt-text-muted);
+}
+
+.lb-recent-empty {
+  padding: var(--jt-space-3);
+  font-size: var(--jt-fs-sm);
+  color: var(--jt-text-muted);
+}
+
+/* ---- Profile mount ---- */
+.mount-profile {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ---- Mobile overlay mode (paired with the .is-open rule in global.css) ---- */
+@media (max-width: 1024px) {
+  .left-bar { width: min(84vw, 300px); }
+  .lb-close-btn { display: flex; }
+}
 
