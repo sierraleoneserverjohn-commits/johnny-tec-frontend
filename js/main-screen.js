@@ -35,7 +35,15 @@
   const BACKEND_BASE_URL = 'https://johnny-tec-backend-in37.onrender.com';
   const GREETING_ENDPOINT = `${BACKEND_BASE_URL}/api/assistant/greeting`;
   const ROUTE_ENDPOINT = `${BACKEND_BASE_URL}/api/chat`;
-  const FETCH_TIMEOUT_MS = 12000; // Render free-tier instances cold-start slowly — give it real time before falling back
+  const FETCH_TIMEOUT_MS = 12000; // Render free-tier instances cold-start slowly — give it real time before falling back (worst case with the provider chain below: ~12s × chain length if the server is fully asleep)
+
+  // Your API Key Health Monitor showed GEMINI_API_KEY missing (and a few
+  // others), while GROQ / OPENAI / ANTHROPIC were live. Rather than
+  // hardcode one provider and break whenever its key is down, this tries
+  // each working one in order and only falls back to the demo response
+  // if all of them fail. Reorder or extend this list as your key status
+  // changes — no other code needs to change.
+  const PROVIDER_FALLBACK_CHAIN = ['groq', 'openai', 'anthropic'];
 
   // This app is public-facing — every visitor is a stranger until real
   // auth says otherwise, so nothing here may assume a specific person's
@@ -377,27 +385,35 @@
   // { type, content } shape so this file never needs to know which
   // provider (Replicate, OpenAI, Groq...) actually served the request.
   async function routeMessage(text) {
-    try {
-      const res = await fetchWithTimeout(ROUTE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, message: text, prompt: text }),
-      });
-      if (!res.ok) throw new Error(`route endpoint returned ${res.status}`);
-      const data = await res.json();
-      // Contract isn't confirmed yet, so accept whichever common shape
-      // the backend actually replies with rather than assuming one.
-      const content =
-        data.content ?? data.reply ?? data.response ?? data.message ??
-        data.text ?? data.output ?? data?.choices?.[0]?.message?.content;
-      if (!content) throw new Error('unrecognized response shape');
-      return content;
-    } catch (err) {
-      // Backend unreachable, cold-starting, or the route path above
-      // doesn't match yet — a clear placeholder so the flow is still
-      // demonstrable end to end.
-      return `(Demo response — ${ROUTE_ENDPOINT} didn't return a usable reply yet: ${err.message}.)\n\nYou said: "${text}"`;
+    let lastError = null;
+
+    for (const provider of PROVIDER_FALLBACK_CHAIN) {
+      try {
+        const res = await fetchWithTimeout(ROUTE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // Send the provider under a few common field names since the
+          // exact one your router expects isn't confirmed yet — harmless
+          // extras, and it means this works regardless of which name it reads.
+          body: JSON.stringify({ text, message: text, prompt: text, provider, model: provider, engine: provider }),
+        });
+        if (!res.ok) throw new Error(`${provider} returned ${res.status}`);
+        const data = await res.json();
+        const content =
+          data.content ?? data.reply ?? data.response ?? data.message ??
+          data.text ?? data.output ?? data?.choices?.[0]?.message?.content;
+        if (!content) throw new Error(`${provider} returned an unrecognized response shape`);
+        return content; // first provider that actually works wins
+      } catch (err) {
+        lastError = err;
+        // try the next provider in the chain
+      }
     }
+
+    // Every provider in the chain failed (backend unreachable, cold-starting,
+    // route path not confirmed yet, or all those keys are down too) — a
+    // clear placeholder so the flow is still demonstrable end to end.
+    return `(Demo response — none of [${PROVIDER_FALLBACK_CHAIN.join(', ')}] returned a usable reply yet: ${lastError?.message}.)\n\nYou said: "${text}"`;
   }
 
   async function handleSend(text) {
@@ -451,4 +467,4 @@
     appendBubble('assistant', `${label} is coming online as its own module next — for now, ask me anything below and I'll route it for you.`);
   });
 })();
-  
+    
